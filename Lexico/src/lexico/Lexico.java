@@ -25,6 +25,7 @@ public class Lexico {
         }
         else{
             Interfaz interfaz = new Interfaz();
+            interfaz.setVisible(true);
         }
     }
     
