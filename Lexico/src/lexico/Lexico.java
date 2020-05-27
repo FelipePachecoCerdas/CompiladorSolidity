@@ -12,14 +12,14 @@ import java.io.File;
  * @author usuario
  */
 public class Lexico {
-    private static boolean Parte1Ready = true;
+    private static boolean Parte1Ready = false;
 
     
     public static void main(String[] args) {
         
-        if (Parte1Ready == false) {
+        if (Parte1Ready == true) {
         // TODO code application logic here
-        String path = "C:/Users/usuario/Desktop/TEC/Compiladores e Interpretes/Proyecto 1/Lexico/src/lexico/lexer.flex";
+        String path = "C:/Users/user/Desktop/TEC/Repositorios/CompiladorSolidity/Lexico/src/lexico/lexer.flex";
         generarLexer (path);
         Parte1Ready = true;
         }
