@@ -101,7 +101,18 @@ public String lexeme;
         "var"   		{lexeme=yytext(); return PALABRA_RESERVADA; }
         "view"   		{lexeme=yytext(); return PALABRA_RESERVADA; }
         "while" 		{lexeme=yytext(); return PALABRA_RESERVADA; }
-  
+        "uint8"			{lexeme=yytext(); return PALABRA_RESERVADA; }
+        "uint16"		{lexeme=yytext(); return PALABRA_RESERVADA; }
+        "uint32"		{lexeme=yytext(); return PALABRA_RESERVADA; }
+        "uint64"		{lexeme=yytext(); return PALABRA_RESERVADA; }
+        "uint128"               {lexeme=yytext(); return PALABRA_RESERVADA; }
+        "uint256"		{lexeme=yytext(); return PALABRA_RESERVADA; }
+        "bytes8"		{lexeme=yytext(); return PALABRA_RESERVADA; }
+        "bytes16"		{lexeme=yytext(); return PALABRA_RESERVADA; }
+        "bytes32"		{lexeme=yytext(); return PALABRA_RESERVADA; }
+        "bytes64"		{lexeme=yytext(); return PALABRA_RESERVADA; }
+        "bytes128"              {lexeme=yytext(); return PALABRA_RESERVADA; }
+        "bytes256"		{lexeme=yytext(); return PALABRA_RESERVADA; }
 
 
 
