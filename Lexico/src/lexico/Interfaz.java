@@ -39,9 +39,9 @@ public class Interfaz extends javax.swing.JFrame {
     private void initComponents() {
 
         ButtonAnalize = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,9 +52,11 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setText("Salida");
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
 
-        jScrollPane2.setViewportView(jTextPane1);
+        jLabel2.setText("Salida");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -66,11 +68,11 @@ public class Interfaz extends javax.swing.JFrame {
                         .addGap(21, 21, 21)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(50, 50, 50)
                         .addComponent(ButtonAnalize, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -79,8 +81,8 @@ public class Interfaz extends javax.swing.JFrame {
                 .addComponent(ButtonAnalize)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addGap(14, 14, 14)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -134,8 +136,8 @@ public class Interfaz extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonAnalize;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 
     public void ProbarLexerFile() throws IOException {
@@ -148,13 +150,12 @@ public class Interfaz extends javax.swing.JFrame {
 
             System.out.println("Opening: " + file.getName() + ".");
             Reader reader;
-            reader = new BufferedReader(new FileReader(file));//TextInput.getText()
-            
+            reader = new BufferedReader(new FileReader(file.getName()));//TextInput.getText()
             Lexer lexer = new Lexer(reader);
             
             //se comienza a evaluar cada caracter
             String Resultados = SingletoneEscaner.getInstance().usarJflex(lexer);
-            jTextPane1.setText(Resultados);//mostrando los resultados
+            jTextArea1.setText(Resultados);//mostrando los resultados
             
         } else {
             System.out.println("Open command cancelled by user.");
