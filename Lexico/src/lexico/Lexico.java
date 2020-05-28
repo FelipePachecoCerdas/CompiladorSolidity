@@ -19,7 +19,7 @@ public class Lexico {
         
         if (Parte1Ready == true) {
         // TODO code application logic here
-        String path = "C:/Users/user/Desktop/TEC/Repositorios/CompiladorSolidity/Lexico/src/lexico/lexer.flex";
+        String path = "src/lexico/lexer.flex";
         generarLexer (path);
         Parte1Ready = true;
         }

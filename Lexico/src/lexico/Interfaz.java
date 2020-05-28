@@ -151,7 +151,7 @@ public class Interfaz extends javax.swing.JFrame {
             reader = new BufferedReader(new FileReader(file));//TextInput.getText()
             
             Lexer lexer = new Lexer(reader);
-            
+            String name = "hola"+"hola";
             //se comienza a evaluar cada caracter
             String Resultados = SingletoneEscaner.getInstance().usarJflex(lexer);
             jTextPane1.setText(Resultados);//mostrando los resultados
