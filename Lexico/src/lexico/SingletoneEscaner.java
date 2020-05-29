@@ -44,7 +44,7 @@ class SingletoneEscaner {
             switch (token) {
                 case IDENTIFICADOR: case OPERADOR: case PALABRA_RESERVADA: case TRANSAC: case UNIDAD: case LITERAL:
                     System.out.println(lexer.lexeme);
-                    String stringToken="TOKEN: "+token+" "+lexer.lexeme.split(" ")[0];
+                    String stringToken=token+" "+lexer.lexeme.split(" ")[0];
                     String numeroLinea =lexer.lexeme.split(" ")[1];
                     if (palabras.get(stringToken) == null){
                         Map<String,Integer> lineas = new HashMap<>();                        
@@ -54,11 +54,11 @@ class SingletoneEscaner {
                         palabras.get(stringToken).put(numeroLinea,palabras.get(stringToken).getOrDefault(numeroLinea,0)+1);
                     }  
                     System.out.println(palabras); 
-                    System.out.println("TOKEN: "+token+" "+lexer.lexeme);
+                    System.out.println(token+" "+lexer.lexeme);
                     //Resultados = Resultados + "Token:" + token + " " + lexer.lexeme + "\n";
                 break;
                 case ERROR:
-                    stringToken = "TOKEN: "+token+" "+lexer.lexeme.split(" ")[0];
+                    stringToken = token+" "+lexer.lexeme.split(" ")[0];
                     numeroLinea = lexer.lexeme.split(" ")[1];
                     if (palabras.get(stringToken) == null){
                         Map<String,Integer> lineas = new HashMap<>();                        
@@ -68,16 +68,16 @@ class SingletoneEscaner {
                         palabras.get(stringToken).put(numeroLinea,palabras.get(stringToken).getOrDefault(numeroLinea,0)+1);
                     }  
                     System.out.println(palabras); 
-                    System.out.println("TOKEN: "+token+" "+lexer.lexeme);
+                    System.out.println(token+" "+lexer.lexeme);
                     //Resultados = Resultados + "Token:" + token + " " + lexer.lexeme + "\n";                    
             }
         }
         for (String palabra : palabras.keySet()){
-           Resultados = Resultados + palabra +" "; 
+           Resultados = Resultados + palabra; 
            for (String linea : palabras.get(palabra).keySet()){
-              Resultados = Resultados + linea + "("+palabras.get(palabra).get(linea) +") "; 
-           }  
-           Resultados = Resultados + "\n";
+              Resultados = Resultados + " " +linea + "("+palabras.get(palabra).get(linea) +"),"; 
+           }
+           Resultados=Resultados.substring(0, Resultados.length() - 1)+ "\n";
         }
         Resultados = Resultados +"FIN";
         return Resultados;
