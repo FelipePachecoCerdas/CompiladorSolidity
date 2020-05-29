@@ -8,7 +8,7 @@ Letras=[a-zA-Z]
 
 Digitos=[0-9]
 
-Flotantes=({Digitos}*.{Digitos}+)|{Digitos}+.{Digitos}*
+Flotantes=({Digitos}*"."{Digitos}+)|({Digitos}+"."{Digitos}*)
 
 SimbolosHexadecimales=[0-9_a-fA-F]
 Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
@@ -140,5 +140,5 @@ public String lexeme;
 
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
--?{Digitos}+|{Hexadecimal}|{NotacionCientifica}|-?{Flotantes} {lexeme=yytext()+" "+(yyline+1);return LITERAL;}
+{Digitos}+|{Hexadecimal}|{NotacionCientifica}|{Flotantes} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
 . {return ERROR;}
