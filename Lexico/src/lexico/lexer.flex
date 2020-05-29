@@ -11,7 +11,7 @@ Digitos=[0-9]
 Flotantes=({Digitos}*"."{Digitos}+)|({Digitos}+"."{Digitos}*)
 
 SimbolosHexadecimales=[0-9_a-fA-F]
-Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
+Hexadecimal="hex"(("\""{SimbolosHexadecimales}+"\"")|("'"{SimbolosHexadecimales}+"'"))
 
 NotacionCientifica=-?({Digitos}+|{Flotantes})"e"-?{Digitos}+
 
@@ -140,5 +140,5 @@ public String lexeme;
 
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
--?{Digitos}+|{Hexadecimal}|{NotacionCientifica}|-?{Flotantes} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
+(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes}) | ("\"".*"\"") {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
 {Digitos}+{Letras}+ {lexeme=yytext()+" "+(yyline+1);return ERROR;}

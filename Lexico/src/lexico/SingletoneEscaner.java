@@ -44,8 +44,9 @@ class SingletoneEscaner {
             switch (token) {
                 case IDENTIFICADOR: case OPERADOR: case PALABRA_RESERVADA: case TRANSAC: case UNIDAD: case LITERAL:
                     System.out.println(lexer.lexeme);
-                    String stringToken=token+" "+lexer.lexeme.split(" ")[0];
-                    String numeroLinea =lexer.lexeme.split(" ")[1];
+                    Integer ultimoEspacio= lexer.lexeme.lastIndexOf(' ');
+                    String stringToken=token+" "+lexer.lexeme.substring(0, ultimoEspacio);
+                    String numeroLinea =lexer.lexeme.substring(ultimoEspacio+1);
                     if (palabras.get(stringToken) == null){
                         Map<String,Integer> lineas = new HashMap<>();                        
                         lineas.put(numeroLinea,1);
@@ -58,8 +59,9 @@ class SingletoneEscaner {
                     //Resultados = Resultados + "Token:" + token + " " + lexer.lexeme + "\n";
                 break;
                 case ERROR:
-                    stringToken = token+" "+lexer.lexeme.split(" ")[0];
-                    numeroLinea = lexer.lexeme.split(" ")[1];
+                     ultimoEspacio= lexer.lexeme.lastIndexOf(' ');
+                    stringToken=token+" "+lexer.lexeme.substring(0, ultimoEspacio);
+                    numeroLinea =lexer.lexeme.substring(ultimoEspacio+1);
                     if (palabras.get(stringToken) == null){
                         Map<String,Integer> lineas = new HashMap<>();                        
                         lineas.put(numeroLinea,1);
