@@ -140,5 +140,6 @@ public String lexeme;
 
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
-(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes}) | ("\"".*"\"") {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
-{Digitos}+{Letras}+ {lexeme=yytext()+" "+(yyline+1);return ERROR;}
+(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes}) |
+(\"([^\\_\n_\t]|[\\t_\\n_\\\"])*\")  {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
+({Digitos}+{Letras}+) | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}

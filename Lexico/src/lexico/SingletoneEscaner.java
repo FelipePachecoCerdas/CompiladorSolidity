@@ -7,6 +7,7 @@ package lexico;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -32,7 +33,7 @@ class SingletoneEscaner {
     
     public String usarJflex(Lexer lexer) throws IOException{
         String Resultados = "";
-        Map<String, Map<String,Integer>> palabras = new HashMap<>();
+        LinkedHashMap<String, LinkedHashMap<String,Integer>> palabras = new LinkedHashMap<>();
         
         while (true) {
             Token token = lexer.yylex();
@@ -48,7 +49,7 @@ class SingletoneEscaner {
                     String stringToken=token+" "+lexer.lexeme.substring(0, ultimoEspacio);
                     String numeroLinea =lexer.lexeme.substring(ultimoEspacio+1);
                     if (palabras.get(stringToken) == null){
-                        Map<String,Integer> lineas = new HashMap<>();                        
+                        LinkedHashMap<String,Integer> lineas = new LinkedHashMap<>();                        
                         lineas.put(numeroLinea,1);
                         palabras.put(stringToken, lineas);
                     }else{
@@ -63,7 +64,7 @@ class SingletoneEscaner {
                     stringToken=token+" "+lexer.lexeme.substring(0, ultimoEspacio);
                     numeroLinea =lexer.lexeme.substring(ultimoEspacio+1);
                     if (palabras.get(stringToken) == null){
-                        Map<String,Integer> lineas = new HashMap<>();                        
+                        LinkedHashMap<String,Integer> lineas = new LinkedHashMap<>();                        
                         lineas.put(numeroLinea,1);
                         palabras.put(stringToken, lineas);
                     }else{

@@ -17,15 +17,13 @@ public class Lexico {
     
     public static void main(String[] args) {
         
-        if (Parte1Ready == true) {
+        if (Parte1Ready == false) {
         // TODO code application logic here
         String path = "src/lexico/lexer.flex";
         generarLexer (path);
         Parte1Ready = true;
-        }
-        else{
-            Interfaz interfaz = new Interfaz();
-            interfaz.setVisible(true);
+        Interfaz interfaz = new Interfaz();
+        interfaz.setVisible(true);
         }
     }
     

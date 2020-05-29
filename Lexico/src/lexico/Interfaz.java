@@ -94,6 +94,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
         catch(IOException ex){
         System.out.println(ex.getMessage());}
+        
     }//GEN-LAST:event_ButtonAnalizeActionPerformed
 
     /**
