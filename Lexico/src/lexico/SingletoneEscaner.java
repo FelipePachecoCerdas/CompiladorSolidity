@@ -43,6 +43,7 @@ class SingletoneEscaner {
             }//termina evaluacion
             switch (token) {
                 case IDENTIFICADOR: case OPERADOR: case PALABRA_RESERVADA: case TRANSAC: case UNIDAD: case LITERAL:
+                    System.out.println(lexer.lexeme);
                     String stringToken="TOKEN: "+token+" "+lexer.lexeme.split(" ")[0];
                     String numeroLinea =lexer.lexeme.split(" ")[1];
                     if (palabras.get(stringToken) == null){
@@ -52,8 +53,8 @@ class SingletoneEscaner {
                     }else{
                         palabras.get(stringToken).put(numeroLinea,palabras.get(stringToken).getOrDefault(numeroLinea,0)+1);
                     }  
-                    //System.out.println(palabras); 
-                    //System.out.println("TOKEN: "+token+" "+lexer.lexeme);
+                    System.out.println(palabras); 
+                    System.out.println("TOKEN: "+token+" "+lexer.lexeme);
                     //Resultados = Resultados + "Token:" + token + " " + lexer.lexeme + "\n";
                 break;
                 case ERROR:
@@ -66,8 +67,8 @@ class SingletoneEscaner {
                     }else{
                         palabras.get(stringToken).put(numeroLinea,palabras.get(stringToken).getOrDefault(numeroLinea,0)+1);
                     }  
-                    //System.out.println(palabras); 
-                    //System.out.println("TOKEN: "+token+" "+lexer.lexeme);
+                    System.out.println(palabras); 
+                    System.out.println("TOKEN: "+token+" "+lexer.lexeme);
                     //Resultados = Resultados + "Token:" + token + " " + lexer.lexeme + "\n";                    
             }
         }

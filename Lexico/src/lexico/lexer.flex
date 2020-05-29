@@ -4,16 +4,16 @@ import static lexico.Token.*;
 %class Lexer
 %line
 %type Token
-L=[a-zA-Z_]
+Letras=[a-zA-Z]
 
-D=[0-9]
+Digitos=[0-9]
 
-F=({D}*.{D}+)|{D}+.{D}*
+Flotantes=({Digitos}*.{Digitos}+)|{Digitos}+.{Digitos}*
 
-SH=[0-9_a-fA-F]
-H="hex"((\"{SH}+\")|("'"{SH}+"'"))
+SimbolosHexadecimales=[0-9_a-fA-F]
+Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
 
-NC=-?{D}+|{F}"e"-?{D}+
+NotacionCientifica=-?({Digitos}+|{Flotantes})"e"-?{Digitos}+
 
 WHITE=[ \t\r\n]
 %{
@@ -139,6 +139,6 @@ public String lexeme;
 
 
 
-{L}({L}|{D})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
--?{D}|{H}|{NC}|-?{F} {lexeme=yytext()+" "+(yyline+1);return LITERAL;}
+{Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
+-?{Digitos}+|{Hexadecimal}|{NotacionCientifica}|-?{Flotantes} {lexeme=yytext()+" "+(yyline+1);return LITERAL;}
 . {return ERROR;}
