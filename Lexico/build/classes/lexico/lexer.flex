@@ -18,10 +18,6 @@ NoHexadecimal="hex"(("\""{SimbolosNoHexadecimales}+ | {SimbolosHexadecimales}* "
 
 NotacionCientifica=-?({Digitos}+|{Flotantes})"e"-?{Digitos}+
 
-Str=([^\\\"\n]|\\\\|\\\"|\\n|\\t)*
-
-
-
 WHITE=[ \t\r\n]
 %{
 public String lexeme;
@@ -147,6 +143,10 @@ public String lexeme;
 
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
+(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|(\"{Str}\")|("/**"([^\n]|"\n*")*"*/") {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
+({Digitos}+{Letras}+) | ({NoHexadecimal}) | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
+
 (-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes}) |
-(\"([^\\_\n_\t]|[\\t_\\n_\\\"])*\")  {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
-({Digitos}+{Letras}+) | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
+(\"([^\\_\n_\t]|[\\t_\\n_\\\"])*\") | ("'"([^\\_\n_\t]|[\\t_\\n_\\\"])*"'")  {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
+
+({Digitos}+{Letras}+) | ({NoHexadecimal}) | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
