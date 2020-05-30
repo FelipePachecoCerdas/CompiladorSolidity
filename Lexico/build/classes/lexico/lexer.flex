@@ -14,7 +14,6 @@ SimbolosHexadecimales=[0-9a-fA-F]
 Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
 
 Str=([^\\\"\n]|\\\\|\\\"|\\n|\\t)*
-Comentario = ("/**"([^\n]|("\n"(" "*)("*")))*"*/")
 
 SimbolosNoHexadecimales =[g-zG-Z]
 NoHexadecimal="hex"(("\""{SimbolosNoHexadecimales}+ | {SimbolosHexadecimales}* "\"")|("'"{SimbolosNoHexadecimales}+ | {SimbolosHexadecimales}* "'"))
@@ -23,6 +22,9 @@ NotacionCientifica=-?({Digitos}+|{Flotantes})"e"-?{Digitos}+
 unicode1 = [\u0021-\u003A] 
 unicode2 = [\u003C-\u1EF3]
 Noidentificador = {Letras}({unicode1} | {unicode2} | "ñ")*
+
+Comentario = ("/**"([^\n]|("\n"(" "*)("*")))*(("\n")(" "*)"*/"|"*/"))
+NoComentario="/**"((((([^\*])|"\n"|"\/")|("*"("*")*(([^\*\/])|"\n")))*)|((([^\*])|"\n"|"\/")*"*"("*"|((([^\*\/])|"\n")(([^\*])|"\n"|"\/")*"*"*))*))
 
 WHITE=[ \t\r\n]
 %{
@@ -150,4 +152,4 @@ public String lexeme;
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
 (-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|(\"{Str}\")|{Comentario} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
-({Digitos}+{Letras}+) | ({NoHexadecimal}) | {Noidentificador} | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
+({Digitos}+{Letras}+) | ({NoHexadecimal}) | {Noidentificador} | {NoComentario} | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
