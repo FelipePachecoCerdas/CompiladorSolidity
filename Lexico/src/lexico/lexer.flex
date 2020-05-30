@@ -24,7 +24,11 @@ unicode2 = [\u003C-\u1EF3]
 Noidentificador = {Letras}({unicode1} | {unicode2} | "ñ")*
 
 Comentario = ("/**"([^\n]|("\n"(" "*)("*")))*(("\n")(" "*)"*/"|"*/"))
-NoComentario="/**"((((([^\*])|"\n"|"\/")|("*"("*")*(([^\*\/])|"\n")))*)|((([^\*])|"\n"|"\/")*"*"("*"|((([^\*\/])|"\n")(([^\*])|"\n"|"\/")*"*"*))*))
+NoComentario1=(([^\n\*]|("*""*"*[^\n\*\/]))|((\n|("*""*"*\n))(("*""*"*\n)|(\t|" "))*("*""*"*[^\n\*\/])))*
+NoComentario2=(([^\n\*]|("*""*"*[^\n\*\/]))*(\n|("*""*"*\n))((("*""*"*\n)|(\t|" "))|(("*""*"*[^\n\*\/])([^\n\*]|("*""*"*[^\n\*\/]))*(\n|("*""*"*\n))))*)
+NoComentario3=(([^\n\*])*("*"|(\n(\t|" ")*))(("*"|(\n(\t|" ")*))|([^\n\*\/][^\n\*]*("*"|(\n(\t|" ")*))))*)
+NoComentario4=({NoComentario1}((\n|("*""*"*\n))(("*""*"*\n)|(\t|" "))*[^\*\/\t" "])(.*|\n|\t)*)
+NoComentario= {NoComentario1}|{NoComentario2}|{NoComentario3}|{NoComentario4}
 
 WHITE=[ \t\r\n]
 %{
@@ -156,6 +160,6 @@ public String lexeme;
 ({Digitos}+{Letras}+) {lexeme=yytext()+" "+(yyline+1);return ERROR_IDENTIFICADOR;}
 ({NoHexadecimal}) {lexeme=yytext()+" "+(yyline+1);return ERROR_HEXADECIMAL;}
 {Noidentificador} {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
-{NoComentario} {lexeme=yytext()+" "+(yyline+1);return ERROR_COMENTARIO;}
+"/**"{NoComentario} {lexeme=yytext()+" "+(yyline+1);return ERROR_COMENTARIO;}
 . {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
 
