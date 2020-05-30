@@ -15,8 +15,8 @@ Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"
 
 Str=([^\\\"\n]|\\\\|\\\"|\\n|\\t)*
 
-SimbolosNoHexadecimales =[g-zG-Z]
-NoHexadecimal="hex"(("\""{SimbolosNoHexadecimales}+ | {SimbolosHexadecimales}* "\"")|("'"{SimbolosNoHexadecimales}+ | {SimbolosHexadecimales}* "'"))
+SimbolosNoHexadecimales =[^0-9a-fA-F]
+NoHexadecimal="hex"(("\""{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {SimbolosHexadecimales}* "\"")|("'"{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {SimbolosHexadecimales}* "'"))
 
 NotacionCientifica=-?({Digitos}+|{Flotantes})"e"-?{Digitos}+
 unicode1 = [\u0021-\u003A] 
@@ -152,4 +152,10 @@ public String lexeme;
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
 (-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|(\"{Str}\")|{Comentario} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
-({Digitos}+{Letras}+) | ({NoHexadecimal}) | {Noidentificador} | {NoComentario} | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
+
+({Digitos}+{Letras}+) {lexeme=yytext()+" "+(yyline+1);return ERROR_IDENTIFICADOR;}
+({NoHexadecimal}) {lexeme=yytext()+" "+(yyline+1);return ERROR_HEXADECIMAL;}
+{Noidentificador} {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
+{NoComentario} {lexeme=yytext()+" "+(yyline+1);return ERROR_COMENTARIO;}
+. {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
+

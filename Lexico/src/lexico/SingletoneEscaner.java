@@ -63,7 +63,11 @@ class SingletoneEscaner {
           System.out.println(token + " " + lexer.lexeme);
           //Resultados = Resultados + "Token:" + token + " " + lexer.lexeme + "\n";
           break;
-        case ERROR:
+        case ERROR_IDENTIFICADOR:
+        case ERROR_COMENTARIO:
+        case ERROR_STRING:
+        case ERROR_CARACTERES_NO_VALIDOS:
+        case ERROR_HEXADECIMAL:
           ultimoEspacio = lexer.lexeme.lastIndexOf(' ');
           stringToken = token + " " + lexer.lexeme.substring(0, ultimoEspacio);
           numeroLinea = lexer.lexeme.substring(ultimoEspacio + 1);

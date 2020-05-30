@@ -47,7 +47,7 @@ public class Interfaz extends javax.swing.JFrame {
     tabla.setBounds(0, 0, 500, 300);
     tabla.setRowHeight(25);
     tabla.setLocation(0, 0);
-    tabla.setFont(new Font("Dialog", Font.PLAIN, 15));
+    tabla.setFont(new Font("Dialog", Font.PLAIN, 13));
 
     JScrollPane scroll = new JScrollPane(tabla, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll.setBounds(0, 0, 500, 300);
@@ -62,7 +62,7 @@ public class Interfaz extends javax.swing.JFrame {
     tabla2.setBounds(0, 0, 500, 300);
     tabla2.setRowHeight(25);
     tabla2.setLocation(0, 0);
-    tabla2.setFont(new Font("Dialog", Font.PLAIN, 15));
+    tabla2.setFont(new Font("Dialog", Font.PLAIN, 13));
 
     JScrollPane scroll2 = new JScrollPane(tabla2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll2.setBounds(0, 0, 500, 300);
@@ -235,7 +235,11 @@ public class Interfaz extends javax.swing.JFrame {
           case "LITERAL":
             modelo.addRow(row);
             break;
-          case "ERROR":
+          case "ERROR_IDENTIFICADOR":
+          case "ERROR_COMENTARIO":
+          case "ERROR_STRING":
+          case "ERROR_CARACTERES_NO_VALIDOS":
+          case "ERROR_HEXADECIMAL":
             modelo2.addRow(row);
             break;
         }
