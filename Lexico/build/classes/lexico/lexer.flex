@@ -14,6 +14,7 @@ SimbolosHexadecimales=[0-9a-fA-F]
 Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
 
 Str=([^\\\"\n]|\\\\|\\\"|\\n|\\t)*
+Comentario = ("/**"([^\n]|("\n"(" "*)("*")))*"*/")
 
 SimbolosNoHexadecimales =[g-zG-Z]
 NoHexadecimal="hex"(("\""{SimbolosNoHexadecimales}+ | {SimbolosHexadecimales}* "\"")|("'"{SimbolosNoHexadecimales}+ | {SimbolosHexadecimales}* "'"))
@@ -148,5 +149,5 @@ public String lexeme;
 
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
-(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|(\"{Str}\")|("/**"([^\n]|"\n*")*"*/") {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
+(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|(\"{Str}\")|{Comentario} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
 ({Digitos}+{Letras}+) | ({NoHexadecimal}) | {Noidentificador} | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
