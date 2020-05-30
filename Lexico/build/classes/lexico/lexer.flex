@@ -13,10 +13,15 @@ Flotantes=({Digitos}*"."{Digitos}+)|({Digitos}+"."{Digitos}*)
 SimbolosHexadecimales=[0-9a-fA-F]
 Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
 
+Str=([^\\\"\n]|\\\\|\\\"|\\n|\\t)*
+
 SimbolosNoHexadecimales =[g-zG-Z]
 NoHexadecimal="hex"(("\""{SimbolosNoHexadecimales}+ | {SimbolosHexadecimales}* "\"")|("'"{SimbolosNoHexadecimales}+ | {SimbolosHexadecimales}* "'"))
 
 NotacionCientifica=-?({Digitos}+|{Flotantes})"e"-?{Digitos}+
+unicode1 = [\u0021-\u003A] 
+unicode2 = [\u003C-\u1EF3]
+Noidentificador = {Letras}({unicode1} | {unicode2} | "ñ")*
 
 WHITE=[ \t\r\n]
 %{
@@ -144,9 +149,4 @@ public String lexeme;
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
 (-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|(\"{Str}\")|("/**"([^\n]|"\n*")*"*/") {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
-({Digitos}+{Letras}+) | ({NoHexadecimal}) | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
-
-(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes}) |
-(\"([^\\_\n_\t]|[\\t_\\n_\\\"])*\") | ("'"([^\\_\n_\t]|[\\t_\\n_\\\"])*"'")  {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
-
-({Digitos}+{Letras}+) | ({NoHexadecimal}) | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
+({Digitos}+{Letras}+) | ({NoHexadecimal}) | {Noidentificador} | . {lexeme=yytext()+" "+(yyline+1);return ERROR;}
