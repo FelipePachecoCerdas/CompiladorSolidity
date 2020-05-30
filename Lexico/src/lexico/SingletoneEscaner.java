@@ -43,6 +43,7 @@ class SingletoneEscaner {
                 //return Resultados;
             }//termina evaluacion
             switch (token) {
+                
                 case IDENTIFICADOR: case OPERADOR: case PALABRA_RESERVADA: case TRANSAC: case UNIDAD: case LITERAL:
                     System.out.println(lexer.lexeme);
                     Integer ultimoEspacio= lexer.lexeme.lastIndexOf(' ');
