@@ -21,7 +21,7 @@ NoHexadecimal="hex"(("\""{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {Si
 NotacionCientifica=-?({Digitos}+|{Flotantes})"e"-?{Digitos}+
 unicode1 = [\u0021-\u003A] 
 unicode2 = [\u003C-\u1EF3]
-Noidentificador = {Letras}({unicode1} | {unicode2} | "ñ")*
+Noidentificador = ({unicode1} | {unicode2})*
 
 Comentario = ("/**"([^\n]|("\n"(" "|\t)*("*")))*(("\n")(" "|\t)*"*/"|"*/"))
 NoComentario1=(([^\n\*]|("*""*"*[^\n\*\/]))|((\n|("*""*"*\n))(("*""*"*\n)|(\t|" "))*("*""*"*[^\n\*\/])))*
