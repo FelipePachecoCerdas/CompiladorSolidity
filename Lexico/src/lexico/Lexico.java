@@ -39,7 +39,7 @@ public class Lexico {
       } catch (javax.swing.UnsupportedLookAndFeelException ex) {
         java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       }
-      javax.swing.UIManager.getDefaults().put("ScrollBar.minimumThumbSize", new Dimension(29, 1));
+      javax.swing.UIManager.getDefaults().put("ScrollBar.minimumThumbSize", new Dimension(29, 29));
 
       Interfaz interfaz = new Interfaz();
       interfaz.setVisible(true);

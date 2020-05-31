@@ -8,6 +8,7 @@ package lexico;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,6 +41,7 @@ public class Interfaz extends javax.swing.JFrame {
    * Creates new form Interfaz
    */
   public Interfaz() {
+    javax.swing.UIManager.getDefaults().put("ScrollBar.minimumThumbSize", new Dimension(29, 29));
 
     Object[][] rows = {};
     Object[] cols = {"Token", "Tipo", "Apariciones"};
@@ -54,6 +56,7 @@ public class Interfaz extends javax.swing.JFrame {
     JScrollPane scroll = new JScrollPane(tabla, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll.setBounds(0, 0, 500, 300);
     scroll.setLocation(50, 100);
+    scroll.updateUI();
     this.add(scroll);
 
     Object[][] rows2 = {};
@@ -67,8 +70,9 @@ public class Interfaz extends javax.swing.JFrame {
     tabla2.setFont(new Font("Dialog", Font.PLAIN, 13));
 
     JScrollPane scroll2 = new JScrollPane(tabla2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    scroll2.setBounds(0, 0, 500, 300);
+    scroll2.setBounds(0, 0, 500, 300); 
     scroll2.setLocation(600, 100);
+    scroll2.updateUI();
     this.add(scroll2);
 
     initComponents();
@@ -178,6 +182,12 @@ public class Interfaz extends javax.swing.JFrame {
       for (int j = 0; j < k; j++) {
         modelo.removeRow(0);
       }
+
+      k = modelo2.getRowCount();
+      for (int j = 0; j < k; j++) {
+        modelo2.removeRow(0);
+      }
+
       //se comienza a evaluar cada caracter
       LinkedHashMap<String, LinkedHashMap<String, Integer>> palabras = SingletoneEscaner.getInstance().usarJflex(lexer);
 
