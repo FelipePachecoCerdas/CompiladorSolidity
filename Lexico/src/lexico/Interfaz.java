@@ -11,9 +11,11 @@ import java.awt.Component;
 import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -169,7 +171,7 @@ public class Interfaz extends javax.swing.JFrame {
 
       System.out.println("Opening: " + file.getName() + ".");
       Reader reader;
-      reader = new BufferedReader(new FileReader(file));//TextInput.getText()
+      reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-1"));//TextInput.getText()
 
       Lexer lexer = new Lexer(reader);
 
