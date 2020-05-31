@@ -23,7 +23,6 @@ public class Lexico {
       String path = "src/lexico/lexer.flex";
       generarLexer(path);
       Parte1Ready = true;
-
       try {
         for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
           if ("Nimbus".equals(info.getName())) {

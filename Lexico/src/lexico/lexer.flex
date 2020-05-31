@@ -30,6 +30,10 @@ NoComentario3=(([^\n\*])*("*"|(\n(\t|" ")*))(("*"|(\n(\t|" ")*))|([^\n\*\/][^\n\
 NoComentario4=({NoComentario1}((\n|("*""*"*\n))(("*""*"*\n)|(\t|" "))*[^\*\/\t" "])(.*|\n|\t)*)
 NoComentario= {NoComentario1}|{NoComentario2}|{NoComentario3}|{NoComentario4}
 
+Operadores = ("!" | "^" | "<" | ">" | "&" | "|" | "~" | "+" | "-" | "*" | "/" | "%" | "=" | "," | ";" | "." | "(" | ")" 
+                | "[" | "]" | "?" | ":" | "{" | "}" | "&&" | "==" | "!=" | "||" | "<=" | ">=" | "**" | "<<" | ">>" | "+=" 
+                | "-=" | "*=" | "/=")
+
 WHITE=[ \t\r\n]
 %{
 public String lexeme;
@@ -38,43 +42,8 @@ public String lexeme;
 {WHITE} {/* ignore */}
 "//".* {/* ignore */}
 
-	"!"			{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"^"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"<"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	">"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"&"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"|"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"~"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"+"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"-"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"*"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"/"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"%"			{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"="                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	","                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	";"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"."                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"("                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	")"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"["                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"]"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"?"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	":"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"{"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"}"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
- 	"&&"                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-   	"=="			{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"!="			{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"||"			{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"<="			{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	">="			{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"**"			{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"<<"			{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	">>"             	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"+="            	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"-="                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-    	"*="            	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
-	"/="                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
+
+	{Operadores}                	{lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
 
    	
         "address"		{lexeme=yytext()+" "+(yyline+1); return PALABRA_RESERVADA; }
