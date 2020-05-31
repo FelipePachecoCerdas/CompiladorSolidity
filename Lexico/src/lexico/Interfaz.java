@@ -49,7 +49,6 @@ public class Interfaz extends javax.swing.JFrame {
     tabla.setBounds(0, 0, 500, 300);
     tabla.setRowHeight(25);
     tabla.setLocation(0, 0);
-    tabla.setEnabled(false);
     tabla.setFont(new Font("Dialog", Font.PLAIN, 13));
 
     JScrollPane scroll = new JScrollPane(tabla, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
