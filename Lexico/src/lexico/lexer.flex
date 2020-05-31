@@ -20,8 +20,8 @@ NoHexadecimal="hex"(("\""{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {Si
 
 NotacionCientifica=-?({Digitos}+|{Flotantes})"e"-?{Digitos}+
 unicode1 = [\u0021-\u003A] 
-unicode2 = [\u003C-\u1EF3]
-Noidentificador = ({unicode1} | {unicode2})*
+unicode2 = [\u003C-\u1EF3] 
+Noidentificador = (({unicode1} | {unicode2})-{Operadores})*
 
 Comentario = ("/**"([^\n]|("\n"(" "|\t)*("*")))*(("\n")(" "|\t)*"*/"|"*/"))
 NoComentario1=(([^\n\*]|("*""*"*[^\n\*\/]))|((\n|("*""*"*\n))(("*""*"*\n)|(\t|" "))*("*""*"*[^\n\*\/])))*
