@@ -13,7 +13,14 @@ Flotantes=({Digitos}*"."{Digitos}+)|({Digitos}+"."{Digitos}*)
 SimbolosHexadecimales=[0-9a-fA-F]
 Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
 
-Str=([^\\\"\n]|\\\\|\\\"|\\n|\\t)*
+SecuenciasEscape=\\\\|\\'|\\\"|\\b|\\f|\\n|\\r|\\t|\\v|\\xNN|\\uNNNN
+SimbolosDeEscape=[^\\"'"\""b""f""n""r""t""v""xNN""uNNNN"]
+
+Str=(\"([^\\\"\n]|{SecuenciasEscape})*\")|("'"([^\\"'"\n]|{SecuenciasEscape})*"'")
+
+NoStr1=\"([^\"\\\n]|{SecuenciasEscape})*((\\({SimbolosDeEscape}?)(([^\n\"]|{SecuenciasEscape})*(\"?|\n?)))|\n)
+NoStr2="'"([^"'"\\\n]|{SecuenciasEscape})*((\\({SimbolosDeEscape}?)(([^\n"'"]|{SecuenciasEscape})*("'"?|\n?)))|\n)
+NoStr={NoStr1}|{NoStr2}
 
 SimbolosNoHexadecimales =[^0-9a-fA-F]
 NoHexadecimal="hex"(("\""{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {SimbolosHexadecimales}* "\"")|("'"{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {SimbolosHexadecimales}* "'"))
@@ -64,11 +71,12 @@ public String lexeme;
 
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
-(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|(\"{Str}\")|("'"{Str}"'")|{Comentario} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
+(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|{Str}|{Comentario} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
 
 ({Digitos}+{Letras}+) {lexeme=yytext()+" "+(yyline+1);return ERROR_IDENTIFICADOR;}
 ({NoHexadecimal}) {lexeme=yytext()+" "+(yyline+1);return ERROR_HEXADECIMAL;}
 {Noidentificador} {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
 "/**"{NoComentario} {lexeme=yytext()+" "+(yyline+1);return ERROR_COMENTARIO;}
 . {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
+{NoStr} {lexeme=yytext()+" "+(yyline+1);return ERROR_STRING;}
 
