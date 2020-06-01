@@ -68,6 +68,8 @@ class SingletoneEscaner {
         case ERROR_STRING:
         case ERROR_CARACTERES_NO_VALIDOS:
         case ERROR_HEXADECIMAL:
+        case ERROR_CEROS_A_LA_IZQUIERDA:
+        case ERROR_NOTACION_CIENTIFICA:
           ultimoEspacio = lexer.lexeme.lastIndexOf(' ');
           stringToken = token + " " + lexer.lexeme.substring(0, ultimoEspacio);
           numeroLinea = lexer.lexeme.substring(ultimoEspacio + 1);

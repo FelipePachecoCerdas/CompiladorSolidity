@@ -7,8 +7,11 @@ import static lexico.Token.*;
 Letras=[a-zA-Z]
 
 Digitos=[0-9]
+DigitosSinCero=[1-9]
+Numero = ({DigitosSinCero}+{Digitos}*|0)
 
-Flotantes=({Digitos}*"."{Digitos}+)|({Digitos}+"."{Digitos}*)
+Flotantes=({Numero}?"."{Digitos}+)|({Numero}"."{Digitos}*)
+NoFlotante=({Digitos}*)"."({Digitos}*)
 
 SimbolosHexadecimales=[0-9a-fA-F]
 Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
@@ -25,10 +28,14 @@ NoStr={NoStr1}|{NoStr2}
 SimbolosNoHexadecimales =[^0-9a-fA-F]
 NoHexadecimal="hex"(("\""{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {SimbolosHexadecimales}* "\"")|("'"{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {SimbolosHexadecimales}* "'"))
 
-NotacionCientifica=-?({Digitos}+|{Flotantes})"e"-?{Digitos}+
-unicode1 = [\u0021-\u003A] 
-unicode2 = [\u003C-\u1EF3] 
-Noidentificador = (({unicode1} | {unicode2})-{Operadores})*
+NotacionCientifica=-?({Numero}|{Flotantes})"e"-?{Numero}
+NoNotacionCientifica1=-?({Numero}|{Flotantes})"e"-?{Digitos}+
+NoNotacionCientifica4=-?({Numero}|{Flotantes})"e"-?
+NoNotacionCientifica2=-?({Numero}|{Flotantes})"e"-?{Flotantes}
+NoNotacionCientifica3=-?((({NoFlotante})"e"-?{Digitos}*)|(({NoFlotante})"e"-?{Flotantes}))
+
+unicode1 = [[[\u0021-\u003A] || [\u003C-\u1EF3]] -- [!\^<>&|~+\-*/%=,;.()\[\]?:{}]] 
+Noidentificador = (({unicode1}))+
 
 Comentario = "/**"([^\n\*]|(("*"|(\n(" "|\t)*"*"))("*"|(\n(" "|\t)*"*"))*[^\n\*\/]))*(("*"|(\n(" "|\t)*"*"))("*"|(\n(" "|\t)*"*"))*"/")
 NoComentario1=(([^\n\*]|("*""*"*[^\n\*\/]))|((\n|("*""*"*\n))(("*""*"*\n)|(\t|" "))*("*""*"*[^\n\*\/])))*
@@ -43,10 +50,11 @@ Operadores = ("!" | "^" | "<" | ">" | "&" | "|" | "~" | "+" | "-" | "*" | "/" | 
 
 Reservadas = ( "address" | "as" | "bool" | "break"  | "byte"  | "constructor"  | "continue"  | "contract" 
                 | "delete" | "do" | "else" | "enum" | "false" | "for" | "from" | "function" | "hex" | "if" | "import" 
-                | "int" | "internal" | "mapping" | "modifier"  | "modifier" | "payable" |  "Pragma"  | "private" 
+                | "int" | "internal" | "mapping" | "modifier"  | "modifier" | "payable" |  "pragma"  | "private" 
                 | "public" | "return" | "returns"| "solidity" |"string" | "string"  | "struct" | "this" | "true" 
-                | "ufixed" | "uint" |"var" |"view" | "while" |"uint8" |"uint16" | "uint32" |"uint64" |"uint128"   
-                |"uint256" |"bytes8" | "bytes16" |"bytes32" |"bytes64" | "bytes128" |"bytes256")
+                | "ufixed" | "uint" |"var" |"view" | "while" |"uint8" |"uint16" | "uint32" |"uint64" |"uint128"  
+                | "int8" |"int16" | "int32" |"int64" |"int128" | "int256" 
+                | "uint256" |"bytes8" | "bytes16" |"bytes32" |"bytes64" | "bytes128" |"bytes256")
 
 Trans = ("balance"  | "call" | "callcode" | "delegatecall" | "send" | "transfer" )
 
@@ -57,8 +65,12 @@ WHITE=[ \t\r\n]
 public String lexeme;
 %}
 %%
+
+
 {WHITE} {/* ignore */}
 "//".* {/* ignore */}
+{Comentario} {/* ignore */}
+
 
 	{Operadores}            {lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
 
@@ -71,12 +83,16 @@ public String lexeme;
 
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
-(-?{Digitos}+)|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|{Str}|{Comentario} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
+(-?{Numero})|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|{Str} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
 
+(({Digitos}*) | {NoNotacionCientifica1}) {lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;}
+{NoNotacionCientifica2} | {NoNotacionCientifica4} {lexeme=yytext()+" "+(yyline+1);return ERROR_NOTACION_CIENTIFICA;}
+{NoFlotante} | {NoNotacionCientifica3} {lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;}
 ({Digitos}+{Letras}+) {lexeme=yytext()+" "+(yyline+1);return ERROR_IDENTIFICADOR;}
 ({NoHexadecimal}) {lexeme=yytext()+" "+(yyline+1);return ERROR_HEXADECIMAL;}
 {Noidentificador} {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
 "/**"{NoComentario} {lexeme=yytext()+" "+(yyline+1);return ERROR_COMENTARIO;}
 . {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
 {NoStr} {lexeme=yytext()+" "+(yyline+1);return ERROR_STRING;}
+
 

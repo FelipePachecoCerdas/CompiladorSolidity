@@ -70,7 +70,7 @@ public class Interfaz extends javax.swing.JFrame {
     tabla2.setFont(new Font("Dialog", Font.PLAIN, 13));
 
     JScrollPane scroll2 = new JScrollPane(tabla2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    scroll2.setBounds(0, 0, 500, 300); 
+    scroll2.setBounds(0, 0, 500, 300);
     scroll2.setLocation(600, 100);
     scroll2.updateUI();
     this.add(scroll2);
@@ -174,7 +174,7 @@ public class Interfaz extends javax.swing.JFrame {
 
       System.out.println("Opening: " + file.getName() + ".");
       Reader reader;
-      reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-1"));//TextInput.getText()
+      reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-15"));//TextInput.getText()
 
       Lexer lexer = new Lexer(reader);
 
@@ -218,6 +218,8 @@ public class Interfaz extends javax.swing.JFrame {
           case "ERROR_STRING":
           case "ERROR_CARACTERES_NO_VALIDOS":
           case "ERROR_HEXADECIMAL":
+          case "ERROR_CEROS_A_LA_IZQUIERDA":
+          case "ERROR_NOTACION_CIENTIFICA":
             modelo2.addRow(row);
             break;
         }
