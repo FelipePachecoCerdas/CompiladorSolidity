@@ -205,7 +205,6 @@ public class Interfaz extends javax.swing.JFrame {
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       File file = elegidor.getSelectedFile();
 
-      System.out.println("Opening: " + file.getName() + ".");
       Reader reader;
       reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-15"));//TextInput.getText()
 
@@ -235,7 +234,6 @@ public class Interfaz extends javax.swing.JFrame {
         apariciones = apariciones.substring(0, apariciones.length() - 1);
 
         String[] row = {token, tipo, apariciones};
-        System.out.println(tipo);
         switch (tipo) {
 
           case "IDENTIFICADOR":

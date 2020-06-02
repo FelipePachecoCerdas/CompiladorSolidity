@@ -48,7 +48,6 @@ class SingletoneEscaner {
         case TRANSAC:
         case UNIDAD:
         case LITERAL:
-          System.out.println(lexer.lexeme);
           Integer ultimoEspacio = lexer.lexeme.lastIndexOf(' ');
           String stringToken = token + " " + lexer.lexeme.substring(0, ultimoEspacio);
           String numeroLinea = lexer.lexeme.substring(ultimoEspacio + 1);
@@ -59,8 +58,6 @@ class SingletoneEscaner {
           } else {
             palabras.get(stringToken).put(numeroLinea, palabras.get(stringToken).getOrDefault(numeroLinea, 0) + 1);
           }
-          System.out.println(palabras);
-          System.out.println(token + " " + lexer.lexeme);
           //Resultados = Resultados + "Token:" + token + " " + lexer.lexeme + "\n";
           break;
         case ERROR_IDENTIFICADOR:
@@ -80,8 +77,6 @@ class SingletoneEscaner {
           } else {
             palabras.get(stringToken).put(numeroLinea, palabras.get(stringToken).getOrDefault(numeroLinea, 0) + 1);
           }
-          System.out.println(palabras);
-          System.out.println(token + " " + lexer.lexeme);
         //Resultados = Resultados + "Token:" + token + " " + lexer.lexeme + "\n";                    
       }
     }
