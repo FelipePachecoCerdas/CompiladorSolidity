@@ -36,6 +36,7 @@ public class Interfaz extends javax.swing.JFrame {
 
   JTable table;
   DefaultTableModel modelo, modelo2;
+  JTable tabla, tabla2;
 
   /**
    * Creates new form Interfaz
@@ -47,23 +48,24 @@ public class Interfaz extends javax.swing.JFrame {
     Object[] cols = {"Token", "Tipo", "Apariciones"};
     modelo = new DefaultTableModel(rows, cols);
 
-    JTable tabla = new JTable(modelo);
+    tabla = new JTable(modelo);
     tabla.setBounds(0, 0, 500, 300);
     tabla.setRowHeight(25);
     tabla.setLocation(0, 0);
     tabla.setFont(new Font("Dialog", Font.PLAIN, 13));
+    tabla.setOpaque(false);
 
     JScrollPane scroll = new JScrollPane(tabla, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll.setBounds(0, 0, 500, 300);
     scroll.setLocation(50, 100);
-    scroll.updateUI();
+    scroll.getViewport().setBackground(Color.decode("#202040"));
     this.add(scroll);
 
     Object[][] rows2 = {};
     Object[] cols2 = {"Token", "Error", "Aparición"};
     modelo2 = new DefaultTableModel(rows2, cols2);
 
-    JTable tabla2 = new JTable(modelo2);
+    tabla2 = new JTable(modelo2);
     tabla2.setBounds(0, 0, 500, 300);
     tabla2.setRowHeight(25);
     tabla2.setLocation(0, 0);
@@ -76,6 +78,8 @@ public class Interfaz extends javax.swing.JFrame {
     this.add(scroll2);
 
     initComponents();
+    String s = "393e46";
+    getContentPane().setBackground(Color.decode("#121212"));
     this.setLocationRelativeTo(null);
   }
 
@@ -95,6 +99,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+    ButtonAnalize.setBackground(Color.decode("#4ecca3"));
     ButtonAnalize.setText("Analizar");
     ButtonAnalize.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,13 +107,17 @@ public class Interfaz extends javax.swing.JFrame {
       }
     });
 
-    jLabel2.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+    jLabel2.setBackground(new java.awt.Color(255, 255, 255));
+    jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+    jLabel2.setForeground(Color.decode("#29c7ac"));
     jLabel2.setText("Analizador Léxico");
 
     jLabel3.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+    jLabel3.setForeground(Color.decode("#bef992"));
     jLabel3.setText("Errores");
 
     jLabel4.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+    jLabel4.setForeground(Color.decode("#9a0f98"));
     jLabel4.setText("Tokens");
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -124,7 +133,7 @@ public class Interfaz extends javax.swing.JFrame {
         .addComponent(jLabel3)
         .addGap(288, 288, 288))
       .addGroup(layout.createSequentialGroup()
-        .addGap(494, 494, 494)
+        .addGap(487, 487, 487)
         .addComponent(jLabel2)
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
@@ -225,6 +234,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
 
       }
+      tabla.getColumnModel().getColumn(4).setCellRenderer(ColorRenderer());
 
 //jTextPane1.setText(Resultados);//mostrando los resultados
 
