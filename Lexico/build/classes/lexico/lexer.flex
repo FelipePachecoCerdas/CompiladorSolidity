@@ -28,11 +28,11 @@ NoStr={NoStr1}|{NoStr2}
 SimbolosNoHexadecimales =[^0-9a-fA-F]
 NoHexadecimal="hex"(("\""{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {SimbolosHexadecimales}* "\"")|("'"{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {SimbolosHexadecimales}* "'"))
 
-NotacionCientifica=-?({Numero}|{Flotantes})"e"-?{Numero}
-NoNotacionCientifica1=-?({Numero}|{Flotantes})"e"-?{Digitos}+
-NoNotacionCientifica4=-?({Numero}|{Flotantes})"e"-?
-NoNotacionCientifica2=-?({Numero}|{Flotantes})"e"-?{Flotantes}
-NoNotacionCientifica3=-?((({NoFlotante})"e"-?{Digitos}*)|(({NoFlotante})"e"-?{Flotantes}))
+NotacionCientifica=({Numero}|{Flotantes})"e"-?{Numero}
+NoNotacionCientifica1=({Numero}|{Flotantes})"e"-?{Digitos}+
+NoNotacionCientifica4=({Numero}|{Flotantes})"e"-?
+NoNotacionCientifica2=({Numero}|{Flotantes})"e"-?{Flotantes}
+NoNotacionCientifica3=((({NoFlotante})"e"-?{Digitos}*)|(({NoFlotante})"e"-?{Flotantes}))
 
 unicode1 = [[[\u0021-\u003A] || [\u003C-\u1EF3]] -- [!\^<>&|~+\-*/%=,;.()\[\]?:{}]] 
 Noidentificador = (({unicode1}))+
@@ -83,7 +83,7 @@ public String lexeme;
 
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
-(-?{Numero})|({Hexadecimal})|({NotacionCientifica})|(-?{Flotantes})|{Str} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
+({Numero})|({Hexadecimal})|({NotacionCientifica})|({Flotantes})|{Str} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
 
 (({Digitos}*) | {NoNotacionCientifica1}) {lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;}
 {NoNotacionCientifica2} | {NoNotacionCientifica4} {lexeme=yytext()+" "+(yyline+1);return ERROR_NOTACION_CIENTIFICA;}

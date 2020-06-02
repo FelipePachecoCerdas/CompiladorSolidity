@@ -23,19 +23,22 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 
 /**
  *
  * @author usuario
  */
 public class Interfaz extends javax.swing.JFrame {
-
+  
   JTable table;
   DefaultTableModel modelo, modelo2;
   JTable tabla, tabla2;
@@ -45,47 +48,61 @@ public class Interfaz extends javax.swing.JFrame {
    */
   public Interfaz() {
     javax.swing.UIManager.getDefaults().put("ScrollBar.minimumThumbSize", new Dimension(29, 29));
-
+    javax.swing.UIManager.getDefaults().put("TableHeader.cellBorder" , BorderFactory.createEmptyBorder(20,20,20,21));
+    
     Object[][] rows = {};
     Object[] cols = {"Token", "Tipo", "Apariciones"};
     modelo = new DefaultTableModel(rows, cols);
-
+    
     tabla = new JTable(modelo);
     tabla.setBounds(0, 0, 500, 300);
     tabla.setRowHeight(25);
     tabla.setLocation(0, 0);
     tabla.setFont(new Font("Dialog", Font.PLAIN, 13));
-
+    
     JScrollPane scroll = new JScrollPane(tabla, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll.setBounds(0, 0, 500, 300);
-    scroll.setLocation(50, 100);
+    scroll.setLocation(50, 150);
+    scroll.getViewport().setBackground(Color.decode("#2d132c"));
+    scroll.setBackground(Color.BLACK);
     this.add(scroll);
-
+    
     Object[][] rows2 = {};
     Object[] cols2 = {"Token", "Error", "Aparición"};
     modelo2 = new DefaultTableModel(rows2, cols2);
-
+    
     tabla2 = new JTable(modelo2);
     tabla2.setBounds(0, 0, 500, 300);
     tabla2.setRowHeight(25);
     tabla2.setLocation(0, 0);
     tabla2.setFont(new Font("Dialog", Font.PLAIN, 13));
-
+    
     JScrollPane scroll2 = new JScrollPane(tabla2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll2.setBounds(0, 0, 500, 300);
-    scroll2.setLocation(600, 100);
+    scroll2.setLocation(600, 150);
     scroll2.updateUI();
+    scroll2.getViewport().setBackground(Color.decode("#445c3c"));
     this.add(scroll2);
-
+    
     initComponents();
     String s = "393e46";
+    tabla.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f")));
+    tabla.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f")));
+    tabla.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f")));
+    
+    tabla2.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129")));
+    tabla2.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129")));
+    tabla2.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129")));
+    
+    tabla.getTableHeader().setDefaultRenderer(new ColorRenderer(Color.decode("#393e46"), Color.decode("#393e46")));
+    tabla2.getTableHeader().setDefaultRenderer(new ColorRenderer(Color.decode("#393e46"), Color.decode("#393e46")));
+    tabla.setShowGrid(true);
+    tabla2.setShowGrid(true);
 
-    tabla.getTableHeader().setForeground(Color.decode("#9a0f98"));
-    tabla2.getTableHeader().setForeground(Color.decode("#a0c334"));
-
+    
     this.setLocationRelativeTo(null);
     this.getContentPane().setBackground(Color.decode("#121212"));
-
+    
   }
 
   /**
@@ -105,7 +122,7 @@ public class Interfaz extends javax.swing.JFrame {
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
     ButtonAnalize.setBackground(Color.decode("#4ecca3"));
-    ButtonAnalize.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+    ButtonAnalize.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
     ButtonAnalize.setText("Analizar");
     ButtonAnalize.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,15 +131,15 @@ public class Interfaz extends javax.swing.JFrame {
     });
 
     jLabel2.setBackground(new java.awt.Color(255, 255, 255));
-    jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+    jLabel2.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
     jLabel2.setForeground(Color.decode("#29c7ac"));
     jLabel2.setText("Analizador Léxico");
 
-    jLabel3.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+    jLabel3.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
     jLabel3.setForeground(Color.decode("#a0c334"));
     jLabel3.setText("Errores");
 
-    jLabel4.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+    jLabel4.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
     jLabel4.setForeground(Color.decode("#9a0f98"));
     jLabel4.setText("Tokens");
 
@@ -131,15 +148,15 @@ public class Interfaz extends javax.swing.JFrame {
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-        .addGap(262, 262, 262)
+        .addContainerGap(224, Short.MAX_VALUE)
         .addComponent(jLabel4)
-        .addGap(221, 221, 221)
+        .addGap(217, 217, 217)
         .addComponent(ButtonAnalize)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 214, Short.MAX_VALUE)
+        .addGap(191, 191, 191)
         .addComponent(jLabel3)
-        .addGap(288, 288, 288))
+        .addGap(283, 283, 283))
       .addGroup(layout.createSequentialGroup()
-        .addGap(487, 487, 487)
+        .addGap(428, 428, 428)
         .addComponent(jLabel2)
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
@@ -148,16 +165,16 @@ public class Interfaz extends javax.swing.JFrame {
       .addGroup(layout.createSequentialGroup()
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
-            .addGap(67, 67, 67)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(jLabel3)
-              .addComponent(jLabel4)))
-          .addGroup(layout.createSequentialGroup()
-            .addGap(17, 17, 17)
+            .addGap(24, 24, 24)
             .addComponent(jLabel2)
-            .addGap(5, 5, 5)
-            .addComponent(ButtonAnalize, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        .addContainerGap(377, Short.MAX_VALUE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(ButtonAnalize))
+          .addGroup(layout.createSequentialGroup()
+            .addGap(99, 99, 99)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+              .addComponent(jLabel4)
+              .addComponent(jLabel3))))
+        .addContainerGap(354, Short.MAX_VALUE))
     );
 
     pack();
@@ -180,24 +197,24 @@ public class Interfaz extends javax.swing.JFrame {
   private javax.swing.JLabel jLabel4;
   // End of variables declaration//GEN-END:variables
   public void ProbarLexerFile() throws IOException {
-
+    
     JFileChooser elegidor = new JFileChooser();
     int returnVal = elegidor.showOpenDialog(this);
-
+    
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       File file = elegidor.getSelectedFile();
-
+      
       System.out.println("Opening: " + file.getName() + ".");
       Reader reader;
       reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-15"));//TextInput.getText()
 
       Lexer lexer = new Lexer(reader);
-
+      
       int k = modelo.getRowCount();
       for (int j = 0; j < k; j++) {
         modelo.removeRow(0);
       }
-
+      
       k = modelo2.getRowCount();
       for (int j = 0; j < k; j++) {
         modelo2.removeRow(0);
@@ -205,7 +222,7 @@ public class Interfaz extends javax.swing.JFrame {
 
 //se comienza a evaluar cada caracter
       LinkedHashMap<String, LinkedHashMap<String, Integer>> palabras = SingletoneEscaner.getInstance().usarJflex(lexer);
-
+      
       for (String palabra : palabras.keySet()) {
         int i = palabra.indexOf(' ');
         String tipo = palabra.substring(0, i);
@@ -215,11 +232,11 @@ public class Interfaz extends javax.swing.JFrame {
           apariciones = apariciones + " " + linea + "(" + palabras.get(palabra).get(linea) + "),";
         }
         apariciones = apariciones.substring(0, apariciones.length() - 1);
-
+        
         String[] row = {token, tipo, apariciones};
         System.out.println(tipo);
         switch (tipo) {
-
+          
           case "IDENTIFICADOR":
           case "OPERADOR":
           case "PALABRA_RESERVADA":
@@ -238,7 +255,7 @@ public class Interfaz extends javax.swing.JFrame {
             modelo2.addRow(row);
             break;
         }
-
+        
       }
 
 //jTextPane1.setText(Resultados);//mostrando los resultados
@@ -254,7 +271,7 @@ public class Interfaz extends javax.swing.JFrame {
     } else {
       System.out.println("Open command cancelled by user.");
     }
-
+    
   }
-
+  
 }

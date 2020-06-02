@@ -7,23 +7,27 @@ import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
+import javax.swing.table.DefaultTableCellRenderer;
 
-public class ColorRenderer extends JLabel implements TableCellRenderer {
+class ColorRenderer extends DefaultTableCellRenderer {
 
-  public ColorRenderer() {
+  Color backgroundColor, foregroundColor;
+
+  public ColorRenderer(Color backgroundColor, Color foregroundColor) {
+    super();
+    this.backgroundColor = backgroundColor;
+    this.foregroundColor = foregroundColor;
   }
 
-  public Component getTableCellRendererComponent(
-    JTable table, Object value,
-    boolean isSelected, boolean hasFocus,
-    int row, int column) {
+  public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-    //if(column == 4){
-    if (true) {
-      setForeground(Color.RED);
-
+    if (row % 2 == 0) {
+      cell.setBackground(backgroundColor);
+    } else {
+      cell.setBackground(foregroundColor);
     }
-    //}
-    return this;
+    cell.setForeground(Color.WHITE);
+    return cell;
   }
 }
