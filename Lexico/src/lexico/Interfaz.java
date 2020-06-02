@@ -38,7 +38,7 @@ import javax.swing.table.TableColumn;
  * @author usuario
  */
 public class Interfaz extends javax.swing.JFrame {
-  
+
   JTable table;
   DefaultTableModel modelo, modelo2;
   JTable tabla, tabla2;
@@ -48,61 +48,62 @@ public class Interfaz extends javax.swing.JFrame {
    */
   public Interfaz() {
     javax.swing.UIManager.getDefaults().put("ScrollBar.minimumThumbSize", new Dimension(29, 29));
-    javax.swing.UIManager.getDefaults().put("TableHeader.cellBorder" , BorderFactory.createEmptyBorder(20,20,20,21));
-    
+    javax.swing.UIManager.getDefaults().put("TableHeader.cellBorder", BorderFactory.createEmptyBorder(20, 20, 20, 21));
+
     Object[][] rows = {};
     Object[] cols = {"Token", "Tipo", "Apariciones"};
     modelo = new DefaultTableModel(rows, cols);
-    
+
     tabla = new JTable(modelo);
     tabla.setBounds(0, 0, 500, 300);
     tabla.setRowHeight(25);
     tabla.setLocation(0, 0);
     tabla.setFont(new Font("Dialog", Font.PLAIN, 13));
-    
+
     JScrollPane scroll = new JScrollPane(tabla, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll.setBounds(0, 0, 500, 300);
     scroll.setLocation(50, 150);
     scroll.getViewport().setBackground(Color.decode("#2d132c"));
     scroll.setBackground(Color.BLACK);
     this.add(scroll);
-    
+
     Object[][] rows2 = {};
-    Object[] cols2 = {"Token", "Error", "Aparición"};
+    Object[] cols2 = {"Token", "Error", "Apariciones"};
     modelo2 = new DefaultTableModel(rows2, cols2);
-    
+
     tabla2 = new JTable(modelo2);
     tabla2.setBounds(0, 0, 500, 300);
     tabla2.setRowHeight(25);
     tabla2.setLocation(0, 0);
     tabla2.setFont(new Font("Dialog", Font.PLAIN, 13));
-    
+
     JScrollPane scroll2 = new JScrollPane(tabla2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll2.setBounds(0, 0, 500, 300);
     scroll2.setLocation(600, 150);
     scroll2.updateUI();
     scroll2.getViewport().setBackground(Color.decode("#445c3c"));
     this.add(scroll2);
-    
+
     initComponents();
     String s = "393e46";
-    tabla.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f")));
-    tabla.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f")));
-    tabla.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f")));
-    
-    tabla2.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129")));
-    tabla2.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129")));
-    tabla2.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129")));
-    
-    tabla.getTableHeader().setDefaultRenderer(new ColorRenderer(Color.decode("#393e46"), Color.decode("#393e46")));
-    tabla2.getTableHeader().setDefaultRenderer(new ColorRenderer(Color.decode("#393e46"), Color.decode("#393e46")));
+    tabla.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
+    tabla.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
+    tabla.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
+
+    tabla2.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129"), 2));
+    tabla2.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129"), 2));
+    tabla2.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129"), 2));
+
+    tabla.getTableHeader().setDefaultRenderer(new ColorRenderer(Color.decode("#900c3f"), Color.decode("#900c3f"), 1));
+    tabla2.getTableHeader().setDefaultRenderer(new ColorRenderer(Color.decode("#445c3c"), Color.decode("#a7d129"), 1));
     tabla.setShowGrid(true);
     tabla2.setShowGrid(true);
 
-    
+    tabla2.getColumnModel().getColumn(1).setPreferredWidth(200);    //Surname
+
     this.setLocationRelativeTo(null);
     this.getContentPane().setBackground(Color.decode("#121212"));
-    
+
   }
 
   /**
@@ -197,24 +198,24 @@ public class Interfaz extends javax.swing.JFrame {
   private javax.swing.JLabel jLabel4;
   // End of variables declaration//GEN-END:variables
   public void ProbarLexerFile() throws IOException {
-    
+
     JFileChooser elegidor = new JFileChooser();
     int returnVal = elegidor.showOpenDialog(this);
-    
+
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       File file = elegidor.getSelectedFile();
-      
+
       System.out.println("Opening: " + file.getName() + ".");
       Reader reader;
       reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-15"));//TextInput.getText()
 
       Lexer lexer = new Lexer(reader);
-      
+
       int k = modelo.getRowCount();
       for (int j = 0; j < k; j++) {
         modelo.removeRow(0);
       }
-      
+
       k = modelo2.getRowCount();
       for (int j = 0; j < k; j++) {
         modelo2.removeRow(0);
@@ -222,7 +223,7 @@ public class Interfaz extends javax.swing.JFrame {
 
 //se comienza a evaluar cada caracter
       LinkedHashMap<String, LinkedHashMap<String, Integer>> palabras = SingletoneEscaner.getInstance().usarJflex(lexer);
-      
+
       for (String palabra : palabras.keySet()) {
         int i = palabra.indexOf(' ');
         String tipo = palabra.substring(0, i);
@@ -232,11 +233,11 @@ public class Interfaz extends javax.swing.JFrame {
           apariciones = apariciones + " " + linea + "(" + palabras.get(palabra).get(linea) + "),";
         }
         apariciones = apariciones.substring(0, apariciones.length() - 1);
-        
+
         String[] row = {token, tipo, apariciones};
         System.out.println(tipo);
         switch (tipo) {
-          
+
           case "IDENTIFICADOR":
           case "OPERADOR":
           case "PALABRA_RESERVADA":
@@ -255,7 +256,7 @@ public class Interfaz extends javax.swing.JFrame {
             modelo2.addRow(row);
             break;
         }
-        
+
       }
 
 //jTextPane1.setText(Resultados);//mostrando los resultados
@@ -271,7 +272,7 @@ public class Interfaz extends javax.swing.JFrame {
     } else {
       System.out.println("Open command cancelled by user.");
     }
-    
+
   }
-  
+
 }

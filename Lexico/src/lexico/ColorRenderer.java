@@ -12,11 +12,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 class ColorRenderer extends DefaultTableCellRenderer {
 
   Color backgroundColor, foregroundColor;
+  int val;
 
-  public ColorRenderer(Color backgroundColor, Color foregroundColor) {
+  public ColorRenderer(Color backgroundColor, Color foregroundColor, int val) {
     super();
     this.backgroundColor = backgroundColor;
     this.foregroundColor = foregroundColor;
+    this.val = val;
   }
 
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -28,6 +30,10 @@ class ColorRenderer extends DefaultTableCellRenderer {
       cell.setBackground(foregroundColor);
     }
     cell.setForeground(Color.WHITE);
+    if (val == 1) {
+      cell.setFont(new java.awt.Font("Dialog", 1, 18));
+      this.setHorizontalAlignment(JLabel.CENTER);
+    }
     return cell;
   }
 }
