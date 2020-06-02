@@ -1,3 +1,4 @@
+package lexico;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -10,7 +11,6 @@ import java.awt.Component;
 public class ColorRenderer extends JLabel implements TableCellRenderer {
 
   public ColorRenderer() {
-    setOpaque(true); //MUST do this for background to show up.
   }
 
   public Component getTableCellRendererComponent(
@@ -20,8 +20,8 @@ public class ColorRenderer extends JLabel implements TableCellRenderer {
 
     //if(column == 4){
     if (true) {
-      setBackground(Color.BLUE);
-      //setForeground(Color.BLACK);
+      setForeground(Color.RED);
+
     }
     //}
     return this;

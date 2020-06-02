@@ -26,7 +26,9 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -53,12 +55,10 @@ public class Interfaz extends javax.swing.JFrame {
     tabla.setRowHeight(25);
     tabla.setLocation(0, 0);
     tabla.setFont(new Font("Dialog", Font.PLAIN, 13));
-    tabla.setOpaque(false);
 
     JScrollPane scroll = new JScrollPane(tabla, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll.setBounds(0, 0, 500, 300);
     scroll.setLocation(50, 100);
-    scroll.getViewport().setBackground(Color.decode("#202040"));
     this.add(scroll);
 
     Object[][] rows2 = {};
@@ -79,8 +79,13 @@ public class Interfaz extends javax.swing.JFrame {
 
     initComponents();
     String s = "393e46";
-    getContentPane().setBackground(Color.decode("#121212"));
+
+    tabla.getTableHeader().setForeground(Color.decode("#9a0f98"));
+    tabla2.getTableHeader().setForeground(Color.decode("#a0c334"));
+
     this.setLocationRelativeTo(null);
+    this.getContentPane().setBackground(Color.decode("#121212"));
+
   }
 
   /**
@@ -100,6 +105,7 @@ public class Interfaz extends javax.swing.JFrame {
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
     ButtonAnalize.setBackground(Color.decode("#4ecca3"));
+    ButtonAnalize.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
     ButtonAnalize.setText("Analizar");
     ButtonAnalize.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -113,7 +119,7 @@ public class Interfaz extends javax.swing.JFrame {
     jLabel2.setText("Analizador Léxico");
 
     jLabel3.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-    jLabel3.setForeground(Color.decode("#bef992"));
+    jLabel3.setForeground(Color.decode("#a0c334"));
     jLabel3.setText("Errores");
 
     jLabel4.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
@@ -129,7 +135,7 @@ public class Interfaz extends javax.swing.JFrame {
         .addComponent(jLabel4)
         .addGap(221, 221, 221)
         .addComponent(ButtonAnalize)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 224, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 214, Short.MAX_VALUE)
         .addComponent(jLabel3)
         .addGap(288, 288, 288))
       .addGroup(layout.createSequentialGroup()
@@ -197,7 +203,7 @@ public class Interfaz extends javax.swing.JFrame {
         modelo2.removeRow(0);
       }
 
-      //se comienza a evaluar cada caracter
+//se comienza a evaluar cada caracter
       LinkedHashMap<String, LinkedHashMap<String, Integer>> palabras = SingletoneEscaner.getInstance().usarJflex(lexer);
 
       for (String palabra : palabras.keySet()) {
@@ -234,7 +240,6 @@ public class Interfaz extends javax.swing.JFrame {
         }
 
       }
-      tabla.getColumnModel().getColumn(4).setCellRenderer(ColorRenderer());
 
 //jTextPane1.setText(Resultados);//mostrando los resultados
 
