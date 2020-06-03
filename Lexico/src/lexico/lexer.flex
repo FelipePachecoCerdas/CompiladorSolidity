@@ -16,13 +16,14 @@ NoFlotante=({Digitos}*)"."({Digitos}*)
 SimbolosHexadecimales=[0-9a-fA-F]
 Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
 
-SecuenciasEscape=\\\\|\\'|\\\"|\\b|\\f|\\n|\\r|\\t|\\v|\\x{SimbolosHexadecimales}{2}|\\u{SimbolosHexadecimales}{4}
-SimbolosDeEscape=[^\\"'"\""b""f""n""r""t""v""x{SimbolosHexadecimales}{2}""^u{SimbolosHexadecimales}{4}"]
+SecuenciasEscape=\\\\|\\'|\\\"|\\b|\\f|\\n|\\r|\\t|\\v|(\\x{SimbolosHexadecimales}{2})|(\\u{SimbolosHexadecimales}{4})
+NoSimbolosDeEscape=[^\\"'"\""b""f""n""r""t""v"]
+NoSimbolos2=\\x([^0-9a-fA-F]|([^0-9a-fA-F][^0-9a-fA-F]))
 
 Str=(\"([^\\\"\n]|{SecuenciasEscape})*\")|("'"([^\\"'"\n]|{SecuenciasEscape})*"'")
 
-NoStr1=\"([^\"\\\n]|{SecuenciasEscape})*((\\({SimbolosDeEscape}?)(([^\n\"]|{SecuenciasEscape})*(\"?|\n?)))|\n)
-NoStr2="'"([^"'"\\\n]|{SecuenciasEscape})*((\\({SimbolosDeEscape}?)(([^\n"'"]|{SecuenciasEscape})*("'"?|\n?)))|\n)
+NoStr1=\"([^\"\\\n]|{SecuenciasEscape})*(((\\({NoSimbolosDeEscape}?))([^\n\\\"]|{SecuenciasEscape})*((\"?)|(\n?)))|\n)
+NoStr2="'"([^"'"\\\n]|{SecuenciasEscape})*(((\\({NoSimbolosDeEscape}?))(([^\n\\"'"]|{SecuenciasEscape})*("'"?|\n?)))|\n)
 NoStr={NoStr1}|{NoStr2}
 
 SimbolosNoHexadecimales =[^0-9a-fA-F]
@@ -35,7 +36,7 @@ NoNotacionCientifica5=({Digitos})*"e"-?({Numero}|{Flotantes}|{NoFlotante})
 NoNotacionCientifica2=({Numero}|{Flotantes})"e"-?{Flotantes}
 NoNotacionCientifica3=((({NoFlotante})"e"-?{Digitos}*)|(({NoFlotante})"e"-?{Flotantes}))
 
-unicode1 = [[[\u0021-\u003A] || [\u003C-\u1EF3]] -- [!\^<>&|~+\-*/%=,;.()\[\]?:{}]] 
+unicode1 = [[[\u0021-\u003A] || [\u003C-\u1EF3]] -- [!\^<>&|~+\-*/%=,;.()\[\]?:{}\""'"]] 
 Noidentificador = (({unicode1}))+
 
 Comentario = "/**"([^\n\*]|(("*"|(\n(" "|\t)*"*"))("*"|(\n(" "|\t)*"*"))*[^\n\*\/]))*(("*"|(\n(" "|\t)*"*"))("*"|(\n(" "|\t)*"*"))*"/")
