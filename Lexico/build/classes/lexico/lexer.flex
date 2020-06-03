@@ -16,8 +16,8 @@ NoFlotante=({Digitos}*)"."({Digitos}*)
 SimbolosHexadecimales=[0-9a-fA-F]
 Hexadecimal="hex"((\"{SimbolosHexadecimales}+\")|("'"{SimbolosHexadecimales}+"'"))
 
-SecuenciasEscape=\\\\|\\'|\\\"|\\b|\\f|\\n|\\r|\\t|\\v|\\xNN|\\uNNNN
-SimbolosDeEscape=[^\\"'"\""b""f""n""r""t""v""xNN""uNNNN"]
+SecuenciasEscape=\\\\|\\'|\\\"|\\b|\\f|\\n|\\r|\\t|\\v|\\x{SimbolosHexadecimales}{2}|\\u{SimbolosHexadecimales}{4}
+SimbolosDeEscape=[^\\"'"\""b""f""n""r""t""v""x{SimbolosHexadecimales}{2}""^u{SimbolosHexadecimales}{4}"]
 
 Str=(\"([^\\\"\n]|{SecuenciasEscape})*\")|("'"([^\\"'"\n]|{SecuenciasEscape})*"'")
 
