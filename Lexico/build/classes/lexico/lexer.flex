@@ -31,6 +31,7 @@ NoHexadecimal="hex"(("\""{SimbolosHexadecimales}* {SimbolosNoHexadecimales}+ {Si
 NotacionCientifica=({Numero}|{Flotantes})"e"-?{Numero}
 NoNotacionCientifica1=({Numero}|{Flotantes})"e"-?{Digitos}+
 NoNotacionCientifica4=({Numero}|{Flotantes})"e"-?
+NoNotacionCientifica5=({Digitos})*"e"-?({Numero}|{Flotantes}|{NoFlotante})
 NoNotacionCientifica2=({Numero}|{Flotantes})"e"-?{Flotantes}
 NoNotacionCientifica3=((({NoFlotante})"e"-?{Digitos}*)|(({NoFlotante})"e"-?{Flotantes}))
 
@@ -87,7 +88,7 @@ public String lexeme;
 
 (({Digitos}*) | {NoNotacionCientifica1}) {lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;}
 {NoNotacionCientifica2} | {NoNotacionCientifica4} {lexeme=yytext()+" "+(yyline+1);return ERROR_NOTACION_CIENTIFICA;}
-{NoFlotante} | {NoNotacionCientifica3} {lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;}
+{NoFlotante} | {NoNotacionCientifica3} | {NoNotacionCientifica5} {lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;}
 ({Digitos}+{Letras}+) {lexeme=yytext()+" "+(yyline+1);return ERROR_IDENTIFICADOR;}
 ({NoHexadecimal}) {lexeme=yytext()+" "+(yyline+1);return ERROR_HEXADECIMAL;}
 {Noidentificador} {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}

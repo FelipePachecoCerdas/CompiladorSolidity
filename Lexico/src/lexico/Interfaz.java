@@ -28,6 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -65,6 +66,7 @@ public class Interfaz extends javax.swing.JFrame {
     scroll.setLocation(50, 150);
     scroll.getViewport().setBackground(Color.decode("#2d132c"));
     scroll.setBackground(Color.BLACK);
+    scroll.getVerticalScrollBar().setBackground(Color.red);
     this.add(scroll);
 
     Object[][] rows2 = {};
@@ -149,9 +151,9 @@ public class Interfaz extends javax.swing.JFrame {
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-        .addContainerGap(224, Short.MAX_VALUE)
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addComponent(jLabel4)
-        .addGap(217, 217, 217)
+        .addGap(190, 190, 190)
         .addComponent(ButtonAnalize)
         .addGap(191, 191, 191)
         .addComponent(jLabel3)
@@ -159,7 +161,7 @@ public class Interfaz extends javax.swing.JFrame {
       .addGroup(layout.createSequentialGroup()
         .addGap(428, 428, 428)
         .addComponent(jLabel2)
-        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        .addContainerGap(454, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -206,7 +208,7 @@ public class Interfaz extends javax.swing.JFrame {
       File file = elegidor.getSelectedFile();
 
       Reader reader;
-      reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-15"));//TextInput.getText()
+      reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));//TextInput.getText()
 
       Lexer lexer = new Lexer(reader);
 
@@ -226,7 +228,7 @@ public class Interfaz extends javax.swing.JFrame {
       for (String palabra : palabras.keySet()) {
         int i = palabra.indexOf(' ');
         String tipo = palabra.substring(0, i);
-        String token = palabra.substring(i, palabra.length());
+        String token = palabra.substring(i + 1, palabra.length());
         String apariciones = "";
         for (String linea : palabras.get(palabra).keySet()) {
           apariciones = apariciones + " " + linea + "(" + palabras.get(palabra).get(linea) + "),";
@@ -256,6 +258,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
 
       }
+      this.updateRowHeights();
 
 //jTextPane1.setText(Resultados);//mostrando los resultados
 
@@ -271,6 +274,19 @@ public class Interfaz extends javax.swing.JFrame {
       System.out.println("Open command cancelled by user.");
     }
 
+  }
+
+  private void updateRowHeights() {
+    for (int row = 0; row < tabla.getRowCount(); row++) {
+      int rowHeight = tabla.getRowHeight();
+
+      for (int column = 0; column < tabla.getColumnCount(); column++) {
+        Component comp = tabla.prepareRenderer(tabla.getCellRenderer(row, column), row, column);
+        rowHeight = Math.max(rowHeight, comp.getPreferredSize().height);
+      }
+
+      tabla.setRowHeight(row, rowHeight);
+    }
   }
 
 }
