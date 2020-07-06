@@ -7,6 +7,10 @@ package lexico;
 
 import java.awt.Dimension;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
@@ -21,7 +25,16 @@ public class Lexico {
     if (Parte1Ready == false) {
       // TODO code application logic here
       String path = "src/lexico/lexer.flex";
-      generarLexer(path);
+      String pathCup = "src/lexico/lexerCup.flex";
+      
+      String[] rutaS = {"-parser", "Sintax", "src/lexico/Sintax.cup"  };
+      try{
+      generar(path, pathCup, rutaS);    
+      }
+      catch (Exception ex){
+          
+      }
+      
       Parte1Ready = true;
       try {
         for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -46,9 +59,31 @@ public class Lexico {
     }
   }
 
-  public static void generarLexer(String path) {
-    File file = new File(path);
+  public static void generar(String path, String pathCup, String[] rutaS) throws IOException, Exception {
+    File file;
+    file = new File(path);
     jflex.Main.generate(file);
+    
+    file = new File(pathCup);
+    jflex.Main.generate(file);
+    java_cup.Main.main(rutaS);
+    
+    Path rutaSym = Paths.get("src/lexico/sym.java");
+    if (Files.exists(rutaSym)) {
+            Files.delete(rutaSym);
+    }
+    Files.move(Paths.get("sym.java"), 
+               Paths.get("src/lexico/sym.java")    
+    );
+    
+    
+    Path rutaSin = Paths.get("src/lexico/Sintax.java");
+    if (Files.exists(rutaSin)) {
+        Files.delete(rutaSin);
+    } 
+    Files.move(Paths.get("Sintax.java"), 
+               Paths.get("src/lexico/Sintax.java")    
+    );
 
   }
 

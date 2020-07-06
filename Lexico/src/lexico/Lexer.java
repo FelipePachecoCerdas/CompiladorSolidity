@@ -56,18 +56,18 @@ class Lexer {
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\1\1\2\1\3\2\4\1\5\2\3\3\2\6\3"+
     "\1\6\10\5\11\3\1\7\1\1\1\4\1\10\1\1"+
-    "\3\3\1\1\2\3\1\0\1\3\1\0\1\4\2\11"+
-    "\1\0\1\11\17\3\1\6\1\0\1\3\1\12\23\3"+
+    "\3\3\1\1\2\3\1\0\1\3\1\0\1\11\2\12"+
+    "\1\0\1\12\17\3\1\6\1\0\1\3\1\13\23\3"+
     "\1\1\1\7\1\10\2\4\1\1\1\10\2\1\1\0"+
-    "\1\1\1\12\3\3\1\1\1\3\4\11\1\0\5\11"+
-    "\1\0\1\11\14\3\1\13\12\3\1\12\12\3\1\14"+
+    "\1\1\1\13\3\3\1\1\1\3\4\12\1\0\5\12"+
+    "\1\0\1\12\14\3\1\14\12\3\1\13\12\3\1\15"+
     "\2\1\2\4\1\0\2\10\1\4\2\0\1\3\2\0"+
-    "\2\11\1\0\1\4\1\0\1\11\1\0\2\11\1\0"+
-    "\1\4\1\0\1\11\2\3\1\12\5\3\1\12\2\13"+
-    "\2\3\1\15\5\3\1\15\17\3\1\2\6\0\1\11"+
-    "\4\0\1\11\2\0\7\3\3\13\22\3\1\0\1\16"+
-    "\1\4\1\0\1\16\1\4\4\0\2\3\1\12\1\3"+
-    "\1\0\1\13\7\3\1\16\2\3\2\13\3\3\1\13"+
+    "\2\12\1\0\1\11\1\0\1\12\1\0\2\12\1\0"+
+    "\1\11\1\0\1\12\2\3\1\13\5\3\1\13\2\14"+
+    "\2\3\1\16\5\3\1\16\17\3\1\2\6\0\1\12"+
+    "\4\0\1\12\2\0\7\3\3\14\22\3\1\0\1\17"+
+    "\1\4\1\0\1\17\1\4\4\0\2\3\1\13\1\3"+
+    "\1\0\1\14\7\3\1\17\2\3\2\14\3\3\1\14"+
     "\6\3";
 
   private static int [] zzUnpackAction() {
@@ -1124,59 +1124,63 @@ public String lexeme;
           case 1: 
             { lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;
             }
-          case 15: break;
+          case 16: break;
           case 2: 
             { lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;
             }
-          case 16: break;
+          case 17: break;
           case 3: 
             { lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;
             }
-          case 17: break;
-          case 4: 
-            { lexeme=yytext()+" "+(yyline+1); return LITERAL;
-            }
           case 18: break;
+          case 4: 
+            { lexeme=yytext()+" "+(yyline+1); return NUMERO;
+            }
+          case 19: break;
           case 5: 
             { lexeme=yytext()+" "+(yyline+1); return OPERADOR;
             }
-          case 19: break;
+          case 20: break;
           case 6: 
             { /* ignore */
             }
-          case 20: break;
+          case 21: break;
           case 7: 
             { lexeme=yytext()+" "+(yyline+1);return ERROR_IDENTIFICADOR;
             }
-          case 21: break;
+          case 22: break;
           case 8: 
             { lexeme=yytext()+" "+(yyline+1);return ERROR_NOTACION_CIENTIFICA;
             }
-          case 22: break;
-          case 9: 
-            { lexeme=yytext()+" "+(yyline+1);return ERROR_STRING;
-            }
           case 23: break;
-          case 10: 
-            { lexeme=yytext()+" "+(yyline+1); return PALABRA_RESERVADA;
+          case 9: 
+            { lexeme=yytext()+" "+(yyline+1); return STRING;
             }
           case 24: break;
-          case 11: 
-            { lexeme=yytext()+" "+(yyline+1);return ERROR_COMENTARIO;
+          case 10: 
+            { lexeme=yytext()+" "+(yyline+1);return ERROR_STRING;
             }
           case 25: break;
-          case 12: 
-            { lexeme=yytext()+" "+(yyline+1); return UNIDAD;
+          case 11: 
+            { lexeme=yytext()+" "+(yyline+1); return PALABRA_RESERVADA;
             }
           case 26: break;
-          case 13: 
-            { lexeme=yytext()+" "+(yyline+1); return TRANSAC;
+          case 12: 
+            { lexeme=yytext()+" "+(yyline+1);return ERROR_COMENTARIO;
             }
           case 27: break;
-          case 14: 
-            { lexeme=yytext()+" "+(yyline+1);return ERROR_HEXADECIMAL;
+          case 13: 
+            { lexeme=yytext()+" "+(yyline+1); return UNIDAD;
             }
           case 28: break;
+          case 14: 
+            { lexeme=yytext()+" "+(yyline+1); return TRANSAC;
+            }
+          case 29: break;
+          case 15: 
+            { lexeme=yytext()+" "+(yyline+1);return ERROR_HEXADECIMAL;
+            }
+          case 30: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

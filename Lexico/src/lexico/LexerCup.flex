@@ -1,9 +1,12 @@
 package lexico;
-import static lexico.Token.*;
+import java_cup.runtime.Symbol;
 %%
-%class Lexer
+%class LexerCup
+%cup
+%full
 %line
-%type Token
+%char
+%type java_cup.runtime.Symbol
 Letras=[a-zA-Z]
 
 Digitos=[0-9]
@@ -69,7 +72,13 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 
 WHITE=[ \t\r\n]
 %{
-public String lexeme;
+    private Symbol symbol (int type, Object value){
+        return new symbol(type, yyline, yycolumn, value);
+    }
+
+    private Symbol symbol (int type){
+        return new symbol(type, yyline, yycolumn);
+    }
 %}
 %%
 
@@ -79,57 +88,58 @@ public String lexeme;
 {Comentario} {/* ignore */}
 
 
-	{Operadores}            {lexeme=yytext()+" "+(yyline+1); return OPERADOR; }
+	{Operadores}            {return new Symbol(sym.OPERADOR, yychar, yyline, yytext());}
 
-        {Reservadas}		{lexeme=yytext()+" "+(yyline+1); return PALABRA_RESERVADA; }
+        {Reservadas}		{return new Symbol(sym.PALABRA_RESERVADA, yychar, yyline, yytext());}
 
-    	{Trans} 		{lexeme=yytext()+" "+(yyline+1); return TRANSAC; }
+    	{Trans} 		{return new Symbol(sym.TRANSAC, yychar, yyline, yytext());}
 
-    	{Unidades}              {lexeme=yytext()+" "+(yyline+1); return UNIDAD; }
-
-
-
-{Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
+    	{Unidades}              {return new Symbol(sym.UNIDAD, yychar, yyline, yytext());}
 
 
-({Numero})|({Hexadecimal})|({NotacionCientifica})|({Flotantes}) {lexeme=yytext()+" "+(yyline+1); return NUMERO;}
 
-{Str} {lexeme=yytext()+" "+(yyline+1); return STRING;}
+{Letras}({Letras}|{Digitos})* {return new Symbol(sym.IDENTIFICADOR, yychar, yyline, yytext());}
 
-{Tipo} {lexeme=yytext()+" "+(yyline+1); return TIPO;}
 
-"if"    {lexeme=yytext(); return IF; }
-"while"    {lexeme=yytext(); return WHILE; }
-"for"    {lexeme=yytext(); return FOR; }
-"do"    {lexeme=yytext(); return DO; }
-"else"    {lexeme=yytext(); return ELSE; }
-"return"    {lexeme=yytext(); return RETURN; }
-","    {lexeme=yytext(); return COMA; }
-("true" | "false")  {lexeme=yytext(); return VISIBILDAD; }
-("true" | "false" | "payable" | "internal" )  {lexeme=yytext(); return MODIFICADOR; }
-"contract"    {lexeme=yytext(); return CONTRACT; }
-"enum"    {lexeme=yytext(); return ENUM; }
-"pragma"    {lexeme=yytext(); return PRAGMA; }
-"solodity"    {lexeme=yytext(); return SOLIDITY; }
-"="    {lexeme=yytext(); return IGUAL; }
-"struct"    {lexeme=yytext(); return STRUCT; }
-"function"    {lexeme=yytext(); return FUNCTION; }
-("+" | "-" | "*" | "/" | "%" | "(" | ")" | "+=" | "-=" | "*=" | "/=")    {lexeme=yytext(); return OP_ARITMETICO; }
-( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&" | "!" )   {lexeme=yytext(); return OP_BOOLEANO; }
-";"    {lexeme=yytext(); return PUNTOCOMA; }
-"("    {lexeme=yytext(); return PARENTESIS_ABRE; }
-")"    {lexeme=yytext(); return PARENTESIS_CIERRE; }
-"{"    {lexeme=yytext(); return LLAVE_ABRE; }
-"}"    {lexeme=yytext(); return LLAVE_CIERRE; }
+({Numero})|({Hexadecimal})|({NotacionCientifica})|({Flotantes}) {return new Symbol(sym.NUMERO, yychar, yyline, yytext());}
 
-(({Digitos}*) | {NoNotacionCientifica1}) {lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;}
-{NoNotacionCientifica2} | {NoNotacionCientifica4} {lexeme=yytext()+" "+(yyline+1);return ERROR_NOTACION_CIENTIFICA;}
-{NoFlotante} | {NoNotacionCientifica3} | {NoNotacionCientifica5} {lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;}
-({Digitos}+{Letras}+) {lexeme=yytext()+" "+(yyline+1);return ERROR_IDENTIFICADOR;}
-({NoHexadecimal}) {lexeme=yytext()+" "+(yyline+1);return ERROR_HEXADECIMAL;}
-{Noidentificador} {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
-"/**"{NoComentario} {lexeme=yytext()+" "+(yyline+1);return ERROR_COMENTARIO;}
-. {lexeme=yytext()+" "+(yyline+1);return ERROR_CARACTERES_NO_VALIDOS;}
-{NoStr} {lexeme=yytext()+" "+(yyline+1);return ERROR_STRING;}
+{Str} {return new Symbol(sym.STRING, yychar, yyline, yytext());}
+
+{Tipo} {return new Symbol(sym.TIPO, yychar, yyline, yytext());}
+
+"if"    {return new Symbol(sym.IF, yychar, yyline, yytext()); }
+"while"    {return new Symbol(sym.WHILE, yychar, yyline, yytext()); }
+"for"    {return new Symbol(sym.FOR, yychar, yyline, yytext()); }
+"do"    {return new Symbol(sym.DO, yychar, yyline, yytext()); }
+"else"    {return new Symbol(sym.ELSE, yychar, yyline, yytext()); }
+"return"    {return new Symbol(sym.RETURN, yychar, yyline, yytext()); }
+","    {return new Symbol(sym.COMA, yychar, yyline, yytext()); }
+("true" | "false")  {return new Symbol(sym.VISIBILDAD, yychar, yyline, yytext()); }
+("true" | "false" | "payable" | "internal" )  {return new Symbol(sym.MODIFICADOR, yychar, yyline, yytext()); }
+"contract"    {return new Symbol(sym.CONTRACT, yychar, yyline, yytext()); }
+"enum"    {return new Symbol(sym.ENUM, yychar, yyline, yytext()); }
+"pragma"    {return new Symbol(sym.PRAGMA, yychar, yyline, yytext());}
+"solodity"    {return new Symbol(sym.SOLIDITY, yychar, yyline, yytext());}
+"="    {return new Symbol(sym.IGUAL, yychar, yyline, yytext()); }
+"struct"    {return new Symbol(sym.STRUCT, yychar, yyline, yytext()); }
+"function"    {return new Symbol(sym.FUNCTION, yychar, yyline, yytext()); }
+("+" | "-" | "*" | "/" | "%" | "(" | ")" | "+=" | "-=" | "*=" | "/=")    {return new Symbol(sym.OP_ARITMETICO, yychar, yyline, yytext()); }
+( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&" | "!" )  {return new Symbol(sym.OP_BOOLEANO, yychar, yyline, yytext()); }
+";"    {return new Symbol(sym.PUNTOCOMA, yychar, yyline, yytext()); }
+"("    {return new Symbol(sym.PARENTESIS_ABRE, yychar, yyline, yytext()); }
+")"    {return new Symbol(sym.PARENTESIS_CIERRE, yychar, yyline, yytext()); }
+"{"    {return new Symbol(sym.LLAVE_ABRE, yychar, yyline, yytext()); }
+"}"    {return new Symbol(sym.LLAVE_CIERRE, yychar, yyline, yytext()); }
+
+(({Digitos}*) | {NoNotacionCientifica1}) {return new Symbol(sym.ERROR_CEROS_A_LA_IZQUIERDA, yychar, yyline, yytext());}
+{NoNotacionCientifica2} | {NoNotacionCientifica4} {return new Symbol(sym.ERROR_NOTACION_CIENTIFICA, yychar, yyline, yytext());}
+{NoFlotante} | {NoNotacionCientifica3} | {NoNotacionCientifica5} {return new Symbol(sym.ERROR_CEROS_A_LA_IZQUIERDA, yychar, yyline, yytext());}
+({Digitos}+{Letras}+) {return new Symbol(sym.ERROR_IDENTIFICADOR, yychar, yyline, yytext());}
+({NoHexadecimal}) {return new Symbol(sym.ERROR_HEXADECIMAL, yychar, yyline, yytext());}
+{Noidentificador} {return new Symbol(sym.ERROR_CARACTERES_NO_VALIDOS, yychar, yyline, yytext()); }
+"/**"{NoComentario} {return new Symbol(sym.ERROR_COMENTARIO, yychar, yyline, yytext()); }
+. {return new Symbol( sym.ERROR_CARACTERES_NO_VALIDOS, yychar, yyline, yytext());}
+{NoStr} {return new Symbol(sym.ERROR_STRING, yychar, yyline, yytext());}
+
 
 
