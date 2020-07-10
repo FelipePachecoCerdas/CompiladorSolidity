@@ -64,6 +64,8 @@ public class Lexico {
     file = new File(path);
     jflex.Main.generate(file);
     
+    
+    
     file = new File(pathCup);
     jflex.Main.generate(file);
     java_cup.Main.main(rutaS);
