@@ -66,8 +66,8 @@ public class Lexico {
     
     
     
-    file = new File(pathCup);
-    jflex.Main.generate(file);
+    File fileCup = new File(pathCup);
+    jflex.Main.generate(fileCup);
     java_cup.Main.main(rutaS);
     
     Path rutaSym = Paths.get("src/lexico/sym.java");

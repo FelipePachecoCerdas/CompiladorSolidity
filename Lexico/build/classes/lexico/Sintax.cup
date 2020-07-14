@@ -16,11 +16,10 @@ parser code
 :};
 
 terminal Linea, Comillas, T_dato, Int, Cadena, If, Else, Do, While, For,
-    Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional,
-    Op_atribucion, Op_booleano, Parentesis_a, Parentesis_c,
+    Igual, Op_logico, Op_relacional, Op_atribucion, Op_booleano, Parentesis_a, Parentesis_c,
     Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, Identificador,
-    Numero,   Contract, Enum, Pragma, Solidity, Struct,Function,Modificador, Coma, Visibildad,
-    String,Tipo, Return,  Op_Aritmetico,PALABRA_RESERVADA, UNIDAD, TRANSAC,ERROR_CEROS_A_LA_IZQUIERDA, ERROR_CARACTERES_NO_VALIDOS, ERROR_IDENTIFICADOR
+    Numero,   Contract, Enum, Pragma, Solidity, Struct,Function,Modificador, Coma,
+    String, Return,  Op_Aritmetico,PALABRA_RESERVADA, UNIDAD, TRANSAC,ERROR_CEROS_A_LA_IZQUIERDA, ERROR_CARACTERES_NO_VALIDOS, ERROR_IDENTIFICADOR
     , ERROR_NOTACION_CIENTIFICA, STRING, ERROR_STRING, OPERADOR, ERROR_COMENTARIO,ERROR_HEXADECIMAL,  ERROR;
 
 non terminal INICIO, SENTENCIA, DECLARACION, DECLARACION_FOR, IF, IF_ELSE,
@@ -29,8 +28,18 @@ non terminal INICIO, SENTENCIA, DECLARACION, DECLARACION_FOR, IF, IF_ELSE,
 start with INICIO;
 
 INICIO ::= 
-    Int Main Parentesis_a Parentesis_c Llave_a SENTENCIA Llave_c |
-    Main Parentesis_a Parentesis_c Llave_a SENTENCIA Llave_c
+    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a Llave_c |
+    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ENUMERADOR VARIABLES ESTRUCTURA FUNCION Llave_c
+;
+
+ENUMERADOR ::= 
+    Enum Identificador Llave_a Identificador Llave_c |
+
+;
+
+VARIABLES ::=
+    T_dato Op_booleano Identificador P_coma |
+    T_dato Corchete_a Corchete_c Identificador P_coma |
 ;
 SENTENCIA ::= 
     SENTENCIA DECLARACION |

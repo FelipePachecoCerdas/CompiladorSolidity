@@ -62,11 +62,6 @@ Trans = ("balance"  | "call" | "callcode" | "delegatecall" | "send" | "transfer"
 
 Unidades = ( "days" | "ether" | "finney" | "hours" | "minutes" | "seconds" | "szabo" | "weeks" | "wei" | "years")
 
-Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "uint" 
-                | "uint8" |"uint16" | "uint32" |"uint64" |"uint128"  
-                | "int8" |"int16" | "int32" |"int64" |"int128" | "int256" 
-                | "uint256" |"bytes8" | "bytes16" |"bytes32" |"bytes64" | "bytes128" |"bytes256")
-
 WHITE=[ \t\r\n]
 %{
 public String lexeme;
@@ -90,37 +85,7 @@ public String lexeme;
 
 
 {Letras}({Letras}|{Digitos})* {lexeme=yytext()+" "+(yyline+1); return IDENTIFICADOR;}
-
-
-({Numero})|({Hexadecimal})|({NotacionCientifica})|({Flotantes}) {lexeme=yytext()+" "+(yyline+1); return NUMERO;}
-
-{Str} {lexeme=yytext()+" "+(yyline+1); return STRING;}
-
-{Tipo} {lexeme=yytext()+" "+(yyline+1); return TIPO;}
-
-"if"    {lexeme=yytext(); return IF; }
-"while"    {lexeme=yytext(); return WHILE; }
-"for"    {lexeme=yytext(); return FOR; }
-"do"    {lexeme=yytext(); return DO; }
-"else"    {lexeme=yytext(); return ELSE; }
-"return"    {lexeme=yytext(); return RETURN; }
-","    {lexeme=yytext(); return COMA; }
-("true" | "false")  {lexeme=yytext(); return VISIBILDAD; }
-("true" | "false" | "payable" | "internal" )  {lexeme=yytext(); return MODIFICADOR; }
-"contract"    {lexeme=yytext(); return CONTRACT; }
-"enum"    {lexeme=yytext(); return ENUM; }
-"pragma"    {lexeme=yytext(); return PRAGMA; }
-"solodity"    {lexeme=yytext(); return SOLIDITY; }
-"="    {lexeme=yytext(); return IGUAL; }
-"struct"    {lexeme=yytext(); return STRUCT; }
-"function"    {lexeme=yytext(); return FUNCTION; }
-("+" | "-" | "*" | "/" | "%" | "(" | ")" | "+=" | "-=" | "*=" | "/=")    {lexeme=yytext(); return OP_ARITMETICO; }
-( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&" | "!" )   {lexeme=yytext(); return OP_BOOLEANO; }
-";"    {lexeme=yytext(); return PUNTOCOMA; }
-"("    {lexeme=yytext(); return PARENTESIS_ABRE; }
-")"    {lexeme=yytext(); return PARENTESIS_CIERRE; }
-"{"    {lexeme=yytext(); return LLAVE_ABRE; }
-"}"    {lexeme=yytext(); return LLAVE_CIERRE; }
+({Numero})|({Hexadecimal})|({NotacionCientifica})|({Flotantes})|{Str} {lexeme=yytext()+" "+(yyline+1); return LITERAL;}
 
 (({Digitos}*) | {NoNotacionCientifica1}) {lexeme=yytext()+" "+(yyline+1);return ERROR_CEROS_A_LA_IZQUIERDA;}
 {NoNotacionCientifica2} | {NoNotacionCientifica4} {lexeme=yytext()+" "+(yyline+1);return ERROR_NOTACION_CIENTIFICA;}

@@ -77,6 +77,7 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
     }
 %}
 %%
+","    {return new Symbol(sym.Coma, yychar, yyline, yytext()); }
 
 /* Espacios en blanco */
 {espacio} {/*Ignore*/}
@@ -87,8 +88,6 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 /* Comillas */
 ( "\"" ) {return new Symbol(sym.Comillas, yychar, yyline, yytext());}
 
-/* Tipos de datos */
-( byte | char | long | float | double ) {return new Symbol(sym.T_dato, yychar, yyline, yytext());}
 
 /* Tipo de dato Int (Para el main) */
 ( "int" ) {return new Symbol(sym.Int, yychar, yyline, yytext());}
@@ -113,18 +112,6 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 
 /* Operador Igual */
 ( "=" ) {return new Symbol(sym.Igual, yychar, yyline, yytext());}
-
-/* Operador Suma */
-( "+" ) {return new Symbol(sym.Suma, yychar, yyline, yytext());}
-
-/* Operador Resta */
-( "-" ) {return new Symbol(sym.Resta, yychar, yyline, yytext());}
-
-/* Operador Multiplicacion */
-( "*" ) {return new Symbol(sym.Multiplicacion, yychar, yyline, yytext());}
-
-/* Operador Division */
-( "/" ) {return new Symbol(sym.Division, yychar, yyline, yytext());}
 
 
 /*Operadores Relacionales */
@@ -161,6 +148,21 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 /* Punto y coma */
 ( ";" ) {return new Symbol(sym.P_coma, yychar, yyline, yytext());}
 
+{Tipo} {return new Symbol(sym.T_dato, yychar, yyline, yytext());}
+
+
+"return"    {return new Symbol(sym.Return, yychar, yyline, yytext()); }
+
+("true" | "false" | "payable" | "internal" )  {return new Symbol(sym.Modificador, yychar, yyline, yytext()); }
+"contract"    {return new Symbol(sym.Contract, yychar, yyline, yytext()); }
+"enum"    {return new Symbol(sym.Enum, yychar, yyline, yytext()); }
+"pragma"    {return new Symbol(sym.Pragma, yychar, yyline, yytext());}
+"solidity"    {return new Symbol(sym.Solidity, yychar, yyline, yytext());}
+"struct"    {return new Symbol(sym.Struct, yychar, yyline, yytext()); }
+"function"    {return new Symbol(sym.Function, yychar, yyline, yytext()); }
+("+" | "-" | "*" | "/" | "%" | "(" | ")" | "+=" | "-=" | "*=" | "/=")    {return new Symbol(sym.Op_Aritmetico, yychar, yyline, yytext()); }
+( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&" | "!" )  {return new Symbol(sym.Op_logico, yychar, yyline, yytext()); }
+
 
 /* Error de analisis */
  . {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
@@ -184,23 +186,7 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 
 ({Numero})|({Hexadecimal})|({NotacionCientifica})|({Flotantes}) {return new Symbol(sym.Numero, yychar, yyline, yytext());}
 
-{Str} {return new Symbol(sym.STRING, yychar, yyline, yytext());}
-
-{Tipo} {return new Symbol(sym.TIPO, yychar, yyline, yytext());}
-
-
-"return"    {return new Symbol(sym.RETURN, yychar, yyline, yytext()); }
-","    {return new Symbol(sym.COMA, yychar, yyline, yytext()); }
-("true" | "false")  {return new Symbol(sym.VISIBILDAD, yychar, yyline, yytext()); }
-("true" | "false" | "payable" | "internal" )  {return new Symbol(sym.MODIFICADOR, yychar, yyline, yytext()); }
-"contract"    {return new Symbol(sym.CONTRACT, yychar, yyline, yytext()); }
-"enum"    {return new Symbol(sym.ENUM, yychar, yyline, yytext()); }
-"pragma"    {return new Symbol(sym.PRAGMA, yychar, yyline, yytext());}
-"solidity"    {return new Symbol(sym.SOLIDITY, yychar, yyline, yytext());}
-"struct"    {return new Symbol(sym.STRUCT, yychar, yyline, yytext()); }
-"function"    {return new Symbol(sym.FUNCTION, yychar, yyline, yytext()); }
-("+" | "-" | "*" | "/" | "%" | "(" | ")" | "+=" | "-=" | "*=" | "/=")    {return new Symbol(sym.OP_ARITMETICO, yychar, yyline, yytext()); }
-( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&" | "!" )  {return new Symbol(sym.Op_logico, yychar, yyline, yytext()); }
+{Str} {return new Symbol(sym.String, yychar, yyline, yytext());}
 
 
 (({Digitos}*) | {NoNotacionCientifica1}) {return new Symbol(sym.ERROR_CEROS_A_LA_IZQUIERDA, yychar, yyline, yytext());}
