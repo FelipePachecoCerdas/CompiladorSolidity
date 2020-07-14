@@ -17,11 +17,11 @@ parser code
 
 terminal Linea, Comillas, T_dato, Int, Cadena, If, Else, Do, While, For,
     Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional,
-    Op_atribucion, Op_incremento, Op_booleano, Parentesis_a, Parentesis_c,
+    Op_atribucion, Op_booleano, Parentesis_a, Parentesis_c,
     Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, Identificador,
     Numero,   Contract, Enum, Pragma, Solidity, Struct,Function,Modificador, Coma, Visibildad,
-    String,Tipo, Return,  Op_Aritmetico,ERROR_CEROS_A_LA_IZQUIERDA, ERROR_CARACTERES_NO_VALIDOS, ERROR_IDENTIFICADOR
-    , NUMERO, ERROR_NOTACION_CIENTIFICA, STRING, ERROR_STRING, OPERADOR, ERROR_COMENTARIO,ERROR_HEXADECIMAL,  ERROR;
+    String,Tipo, Return,  Op_Aritmetico,PALABRA_RESERVADA, UNIDAD, TRANSAC,ERROR_CEROS_A_LA_IZQUIERDA, ERROR_CARACTERES_NO_VALIDOS, ERROR_IDENTIFICADOR
+    , ERROR_NOTACION_CIENTIFICA, STRING, ERROR_STRING, OPERADOR, ERROR_COMENTARIO,ERROR_HEXADECIMAL,  ERROR;
 
 non terminal INICIO, SENTENCIA, DECLARACION, DECLARACION_FOR, IF, IF_ELSE,
     WHILE, DO_WHILE, FOR, SENTENCIA_BOOLEANA, SENTENCIA_FOR, ENUMERADOR, VARIABLES, ESTRUCTURA, FUNCION ;
@@ -49,14 +49,10 @@ SENTENCIA ::=
 DECLARACION ::= 
     Int Identificador P_coma | 
     Int Identificador Op_atribucion Numero P_coma |
-    Int Identificador Igual Numero P_coma |
-    Int Identificador Op_incremento P_coma | 
-    Int Op_incremento Identificador P_coma | 
+    Int Identificador Igual Numero P_coma | 
     T_dato Identificador P_coma | 
     T_dato Identificador Op_atribucion Numero P_coma |
-    T_dato Identificador Igual Numero P_coma |
-    T_dato Identificador Op_incremento P_coma | 
-    T_dato Op_incremento Identificador P_coma | 
+    T_dato Identificador Igual Numero P_coma | 
     Cadena Identificador Op_atribucion Comillas Comillas P_coma |
     Cadena Identificador Igual Comillas Comillas P_coma |
     Cadena Identificador Op_atribucion Comillas Identificador Comillas P_coma |
@@ -85,9 +81,7 @@ SENTENCIA_FOR ::=
     Identificador Igual Numero P_coma SENTENCIA_BOOLEANA P_coma DECLARACION_FOR
 ;
 DECLARACION_FOR ::= 
-    Identificador Op_atribucion Numero |
-    Identificador Op_incremento | 
-    Op_incremento Identificador
+    Identificador Op_atribucion Numero
 ;
 
 

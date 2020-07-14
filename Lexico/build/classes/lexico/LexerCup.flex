@@ -126,8 +126,6 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 /* Operador Division */
 ( "/" ) {return new Symbol(sym.Division, yychar, yyline, yytext());}
 
-/* Operadores logicos */
-( "&&" | "||" | "!" | "&" | "|" ) {return new Symbol(sym.Op_logico, yychar, yyline, yytext());}
 
 /*Operadores Relacionales */
 ( ">" | "<" | "==" | "!=" | ">=" | "<=" | "<<" | ">>" ) {return new Symbol(sym.Op_relacional, yychar, yyline, yytext());}
@@ -135,8 +133,6 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 /* Operadores Atribucion */
 ( "+=" | "-="  | "*=" | "/=" | "%=" | "=" ) {return new Symbol(sym.Op_atribucion, yychar, yyline, yytext());}
 
-/* Operadores Incremento y decremento */
-( "++" | "--" ) {return new Symbol(sym.Op_incremento, yychar, yyline, yytext());}
 
 /*Operadores Booleanos*/
 ( true | false ) {return new Symbol(sym.Op_booleano, yychar, yyline, yytext());}
@@ -165,11 +161,6 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 /* Punto y coma */
 ( ";" ) {return new Symbol(sym.P_coma, yychar, yyline, yytext());}
 
-/* Identificador */
-{Letras}({Letras}|{Digitos})* {return new Symbol(sym.Identificador, yychar, yyline, yytext());}
-
-/* Numero */
-("(-"{Digitos}+")")|{Digitos}+ {return new Symbol(sym.Numero, yychar, yyline, yytext());}
 
 /* Error de analisis */
  . {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
@@ -188,20 +179,16 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 
 
 
-{Letras}({Letras}|{Digitos})* {return new Symbol(sym.IDENTIFICADOR, yychar, yyline, yytext());}
+{Letras}({Letras}|{Digitos})* {return new Symbol(sym.Identificador, yychar, yyline, yytext());}
 
 
-({Numero})|({Hexadecimal})|({NotacionCientifica})|({Flotantes}) {return new Symbol(sym.NUMERO, yychar, yyline, yytext());}
+({Numero})|({Hexadecimal})|({NotacionCientifica})|({Flotantes}) {return new Symbol(sym.Numero, yychar, yyline, yytext());}
 
 {Str} {return new Symbol(sym.STRING, yychar, yyline, yytext());}
 
 {Tipo} {return new Symbol(sym.TIPO, yychar, yyline, yytext());}
 
-"if"    {return new Symbol(sym.IF, yychar, yyline, yytext()); }
-"while"    {return new Symbol(sym.WHILE, yychar, yyline, yytext()); }
-"for"    {return new Symbol(sym.FOR, yychar, yyline, yytext()); }
-"do"    {return new Symbol(sym.DO, yychar, yyline, yytext()); }
-"else"    {return new Symbol(sym.ELSE, yychar, yyline, yytext()); }
+
 "return"    {return new Symbol(sym.RETURN, yychar, yyline, yytext()); }
 ","    {return new Symbol(sym.COMA, yychar, yyline, yytext()); }
 ("true" | "false")  {return new Symbol(sym.VISIBILDAD, yychar, yyline, yytext()); }
@@ -210,16 +197,11 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 "enum"    {return new Symbol(sym.ENUM, yychar, yyline, yytext()); }
 "pragma"    {return new Symbol(sym.PRAGMA, yychar, yyline, yytext());}
 "solidity"    {return new Symbol(sym.SOLIDITY, yychar, yyline, yytext());}
-"="    {return new Symbol(sym.IGUAL, yychar, yyline, yytext()); }
 "struct"    {return new Symbol(sym.STRUCT, yychar, yyline, yytext()); }
 "function"    {return new Symbol(sym.FUNCTION, yychar, yyline, yytext()); }
 ("+" | "-" | "*" | "/" | "%" | "(" | ")" | "+=" | "-=" | "*=" | "/=")    {return new Symbol(sym.OP_ARITMETICO, yychar, yyline, yytext()); }
-( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&" | "!" )  {return new Symbol(sym.OP_BOOLEANO, yychar, yyline, yytext()); }
-";"    {return new Symbol(sym.PUNTOCOMA, yychar, yyline, yytext()); }
-"("    {return new Symbol(sym.PARENTESIS_ABRE, yychar, yyline, yytext()); }
-")"    {return new Symbol(sym.PARENTESIS_CIERRE, yychar, yyline, yytext()); }
-"{"    {return new Symbol(sym.LLAVE_ABRE, yychar, yyline, yytext()); }
-"}"    {return new Symbol(sym.LLAVE_CIERRE, yychar, yyline, yytext()); }
+( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&" | "!" )  {return new Symbol(sym.Op_logico, yychar, yyline, yytext()); }
+
 
 (({Digitos}*) | {NoNotacionCientifica1}) {return new Symbol(sym.ERROR_CEROS_A_LA_IZQUIERDA, yychar, yyline, yytext());}
 {NoNotacionCientifica2} | {NoNotacionCientifica4} {return new Symbol(sym.ERROR_NOTACION_CIENTIFICA, yychar, yyline, yytext());}
