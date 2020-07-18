@@ -10,7 +10,6 @@ import java_cup.runtime.Symbol;
 Letras=[a-zA-Z]
 
 Digitos=[0-9]
-espacio=[ ,\t,\r,\n]+
 
 DigitosSinCero=[1-9]
 Numero = ({DigitosSinCero}+{Digitos}*|0)
@@ -52,7 +51,7 @@ NoComentario4=({NoComentario1}((\n|("*""*"*\n))(("*""*"*\n)|(\t|" "))*[^\*\/\t" 
 NoComentario= {NoComentario1}|{NoComentario2}|{NoComentario3}|{NoComentario4}
 
 Operadores = ( "^" | "<" | ">" | "&" | "|" | "~" | "." 
-                | "[" | "]" | "?" | ":" | "**" | "<<" | ">>" )
+                | "[" | "]" | "**" | "<<" | ">>" )
 
 Reservadas = ( "as" | "break"  | "constructor"  | "continue"  
                 | "delete"  | "from" | "hex" | "import" 
@@ -68,6 +67,8 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
                 | "uint8" |"uint16" | "uint32" |"uint64" |"uint128"  
                 | "int8" |"int16" | "int32" |"int64" |"int128" | "int256" 
                 | "uint256" |"bytes8" | "bytes16" |"bytes32" |"bytes64" | "bytes128" |"bytes256")
+
+WHITE=[ \t\r\n]
 %{
     private Symbol symbol(int type, Object value){
         return new Symbol(type, yyline, yycolumn, value);
@@ -77,20 +78,21 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
     }
 %}
 %%
-","    {return new Symbol(sym.Coma, yychar, yyline, yytext()); }
 
 /* Espacios en blanco */
-{espacio} {/*Ignore*/}
+{WHITE} {/* ignore */}
 
-/* Comentarios */
-( "//"(.)* ) {/*Ignore*/}
+"//".* {/* ignore */}
+{Comentario} {/* ignore */}
 
+/*coma */
+( "," ) {return new Symbol(sym.Coma, yychar, yyline, yytext());}
+
+( ":" ) {return new Symbol(sym.Dos_Puntos, yychar, yyline, yytext());}
 /* Comillas */
 ( "\"" ) {return new Symbol(sym.Comillas, yychar, yyline, yytext());}
 
 
-/* Tipo de dato Int (Para el main) */
-( "int" ) {return new Symbol(sym.Int, yychar, yyline, yytext());}
 
 /* Tipo de dato String */
 ( String ) {return new Symbol(sym.Cadena, yychar, yyline, yytext());}
@@ -124,6 +126,8 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 /*Operadores Booleanos*/
 ( true | false ) {return new Symbol(sym.Op_booleano, yychar, yyline, yytext());}
 
+( "public" | "private" ) {return new Symbol(sym.Visibilidad, yychar, yyline, yytext());}
+
 /* Parentesis de apertura */
 ( "(" ) {return new Symbol(sym.Parentesis_a, yychar, yyline, yytext());}
 
@@ -148,6 +152,9 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 /* Punto y coma */
 ( ";" ) {return new Symbol(sym.P_coma, yychar, yyline, yytext());}
 
+
+("?") {return new Symbol(sym.Pregunta, yychar, yyline, yytext());}
+
 {Tipo} {return new Symbol(sym.T_dato, yychar, yyline, yytext());}
 
 
@@ -167,8 +174,6 @@ Tipo = ( "bool" | "byte" | "bytes" | "address" | "int" | "string" | "ufixed" | "
 /* Error de analisis */
  . {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
 
-"//".* {/* ignore */}
-{Comentario} {/* ignore */}
 
 
 	{Operadores}            {return new Symbol(sym.OPERADOR, yychar, yyline, yytext());}

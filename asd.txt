@@ -1,2 +1,39 @@
 pragma solidity 0.4.0;
-contract nombre {}
+contract nombre {
+	enum hola { perra} //enum con 1 coso
+	enum hola { puta , asd , edc} //enum con varios cosos
+
+	byte public hola;  //declaracion de variable
+	int[] dios;	//otro tipo de declaración
+	uint private zorra = 420; //otro tipo de declaración
+
+	//Probando structs a ver que
+	struct perro{
+		int32 public satan = 666;
+		bool private falsedad = false;
+	}
+	struct gato{
+		address public satan = 666;
+		bool private falsedad = false;
+	}
+
+	function abr ( int magicNumber ){
+		address public satan = 666;
+		hola = (true) ? puta : madre ;
+		return hola
+	}
+
+	function otro ( int magicNumber ){
+		address public satan = 666;
+		
+		if (true){
+		 	while (false){
+				hola = (true) ? puta : madre ;
+			}
+		}
+
+
+		return hola
+	}
+
+}

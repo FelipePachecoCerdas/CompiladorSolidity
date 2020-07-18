@@ -223,6 +223,18 @@ public class Interfaz extends javax.swing.JFrame {
             txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
             txtAnalizarSin.setForeground(Color.red);
         }
+        /*
+        try {
+            s.parse();
+            Symbol sym = s.getS();
+            txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
+            txtAnalizarSin.setForeground(Color.red);
+            System.out.println("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
+
+        } catch (Exception ex) {
+            txtAnalizarSin.setText("Analisis realizado correctamente");
+            txtAnalizarSin.setForeground(new Color(25, 111, 61));
+        }*/
   }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
