@@ -258,7 +258,7 @@ public class Interfaz extends javax.swing.JFrame {
       infoArchivo = new String(Files.readAllBytes(archivo.toPath()));
 
       Reader reader;
-      reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));//TextInput.getText()
+      reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-15"));//TextInput.getText()
 
       Lexer lexer = new Lexer(reader);
 
