@@ -1,18 +1,32 @@
 package lexico;
 
 import java_cup.runtime.Symbol;
+import java.util.Stack;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 parser code
 {:
-    private Symbol s;
-    
-    public void syntax_error(Symbol s){
-        this.s = s;
-    }
+  public ArrayList<Symbol> errores = new ArrayList<>();
+  public ArrayList<String> erroresStr = new ArrayList<>();
+  
+  public void syntax_error(Symbol s) {
+    System.out.println("WTFDYM" + this.stack.size());
+    String cadena = "";
 
-    public Symbol getS(){
-        return this.s;
-}
+    for (int i = this.stack.size()-1; i > 0; i--) {
+      Symbol sp = this.stack.get(i);
+      cadena += " " + sp.value;
+      if ("enum".equals(sp.value)) {
+        System.out.println("Soy un error de enum xd");
+        cadena += " " + s.value;
+        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        errores.add(sp2);
+        erroresStr.add("Enum");
+        break;
+      }
+    }
+  }
 :};
 
 terminal Linea, Comillas, T_dato, Cadena, If, Else, Do, While, For, Dos_Puntos,
@@ -52,7 +66,10 @@ INICIO ::=
 
 ENUMERADOR ::= 
     ENUMERADOR Enum Identificador Llave_a LISTA Llave_c |
-    Enum Identificador Llave_a LISTA Llave_c
+    ENUMERADOR Enum error Llave_a LISTA Llave_c |
+    Enum error Llave_a LISTA Llave_c |
+    Enum Identificador Llave_a LISTA Llave_c 
+
 ;
 LISTA ::= 
     LISTA Coma Identificador |
