@@ -20,7 +20,7 @@ parser code
     }
     for (int i = this.stack.size() - 1; i > 0; i--) {
       Symbol sp = this.stack.get(i);
-      System.out.println(sp.value+" "+Integer.toString(sp.sym));
+      System.out.println(sp.value + " " + Integer.toString(sp.right + 1) + ": " + Integer.toString(sp.left + 1) );
       cadena = sp.value + " " + cadena;
       if ("enum".equals(sp.value)) {
         System.out.println("Soy un error de enum xd");
@@ -165,7 +165,7 @@ FUNCION ::=
     FUNCION_HEADER Llave_a Return EXPRESION P_coma Llave_c FUNCION |
     FUNCION_HEADER Llave_a VARIABLES Return EXPRESION P_coma Llave_c |
     FUNCION_HEADER Llave_a VARIABLES CUERPO Return EXPRESION P_coma Llave_c |
-    FUNCION_HEADER Llave_a CUERPO Return EXPRESION P_coma Llave_c 
+    FUNCION_HEADER Llave_a CUERPO Return EXPRESION P_coma Llave_c |
     FUNCION_HEADER Llave_a Return EXPRESION P_coma Llave_c 
 ;
 RETURNS ::= 
@@ -270,7 +270,7 @@ OP_TERNARIO ::=
     Parentesis_a EXPRESION_BOOLEANA Parentesis_c Pregunta EXPRESION Dos_Puntos EXPRESION P_coma
 ;
 IF ::= 
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c |
     If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c
 ;
 EXPRESION_BOOLEANA ::= 
@@ -278,21 +278,21 @@ EXPRESION_BOOLEANA ::=
     EXPRESION Op_relacional EXPRESION
 ;
 IF_ELSE ::= 
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a CUERPO_EC Llave_c
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a Llave_c
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a CUERPO_EC Llave_c
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a CUERPO_EC Llave_c |
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a Llave_c |
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a CUERPO_EC Llave_c |
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a Llave_c 
 ;
 WHILE ::= 
-    While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c
+    While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c |
     While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c
 ;
 DO_WHILE ::= 
-    Do Llave_a CUERPO_EC Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma
+    Do Llave_a CUERPO_EC Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma |
     Do Llave_a Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma
 ;
 FOR ::= 
-    For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a CUERPO_EC Llave_c
+    For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a CUERPO_EC Llave_c |
     For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a Llave_c
 ;
 SENTENCIA_FOR ::=
