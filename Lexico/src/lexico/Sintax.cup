@@ -216,6 +216,20 @@ ARGUMENTOS ::=
     EXPRESION
 ;
 EXPRESION ::= 
+    Numero Op_Aritmetico EXPRESION |
+    Cadena Op_Aritmetico EXPRESION |
+    Op_booleano Op_Aritmetico EXPRESION |
+    Identificador Op_Aritmetico EXPRESION |
+    LLAMADA_FUNCION Op_Aritmetico EXPRESION | 
+    IDENTIFICADOR_CUERPO Op_Aritmetico EXPRESION |
+
+    Numero Op_logico EXPRESION |
+    Cadena Op_logico EXPRESION |
+    Op_booleano Op_logico EXPRESION |
+    Identificador Op_logico EXPRESION |
+    LLAMADA_FUNCION Op_logico EXPRESION | 
+    IDENTIFICADOR_CUERPO Op_logico EXPRESION |
+    
     Numero |
     Cadena |
     Op_booleano |
