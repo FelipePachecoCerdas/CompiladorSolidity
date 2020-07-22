@@ -159,9 +159,11 @@ FUNCION_HEADER ::=
     Function Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS 
 ;
 FUNCION ::=
+    FUNCION_HEADER Llave_a VARIABLES Return EXPRESION P_coma Llave_c FUNCION |
     FUNCION_HEADER Llave_a VARIABLES CUERPO Return EXPRESION P_coma Llave_c FUNCION |
     FUNCION_HEADER Llave_a CUERPO Return EXPRESION P_coma Llave_c FUNCION |
     FUNCION_HEADER Llave_a Return EXPRESION P_coma Llave_c FUNCION |
+    FUNCION_HEADER Llave_a VARIABLES Return EXPRESION P_coma Llave_c |
     FUNCION_HEADER Llave_a VARIABLES CUERPO Return EXPRESION P_coma Llave_c |
     FUNCION_HEADER Llave_a CUERPO Return EXPRESION P_coma Llave_c 
     FUNCION_HEADER Llave_a Return EXPRESION P_coma Llave_c 
@@ -181,11 +183,11 @@ MODIFICADORES ::=
 ;
 CUERPO ::=
     ASIGNACION_BASICA CUERPO |
-    EXPRESION CUERPO |
+    EXPRESION P_coma CUERPO |
     ESTRUCTURA_CONTROL CUERPO |
 
     ASIGNACION_BASICA |
-    EXPRESION |
+    EXPRESION P_coma |
     ESTRUCTURA_CONTROL 
 ;
 IDENTIFICADOR_CUERPO ::=
@@ -206,8 +208,8 @@ ASIGNACION_COMPLEJA ::=
     Identificador Igual EXPRESION P_coma 
 ;
 LLAMADA_FUNCION ::= 
-    Identificador Parentesis_a ARGUMENTOS Parentesis_c P_coma |
-    Identificador Parentesis_a Parentesis_c P_coma
+    Identificador Parentesis_a ARGUMENTOS Parentesis_c |
+    Identificador Parentesis_a Parentesis_c
 ;
 ARGUMENTOS ::=
     EXPRESION Coma ARGUMENTOS |
@@ -240,11 +242,11 @@ SENTENCIA ::=
 ;
 CUERPO_EC ::=
     ASIGNACION_BASICA CUERPO_EC |
-    EXPRESION CUERPO_EC |
+    EXPRESION P_coma CUERPO_EC |
     SENTENCIA CUERPO_EC |
 
     ASIGNACION_BASICA |
-    EXPRESION |
+    EXPRESION P_coma |
     SENTENCIA 
 ;
 OP_TERNARIO ::= 
