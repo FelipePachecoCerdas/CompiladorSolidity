@@ -222,6 +222,7 @@ EXPRESION ::=
     Identificador Op_Aritmetico EXPRESION |
     LLAMADA_FUNCION Op_Aritmetico EXPRESION | 
     IDENTIFICADOR_CUERPO Op_Aritmetico EXPRESION |
+    OP_TERNARIO Op_Aritmetico EXPRESION |
 
     Numero Op_logico EXPRESION |
     Cadena Op_logico EXPRESION |
@@ -229,7 +230,9 @@ EXPRESION ::=
     Identificador Op_logico EXPRESION |
     LLAMADA_FUNCION Op_logico EXPRESION | 
     IDENTIFICADOR_CUERPO Op_logico EXPRESION |
+    OP_TERNARIO Op_logico EXPRESION |
     
+    OP_TERNARIO |
     Numero |
     Cadena |
     Op_booleano |
@@ -264,7 +267,7 @@ CUERPO_EC ::=
     SENTENCIA 
 ;
 OP_TERNARIO ::= 
-    Parentesis_a EXPRESION_BOOLEANA Parentesis_c Pregunta EXPRESION Dos_Puntos EXPRESION
+    Parentesis_a EXPRESION_BOOLEANA Parentesis_c Pregunta EXPRESION Dos_Puntos EXPRESION P_coma
 ;
 IF ::= 
     If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c
