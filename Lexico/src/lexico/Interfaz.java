@@ -91,7 +91,7 @@ public class Interfaz extends javax.swing.JFrame {
     this.add(scroll2);
 
     Object[][] rows3 = {};
-    Object[] cols3 = {"Hilera Errónea", "Tipo de Error", "Aparición"};
+    Object[] cols3 = {"Hilera Errónea", "Tipo de Error", "Línea: Columna"};
     modelo3 = new DefaultTableModel(rows3, cols3);
 
     tabla3 = new JTable(modelo3);
@@ -129,7 +129,9 @@ public class Interfaz extends javax.swing.JFrame {
     tabla3.setShowGrid(true);
 
     tabla2.getColumnModel().getColumn(1).setPreferredWidth(200);    //Surname
-
+    tabla3.getColumnModel().getColumn(1).setPreferredWidth(50);    //Surname
+    tabla3.getColumnModel().getColumn(2).setPreferredWidth(50);    //Surname
+    tabla3.getColumnModel().getColumn(0).setPreferredWidth(300);    //Surname
     this.setLocationRelativeTo(null);
     this.getContentPane().setBackground(Color.decode("#121212"));
 
@@ -255,24 +257,17 @@ public class Interfaz extends javax.swing.JFrame {
 
     String ST = infoArchivo;
     lexico.LexerCup lc = new lexico.LexerCup(new StringReader(ST));
+    lexico.LexerCup lc2 = new lexico.LexerCup(new StringReader(ST));
+
+    try {
+      Symbol s;
+      while ((s = (lc2.next_token())).value != null) {
+        System.out.println(s.value + ": " + Integer.toString(s.sym));
+      }
+    } catch (IOException e) {
+    }
 
     Sintax st = new Sintax(lc);
-    /*
-    try {
-      System.out.println("COMIENZA LA CUMBIA");
-      System.out.println(s.parse().value);
-      System.out.println(s.parse().value);
-      
-      System.out.println(s.getS());
-      s.parse();
-      System.out.println(s.getS());
-      s.parse();
-      System.out.println(s.getS());
-      s.parse();
-      System.out.println(s.getS());
-    } catch (Exception ex) {
-      System.out.println("MURIÓ LA CUMBIA");
-    }*/
 
     try {
       st.parse();
@@ -280,9 +275,10 @@ public class Interfaz extends javax.swing.JFrame {
       for (int j = 0; j < st.errores.size(); j++) {
 
         Symbol e = st.errores.get(j);
-        String[] row = {e.value.toString(), st.erroresStr.get(j), Integer.toString(e.right + 1) + " (" + Integer.toString(e.left + 1) + ")"};
+        String[] row = {e.value.toString(), st.erroresStr.get(j), Integer.toString(e.right + 1) + ": " + Integer.toString(e.left + 1)};
         modelo3.addRow(row);
       }
+      System.out.println("Parsing done");
       //String[] row = {"", "Analisis realizado correctamente", ""};
       //modelo3.addRow(row);
       //txtAnalizarSin.setText("Analisis realizado correctamente");

@@ -171,8 +171,6 @@ WHITE=[ \t\r\n]
 ( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&" | "!" )  {return new Symbol(sym.Op_logico, yychar, yyline, yytext()); }
 
 
-/* Error de analisis */
- . {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
 
 
 
@@ -201,5 +199,7 @@ WHITE=[ \t\r\n]
 ({NoHexadecimal}) {return new Symbol(sym.ERROR_HEXADECIMAL, yychar, yyline, yytext());}
 {Noidentificador} {return new Symbol(sym.ERROR_CARACTERES_NO_VALIDOS, yychar, yyline, yytext()); }
 "/**"{NoComentario} {return new Symbol(sym.ERROR_COMENTARIO, yychar, yyline, yytext()); }
+/* Error de analisis */
+ . {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
 {NoStr} {return new Symbol(sym.ERROR_STRING, yychar, yyline, yytext());}
 

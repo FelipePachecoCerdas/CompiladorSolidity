@@ -11,15 +11,21 @@ parser code
   public ArrayList<String> erroresStr = new ArrayList<>();
   
   public void syntax_error(Symbol s) {
-    System.out.println("WTFDYM" + this.stack.size());
+    System.out.println("ERROR CON: " + s.value);
     String cadena = "";
 
-    for (int i = this.stack.size()-1; i > 0; i--) {
+    for (int i = 0; i < this.stack.size(); i++) {
       Symbol sp = this.stack.get(i);
-      cadena += " " + sp.value;
+      System.out.println(sp.value+" "+Integer.toString(sp.sym));      
+    }
+    for (int i = this.stack.size() - 1; i > 0; i--) {
+      Symbol sp = this.stack.get(i);
+      //System.out.println(sp.value+" "+Integer.toString(sp.sym));
+      cadena = sp.value + " " + cadena;
       if ("enum".equals(sp.value)) {
         System.out.println("Soy un error de enum xd");
-        cadena += " " + s.value;
+        cadena += "~" + s.value + "~ ...";
+        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
         errores.add(sp2);
         erroresStr.add("Enum");
@@ -65,14 +71,25 @@ INICIO ::=
 ;
 
 ENUMERADOR ::= 
-    ENUMERADOR Enum Identificador Llave_a LISTA Llave_c |
-    ENUMERADOR Enum error Llave_a LISTA Llave_c |
-    Enum error Llave_a LISTA Llave_c |
-    Enum Identificador Llave_a LISTA Llave_c 
+    Enum Identificador Llave_a LISTA Llave_c ENUMERADOR |
+    Enum Identificador Llave_a Llave_c ENUMERADOR |
+    Enum Identificador Llave_a LISTA Llave_c |
+    Enum Identificador Llave_a Llave_c |
 
+    Enum error Llave_a LISTA Llave_c ENUMERADOR |
+    Enum error Llave_a Llave_c ENUMERADOR |
+
+    Enum Identificador error LISTA Llave_c ENUMERADOR |
+    Enum Identificador error Llave_c ENUMERADOR |
+
+    Enum error Llave_a LISTA Llave_c | 
+    Enum error Llave_a Llave_c |
+
+    Enum Identificador error LISTA Llave_c |
+    Enum Identificador error Llave_c 
 ;
 LISTA ::= 
-    LISTA Coma Identificador |
+    Identificador Coma LISTA |
     Identificador
 ;
 VARIABLES ::=
