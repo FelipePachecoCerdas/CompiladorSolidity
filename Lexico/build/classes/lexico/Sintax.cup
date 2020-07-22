@@ -11,7 +11,7 @@ parser code
   public ArrayList<String> erroresStr = new ArrayList<>();
   
   public void syntax_error(Symbol s) {
-    System.out.println("ERROR CON: " + s.value);
+    System.out.println("ERROR CON: " + s.value + " " + Integer.toString(s.right + 1) + ": " + Integer.toString(s.left + 1) );
     String cadena = "";
 
     for (int i = 0; i < this.stack.size(); i++) {
