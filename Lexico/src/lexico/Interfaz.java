@@ -262,7 +262,11 @@ public class Interfaz extends javax.swing.JFrame {
     try {
       Symbol s;
       while ((s = (lc2.next_token())).value != null) {
+        if (s.value == "struct") {
+          break;
+        }
         System.out.println(s.value + ": " + Integer.toString(s.sym));
+
       }
     } catch (IOException e) {
     }

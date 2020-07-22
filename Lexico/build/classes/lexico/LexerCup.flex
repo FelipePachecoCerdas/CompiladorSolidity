@@ -50,13 +50,13 @@ NoComentario3=(([^\n\*])*("*"|(\n(\t|" ")*))(("*"|(\n(\t|" ")*))|([^\n\*\/][^\n\
 NoComentario4=({NoComentario1}((\n|("*""*"*\n))(("*""*"*\n)|(\t|" "))*[^\*\/\t" "])(.*|\n|\t)*)
 NoComentario= {NoComentario1}|{NoComentario2}|{NoComentario3}|{NoComentario4}
 
-Operadores = ( "^" | "<" | ">" | "&" | "|" | "~" | "." 
+Operadores = ( "<" | ">" | "&" | "|" | "~"
                 | "[" | "]" | "**" | "<<" | ">>" )
 
-Reservadas = ( "as" | "break"  | "constructor"  | "continue"  
+Reservadas = ( "as"  | "constructor" 
                 | "delete"  | "from" | "hex" | "import" 
                 | "internal" | "mapping" | "modifier"  | "modifier" | "payable"  | "private" 
-                | "public" | "returns" |"string" | "this" 
+                | "public" | "returns" |"string"  
                 | "var" |"view")
 
 Trans = ("balance"  | "call" | "callcode" | "delegatecall" | "send" | "transfer" )
@@ -152,6 +152,12 @@ WHITE=[ \t\r\n]
 /* Punto y coma */
 ( ";" ) {return new Symbol(sym.P_coma, yychar, yyline, yytext());}
 
+/* Operador caret */
+( "^" ) {return new Symbol(sym.Caret, yychar, yyline, yytext());}
+
+/* Operador punto */
+( "." ) {return new Symbol(sym.Punto, yychar, yyline, yytext());}
+
 
 ("?") {return new Symbol(sym.Pregunta, yychar, yyline, yytext());}
 
@@ -159,8 +165,12 @@ WHITE=[ \t\r\n]
 
 
 "return"    {return new Symbol(sym.Return, yychar, yyline, yytext()); }
+"returns"    {return new Symbol(sym.Returns, yychar, yyline, yytext()); }
+"this"    {return new Symbol(sym.This, yychar, yyline, yytext()); }
+"break"    {return new Symbol(sym.Break, yychar, yyline, yytext()); }
+"continue"    {return new Symbol(sym.Continue, yychar, yyline, yytext()); }
 
-("true" | "false" | "payable" | "internal" )  {return new Symbol(sym.Modificador, yychar, yyline, yytext()); }
+("payable" | "internal" )  {return new Symbol(sym.Modificador, yychar, yyline, yytext()); }
 "contract"    {return new Symbol(sym.Contract, yychar, yyline, yytext()); }
 "enum"    {return new Symbol(sym.Enum, yychar, yyline, yytext()); }
 "pragma"    {return new Symbol(sym.Pragma, yychar, yyline, yytext());}

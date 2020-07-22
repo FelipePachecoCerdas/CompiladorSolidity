@@ -16,11 +16,11 @@ parser code
 
     for (int i = 0; i < this.stack.size(); i++) {
       Symbol sp = this.stack.get(i);
-      System.out.println(sp.value+" "+Integer.toString(sp.sym));      
+      //System.out.println(sp.value+" "+Integer.toString(sp.sym));      
     }
     for (int i = this.stack.size() - 1; i > 0; i--) {
       Symbol sp = this.stack.get(i);
-      //System.out.println(sp.value+" "+Integer.toString(sp.sym));
+      System.out.println(sp.value+" "+Integer.toString(sp.sym));
       cadena = sp.value + " " + cadena;
       if ("enum".equals(sp.value)) {
         System.out.println("Soy un error de enum xd");
@@ -31,45 +31,77 @@ parser code
         erroresStr.add("Enum");
         break;
       }
-    }
+        }
   }
+
+  @Override
+  public int error_sync_size() {
+    return 2;
+  }
+
 :};
 
 terminal Linea, Comillas, T_dato, Cadena, If, Else, Do, While, For, Dos_Puntos,
     Igual, Op_logico, Op_relacional, Op_atribucion, Op_booleano, Parentesis_a, Parentesis_c,
     Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, Identificador,
-    Numero,   Contract, Enum, Pragma, Solidity, Struct,Function,Modificador, Coma,
-    String, Return,  Op_Aritmetico, Visibilidad, Pregunta, PALABRA_RESERVADA, UNIDAD, TRANSAC,ERROR_CEROS_A_LA_IZQUIERDA, ERROR_CARACTERES_NO_VALIDOS, ERROR_IDENTIFICADOR
+    Numero,   Contract, Enum, Pragma, Solidity, Struct,Function,Modificador, Coma, Caret, Punto, This, Break, Continue, 
+    String, Return, Returns,  Op_Aritmetico, Visibilidad, Pregunta, PALABRA_RESERVADA, UNIDAD, TRANSAC,ERROR_CEROS_A_LA_IZQUIERDA, ERROR_CARACTERES_NO_VALIDOS, ERROR_IDENTIFICADOR
     , ERROR_NOTACION_CIENTIFICA, STRING, ERROR_STRING, OPERADOR, ERROR_COMENTARIO,ERROR_HEXADECIMAL,  ERROR;
 
-non terminal INICIO, SENTENCIA, DECLARACION, DECLARACION_FOR, IF, IF_ELSE, LISTA, PARAMETROS,
-    WHILE, DO_WHILE, FOR, SENTENCIA_BOOLEANA, SENTENCIA_FOR, ENUMERADOR, VARIABLES, ESTRUCTURA, FUNCION ;
+non terminal INICIO, CONTRATO, SENTENCIA, OP_TERNARIO, DECLARACION_FOR, IF, IF_ELSE, LISTA, PARAMETROS,
+    WHILE, DO_WHILE, FOR, EXPRESION_BOOLEANA, SENTENCIA_FOR, ENUMERADOR, VARIABLES, ASIGNACION, ESTRUCTURA, 
+    FUNCION, MODIFICADORES, RETURNS, CUERPO, FUNCION_HEADER, ASIGNACION_BASICA, ASIGNACION_COMPLEJA, LLAMADA_FUNCION, ARGUMENTOS,
+    EXPRESION, ESTRUCTURA_CONTROL, IDENTIFICADOR_CUERPO ;
 
 start with INICIO;
 
 INICIO ::= 
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a Llave_c |
-
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ENUMERADOR Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ENUMERADOR VARIABLES Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ENUMERADOR ESTRUCTURA Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ENUMERADOR FUNCION Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ENUMERADOR VARIABLES ESTRUCTURA Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ENUMERADOR VARIABLES FUNCION Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ENUMERADOR ESTRUCTURA FUNCION Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ENUMERADOR VARIABLES ESTRUCTURA FUNCION Llave_c |
-
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a VARIABLES Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a VARIABLES ESTRUCTURA Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a VARIABLES FUNCION Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a VARIABLES ESTRUCTURA FUNCION Llave_c |
-
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ESTRUCTURA Llave_c |
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a ESTRUCTURA FUNCION Llave_c |
-
-    Pragma Solidity Numero Numero P_coma Contract Identificador Llave_a FUNCION Llave_c 
+    Pragma Solidity Numero Numero P_coma CONTRATO |
+    Pragma Solidity Caret Numero Numero P_coma CONTRATO
 ;
+CONTRATO ::=
+    Contract Identificador Llave_a Llave_c CONTRATO |
 
+    Contract Identificador Llave_a ENUMERADOR Llave_c CONTRATO |
+    Contract Identificador Llave_a ENUMERADOR VARIABLES Llave_c CONTRATO |
+    Contract Identificador Llave_a ENUMERADOR ESTRUCTURA Llave_c CONTRATO |
+    Contract Identificador Llave_a ENUMERADOR FUNCION Llave_c CONTRATO |
+    Contract Identificador Llave_a ENUMERADOR VARIABLES ESTRUCTURA Llave_c CONTRATO |
+    Contract Identificador Llave_a ENUMERADOR VARIABLES FUNCION Llave_c CONTRATO |
+    Contract Identificador Llave_a ENUMERADOR ESTRUCTURA FUNCION Llave_c CONTRATO |
+    Contract Identificador Llave_a ENUMERADOR VARIABLES ESTRUCTURA FUNCION Llave_c CONTRATO |
+
+    Contract Identificador Llave_a VARIABLES Llave_c CONTRATO |
+    Contract Identificador Llave_a VARIABLES ESTRUCTURA Llave_c CONTRATO |
+    Contract Identificador Llave_a VARIABLES FUNCION Llave_c CONTRATO |
+    Contract Identificador Llave_a VARIABLES ESTRUCTURA FUNCION Llave_c CONTRATO |
+
+    Contract Identificador Llave_a ESTRUCTURA Llave_c CONTRATO |
+    Contract Identificador Llave_a ESTRUCTURA FUNCION Llave_c CONTRATO |
+
+    Contract Identificador Llave_a FUNCION Llave_c CONTRATO |
+
+    Contract Identificador Llave_a Llave_c |
+
+    Contract Identificador Llave_a ENUMERADOR Llave_c |
+    Contract Identificador Llave_a ENUMERADOR VARIABLES Llave_c |
+    Contract Identificador Llave_a ENUMERADOR ESTRUCTURA Llave_c |
+    Contract Identificador Llave_a ENUMERADOR FUNCION Llave_c |
+    Contract Identificador Llave_a ENUMERADOR VARIABLES ESTRUCTURA Llave_c |
+    Contract Identificador Llave_a ENUMERADOR VARIABLES FUNCION Llave_c |
+    Contract Identificador Llave_a ENUMERADOR ESTRUCTURA FUNCION Llave_c |
+    Contract Identificador Llave_a ENUMERADOR VARIABLES ESTRUCTURA FUNCION Llave_c |
+
+    Contract Identificador Llave_a VARIABLES Llave_c |
+    Contract Identificador Llave_a VARIABLES ESTRUCTURA Llave_c |
+    Contract Identificador Llave_a VARIABLES FUNCION Llave_c |
+    Contract Identificador Llave_a VARIABLES ESTRUCTURA FUNCION Llave_c |
+
+    Contract Identificador Llave_a ESTRUCTURA Llave_c |
+    Contract Identificador Llave_a ESTRUCTURA FUNCION Llave_c |
+
+    Contract Identificador Llave_a FUNCION Llave_c 
+;
 ENUMERADOR ::= 
     Enum Identificador Llave_a LISTA Llave_c ENUMERADOR |
     Enum Identificador Llave_a Llave_c ENUMERADOR |
@@ -93,81 +125,166 @@ LISTA ::=
     Identificador
 ;
 VARIABLES ::=
-    VARIABLES T_dato Visibilidad Identificador P_coma |
-    VARIABLES T_dato Corchete_a Corchete_c Identificador P_coma |
-    VARIABLES T_dato Visibilidad Identificador Igual Numero P_coma |
-    VARIABLES T_dato Visibilidad Identificador Igual String P_coma |
-    VARIABLES T_dato Visibilidad Identificador Igual Op_booleano P_coma |
-    VARIABLES T_dato Visibilidad Identificador Igual Identificador P_coma |
+    T_dato Visibilidad Identificador P_coma VARIABLES |
+    T_dato Identificador P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad Identificador P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c Identificador P_coma VARIABLES |
+
+    T_dato Visibilidad Identificador ASIGNACION P_coma VARIABLES |
+    T_dato Identificador ASIGNACION P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad Identificador ASIGNACION P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c Identificador ASIGNACION P_coma VARIABLES |
 
     T_dato Visibilidad Identificador P_coma |
+    T_dato Identificador P_coma |
+    T_dato Corchete_a Corchete_c Visibilidad Identificador P_coma |
     T_dato Corchete_a Corchete_c Identificador P_coma |
-    T_dato Visibilidad Identificador Igual Numero P_coma |
-    T_dato Visibilidad Identificador Igual String P_coma |
-    T_dato Visibilidad Identificador Igual Op_booleano P_coma |
-    T_dato Visibilidad Identificador Igual Identificador P_coma
-    
+
+    T_dato Visibilidad Identificador ASIGNACION P_coma |
+    T_dato Identificador ASIGNACION P_coma |
+    T_dato Corchete_a Corchete_c Visibilidad Identificador ASIGNACION P_coma |
+    T_dato Corchete_a Corchete_c Identificador ASIGNACION P_coma 
+;
+ASIGNACION ::= 
+    Igual EXPRESION
 ;
 ESTRUCTURA ::=
-    ESTRUCTURA Struct Identificador Llave_a VARIABLES Llave_c |
+    Struct Identificador Llave_a VARIABLES Llave_c ESTRUCTURA |
     Struct Identificador Llave_a VARIABLES Llave_c
 ;
+FUNCION_HEADER ::=
+    Function Identificador Parentesis_a PARAMETROS Parentesis_c |
+    Function Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
+    Function Identificador Parentesis_a PARAMETROS Parentesis_c RETURNS |
+    Function Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS 
+;
 FUNCION ::=
-    FUNCION Function Identificador Parentesis_a PARAMETROS Parentesis_c Llave_a VARIABLES SENTENCIA Return Identificador Llave_c |
-    FUNCION Function Identificador Parentesis_a PARAMETROS Parentesis_c Modificador Llave_a VARIABLES SENTENCIA Return Identificador Llave_c |
-    FUNCION Function Identificador Parentesis_a PARAMETROS Parentesis_c Return Parentesis_a T_dato Identificador  Parentesis_c Llave_a VARIABLES SENTENCIA Return Identificador Llave_c |
-    FUNCION Function Identificador Parentesis_a PARAMETROS Parentesis_c Modificador Return Parentesis_a T_dato Identificador  Parentesis_c Llave_a VARIABLES SENTENCIA Return Identificador Llave_c |
-
-    Function Identificador Parentesis_a PARAMETROS Parentesis_c Llave_a VARIABLES SENTENCIA Return Identificador Llave_c |
-    Function Identificador Parentesis_a PARAMETROS Parentesis_c Modificador Llave_a VARIABLES SENTENCIA Return Identificador Llave_c |
-    Function Identificador Parentesis_a PARAMETROS Parentesis_c Return Parentesis_a T_dato Identificador  Parentesis_c Llave_a VARIABLES SENTENCIA Return Identificador Llave_c |
-    Function Identificador Parentesis_a PARAMETROS Parentesis_c Modificador Return Parentesis_a T_dato Identificador  Parentesis_c Llave_a VARIABLES SENTENCIA Return Identificador Llave_c
+    FUNCION_HEADER Llave_a VARIABLES CUERPO Return EXPRESION P_coma Llave_c FUNCION |
+    FUNCION_HEADER Llave_a CUERPO Return EXPRESION P_coma Llave_c FUNCION |
+    FUNCION_HEADER Llave_a VARIABLES CUERPO Return EXPRESION P_coma Llave_c |
+    FUNCION_HEADER Llave_a CUERPO Return EXPRESION P_coma Llave_c 
+;
+RETURNS ::= 
+    Returns Parentesis_a T_dato Identificador  Parentesis_c
 ;
 PARAMETROS ::=
-    PARAMETROS Coma T_dato Identificador |
+    T_dato Identificador Coma PARAMETROS |
     T_dato Identificador
 ;
+MODIFICADORES ::=
+    Modificador MODIFICADORES |
+    Visibilidad MODIFICADORES |
+    Modificador |
+    Visibilidad 
+;
+CUERPO ::=
+    ASIGNACION_BASICA CUERPO |
+    LLAMADA_FUNCION CUERPO |
+    IDENTIFICADOR_CUERPO P_coma CUERPO |
+    EXPRESION P_coma CUERPO |
+    ESTRUCTURA_CONTROL CUERPO |
+
+    ASIGNACION_BASICA |
+    LLAMADA_FUNCION |
+    IDENTIFICADOR_CUERPO P_coma |
+    EXPRESION P_coma |
+    ESTRUCTURA_CONTROL 
+;
+IDENTIFICADOR_CUERPO ::=
+    This Punto Identificador Parentesis_a Parentesis_c |
+    This Punto Identificador Parentesis_a ARGUMENTOS Parentesis_c |
+    This Punto Identificador |
+    Identificador Punto Identificador Parentesis_a ARGUMENTOS Parentesis_c |
+    Identificador Punto Identificador Parentesis_a Parentesis_c |
+    Identificador Punto Identificador 
+;
+ASIGNACION_BASICA ::= 
+    IDENTIFICADOR_CUERPO Igual EXPRESION P_coma |
+    Identificador Igual EXPRESION P_coma 
+;
+ASIGNACION_COMPLEJA ::= 
+    IDENTIFICADOR_CUERPO Igual EXPRESION P_coma |
+    T_dato Identificador Igual EXPRESION P_coma | 
+    Identificador Igual EXPRESION P_coma 
+;
+LLAMADA_FUNCION ::= 
+    Identificador Parentesis_a ARGUMENTOS Parentesis_c P_coma |
+    Identificador Parentesis_a Parentesis_c P_coma
+;
+ARGUMENTOS ::=
+    IDENTIFICADOR_CUERPO Coma ARGUMENTOS |
+    EXPRESION Coma ARGUMENTOS |
+    IDENTIFICADOR_CUERPO |
+    EXPRESION
+;
+EXPRESION ::= 
+    Numero |
+    String |
+    Op_booleano |
+    Identificador
+;
+ESTRUCTURA_CONTROL ::= 
+    P_coma
+;
 SENTENCIA ::= 
-    SENTENCIA DECLARACION |
-    DECLARACION |
-    SENTENCIA IF | 
-    IF |
-    SENTENCIA IF_ELSE |
+    OP_TERNARIO SENTENCIA |
+    IF_ELSE SENTENCIA |
+    IF SENTENCIA | 
+    WHILE SENTENCIA |
+    DO_WHILE SENTENCIA |
+    FOR SENTENCIA |
+    Return EXPRESION P_coma SENTENCIA |
+    Break P_coma SENTENCIA |
+    Continue P_coma SENTENCIA |
+    
+    OP_TERNARIO |
     IF_ELSE |
-    SENTENCIA WHILE |
+    IF | 
     WHILE |
-    SENTENCIA DO_WHILE
     DO_WHILE |
-    SENTENCIA FOR |
-    FOR
+    FOR |
+    Return EXPRESION P_coma |
+    Break P_coma |
+    Continue P_coma
 ;
-DECLARACION ::= 
-    Identificador Igual Parentesis_a SENTENCIA_BOOLEANA Parentesis_c Pregunta Identificador Dos_Puntos Identificador P_coma
+OP_TERNARIO ::= 
+    Identificador Igual Parentesis_a EXPRESION_BOOLEANA Parentesis_c Pregunta Identificador Dos_Puntos Identificador P_coma
 ;
-IF ::= If Parentesis_a SENTENCIA_BOOLEANA Parentesis_c Llave_a SENTENCIA Llave_c
+IF ::= 
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c
 ;
-SENTENCIA_BOOLEANA ::= 
+EXPRESION_BOOLEANA ::= 
     Op_booleano | 
-    Identificador Op_relacional Op_booleano |
-    Identificador Op_relacional Numero |
-    Identificador Op_relacional Identificador |
-    Identificador Op_relacional Comillas Comillas |
-    Identificador Op_relacional Comillas Identificador Comillas
+    EXPRESION Op_relacional EXPRESION
 ;
-IF_ELSE ::= If Parentesis_a SENTENCIA_BOOLEANA Parentesis_c Llave_a SENTENCIA Llave_c Else Llave_a SENTENCIA Llave_c
+IF_ELSE ::= 
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO Llave_c Else Llave_a CUERPO Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO Llave_c Else Llave_a Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a CUERPO Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a Llave_c
 ;
-WHILE ::= While Parentesis_a SENTENCIA_BOOLEANA Parentesis_c Llave_a SENTENCIA Llave_c
+WHILE ::= 
+    While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO Llave_c
+    While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c
 ;
-DO_WHILE ::= Do Llave_a SENTENCIA Llave_c While Parentesis_a SENTENCIA_BOOLEANA Parentesis_c P_coma
+DO_WHILE ::= 
+    Do Llave_a CUERPO Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma
+    Do Llave_a Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma
 ;
-FOR ::= For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a SENTENCIA Llave_c
+FOR ::= 
+    For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a CUERPO Llave_c
+    For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a Llave_c
 ;
 SENTENCIA_FOR ::=
-    T_dato Identificador Igual Numero P_coma SENTENCIA_BOOLEANA P_coma DECLARACION_FOR |
-    Identificador Igual Numero P_coma SENTENCIA_BOOLEANA P_coma DECLARACION_FOR
-;
-DECLARACION_FOR ::= 
-    Identificador Op_atribucion Numero
+    ASIGNACION_COMPLEJA P_coma EXPRESION P_coma EXPRESION |
+    P_coma EXPRESION P_coma EXPRESION |
+    ASIGNACION_COMPLEJA P_coma P_coma EXPRESION |
+    ASIGNACION_COMPLEJA P_coma EXPRESION P_coma |
+    P_coma P_coma EXPRESION |
+    P_coma EXPRESION P_coma |
+    ASIGNACION_COMPLEJA P_coma P_coma | 
+    P_coma P_coma 
 ;
 
 
