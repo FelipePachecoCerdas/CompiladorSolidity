@@ -48,10 +48,10 @@ terminal Linea, Comillas, T_dato, Cadena, If, Else, Do, While, For, Dos_Puntos,
     String, Return, Returns,  Op_Aritmetico, Visibilidad, Pregunta, PALABRA_RESERVADA, UNIDAD, TRANSAC,ERROR_CEROS_A_LA_IZQUIERDA, ERROR_CARACTERES_NO_VALIDOS, ERROR_IDENTIFICADOR
     , ERROR_NOTACION_CIENTIFICA, STRING, ERROR_STRING, OPERADOR, ERROR_COMENTARIO,ERROR_HEXADECIMAL,  ERROR;
 
-non terminal INICIO, CONTRATO, SENTENCIA, OP_TERNARIO, DECLARACION_FOR, IF, IF_ELSE, LISTA, PARAMETROS,
-    WHILE, DO_WHILE, FOR, EXPRESION_BOOLEANA, SENTENCIA_FOR, ENUMERADOR, VARIABLES, ASIGNACION, ESTRUCTURA, 
+non terminal INICIO, CONTRATO, OP_TERNARIO, DECLARACION_FOR, IF, IF_ELSE, LISTA, PARAMETROS,
+    WHILE, DO_WHILE, FOR, EXPRESION_BOOLEANA, SENTENCIA, SENTENCIA_FOR, ENUMERADOR, VARIABLES, ASIGNACION, ESTRUCTURA, 
     FUNCION, MODIFICADORES, RETURNS, CUERPO, FUNCION_HEADER, ASIGNACION_BASICA, ASIGNACION_COMPLEJA, LLAMADA_FUNCION, ARGUMENTOS,
-    EXPRESION, ESTRUCTURA_CONTROL, IDENTIFICADOR_CUERPO ;
+    EXPRESION, ESTRUCTURA_CONTROL, IDENTIFICADOR_CUERPO, CUERPO_EC ;
 
 start with INICIO;
 
@@ -161,8 +161,10 @@ FUNCION_HEADER ::=
 FUNCION ::=
     FUNCION_HEADER Llave_a VARIABLES CUERPO Return EXPRESION P_coma Llave_c FUNCION |
     FUNCION_HEADER Llave_a CUERPO Return EXPRESION P_coma Llave_c FUNCION |
+    FUNCION_HEADER Llave_a Return EXPRESION P_coma Llave_c FUNCION |
     FUNCION_HEADER Llave_a VARIABLES CUERPO Return EXPRESION P_coma Llave_c |
     FUNCION_HEADER Llave_a CUERPO Return EXPRESION P_coma Llave_c 
+    FUNCION_HEADER Llave_a Return EXPRESION P_coma Llave_c 
 ;
 RETURNS ::= 
     Returns Parentesis_a T_dato Identificador  Parentesis_c
@@ -179,15 +181,11 @@ MODIFICADORES ::=
 ;
 CUERPO ::=
     ASIGNACION_BASICA CUERPO |
-    LLAMADA_FUNCION CUERPO |
-    IDENTIFICADOR_CUERPO P_coma CUERPO |
-    EXPRESION P_coma CUERPO |
+    EXPRESION CUERPO |
     ESTRUCTURA_CONTROL CUERPO |
 
     ASIGNACION_BASICA |
-    LLAMADA_FUNCION |
-    IDENTIFICADOR_CUERPO P_coma |
-    EXPRESION P_coma |
+    EXPRESION |
     ESTRUCTURA_CONTROL 
 ;
 IDENTIFICADOR_CUERPO ::=
@@ -212,46 +210,48 @@ LLAMADA_FUNCION ::=
     Identificador Parentesis_a Parentesis_c P_coma
 ;
 ARGUMENTOS ::=
-    IDENTIFICADOR_CUERPO Coma ARGUMENTOS |
     EXPRESION Coma ARGUMENTOS |
-    IDENTIFICADOR_CUERPO |
     EXPRESION
 ;
 EXPRESION ::= 
     Numero |
-    String |
+    Cadena |
     Op_booleano |
-    Identificador
+    Identificador |
+    LLAMADA_FUNCION | 
+    IDENTIFICADOR_CUERPO 
 ;
 ESTRUCTURA_CONTROL ::= 
-    P_coma
+    IF_ELSE |
+    IF | 
+    WHILE |
+    DO_WHILE |
+    FOR 
 ;
-SENTENCIA ::= 
-    OP_TERNARIO SENTENCIA |
-    IF_ELSE SENTENCIA |
-    IF SENTENCIA | 
-    WHILE SENTENCIA |
-    DO_WHILE SENTENCIA |
-    FOR SENTENCIA |
-    Return EXPRESION P_coma SENTENCIA |
-    Break P_coma SENTENCIA |
-    Continue P_coma SENTENCIA |
-    
-    OP_TERNARIO |
+SENTENCIA ::=
     IF_ELSE |
     IF | 
     WHILE |
     DO_WHILE |
     FOR |
-    Return EXPRESION P_coma |
     Break P_coma |
-    Continue P_coma
+    Continue P_coma |
+    Return EXPRESION P_coma
+;
+CUERPO_EC ::=
+    ASIGNACION_BASICA CUERPO_EC |
+    EXPRESION CUERPO_EC |
+    SENTENCIA CUERPO_EC |
+
+    ASIGNACION_BASICA |
+    EXPRESION |
+    SENTENCIA 
 ;
 OP_TERNARIO ::= 
-    Identificador Igual Parentesis_a EXPRESION_BOOLEANA Parentesis_c Pregunta Identificador Dos_Puntos Identificador P_coma
+    Parentesis_a EXPRESION_BOOLEANA Parentesis_c Pregunta EXPRESION Dos_Puntos EXPRESION
 ;
 IF ::= 
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c
     If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c
 ;
 EXPRESION_BOOLEANA ::= 
@@ -259,21 +259,21 @@ EXPRESION_BOOLEANA ::=
     EXPRESION Op_relacional EXPRESION
 ;
 IF_ELSE ::= 
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO Llave_c Else Llave_a CUERPO Llave_c
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO Llave_c Else Llave_a Llave_c
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a CUERPO Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a CUERPO_EC Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a Llave_c
+    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a CUERPO_EC Llave_c
     If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a Llave_c
 ;
 WHILE ::= 
-    While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO Llave_c
+    While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c
     While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c
 ;
 DO_WHILE ::= 
-    Do Llave_a CUERPO Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma
+    Do Llave_a CUERPO_EC Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma
     Do Llave_a Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma
 ;
 FOR ::= 
-    For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a CUERPO Llave_c
+    For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a CUERPO_EC Llave_c
     For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a Llave_c
 ;
 SENTENCIA_FOR ::=
