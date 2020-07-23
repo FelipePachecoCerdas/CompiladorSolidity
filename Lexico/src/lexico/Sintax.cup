@@ -11,7 +11,7 @@ parser code
   public ArrayList<String> erroresStr = new ArrayList<>();
   
   public void syntax_error(Symbol s) {
-    System.out.println("ERROR CON: " + s.value + " " + Integer.toString(s.right + 1) + ": " + Integer.toString(s.left + 1) );
+    System.out.println("ERROR CON: " + s.value + " -> " + Integer.toString(s.sym) + " " + Integer.toString(s.right + 1) + ": " + Integer.toString(s.left + 1) );
     String cadena = "";
 
     for (int i = 0; i < this.stack.size(); i++) {
@@ -51,7 +51,7 @@ terminal Linea, Comillas, T_dato, Cadena, If, Else, Do, While, For, Dos_Puntos,
 non terminal INICIO, CONTRATO, OP_TERNARIO, DECLARACION_FOR, IF, IF_ELSE, LISTA, PARAMETROS,
     WHILE, DO_WHILE, FOR, EXPRESION_BOOLEANA, SENTENCIA, SENTENCIA_FOR, ENUMERADOR, VARIABLES, ASIGNACION, ESTRUCTURA, 
     FUNCION, MODIFICADORES, RETURNS, CUERPO, FUNCION_HEADER, ASIGNACION_BASICA, ASIGNACION_COMPLEJA, LLAMADA_FUNCION, ARGUMENTOS,
-    EXPRESION, ESTRUCTURA_CONTROL, IDENTIFICADOR_CUERPO, CUERPO_EC ;
+    EXPRESION, ESTRUCTURA_CONTROL, IDENTIFICADOR_CUERPO, CUERPO_EC, EXPRESION_AUX ;
 
 start with INICIO;
 
@@ -215,26 +215,27 @@ ARGUMENTOS ::=
     EXPRESION Coma ARGUMENTOS |
     EXPRESION
 ;
-EXPRESION ::= 
+EXPRESION ::=
+    EXPRESION_AUX |
+    OP_TERNARIO
+;
+EXPRESION_AUX ::= 
     Numero Op_Aritmetico EXPRESION |
-    Cadena Op_Aritmetico EXPRESION |
+    String Op_Aritmetico EXPRESION |
     Op_booleano Op_Aritmetico EXPRESION |
     Identificador Op_Aritmetico EXPRESION |
     LLAMADA_FUNCION Op_Aritmetico EXPRESION | 
     IDENTIFICADOR_CUERPO Op_Aritmetico EXPRESION |
-    OP_TERNARIO Op_Aritmetico EXPRESION |
 
     Numero Op_logico EXPRESION |
-    Cadena Op_logico EXPRESION |
+    String Op_logico EXPRESION |
     Op_booleano Op_logico EXPRESION |
     Identificador Op_logico EXPRESION |
     LLAMADA_FUNCION Op_logico EXPRESION | 
     IDENTIFICADOR_CUERPO Op_logico EXPRESION |
-    OP_TERNARIO Op_logico EXPRESION |
     
-    OP_TERNARIO |
     Numero |
-    Cadena |
+    String |
     Op_booleano |
     Identificador |
     LLAMADA_FUNCION | 
@@ -267,7 +268,7 @@ CUERPO_EC ::=
     SENTENCIA 
 ;
 OP_TERNARIO ::= 
-    Parentesis_a EXPRESION_BOOLEANA Parentesis_c Pregunta EXPRESION Dos_Puntos EXPRESION P_coma
+    Parentesis_a EXPRESION_BOOLEANA Parentesis_c Pregunta EXPRESION Dos_Puntos EXPRESION
 ;
 IF ::= 
     If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c |
