@@ -10,6 +10,7 @@ parser code
   public ArrayList<String> erroresStr = new ArrayList<>();
   
   public void syntax_error(Symbol s) {
+     System.out.println("ERROR EN " + s.value + " " + Integer.toString(s.right + 1) + ": " + Integer.toString(s.left + 1) );
     for (int i = this.stack.size() - 1; i > 0; i--) {
       Symbol sp = this.stack.get(i);
        String cadena = "";
@@ -62,15 +63,15 @@ parser code
 
 terminal Linea, Comillas, T_dato, Cadena, If, Else, Do, While, For, Dos_Puntos,
     Igual, Op_logico, Op_relacional, Op_atribucion, Op_booleano, Parentesis_a, Parentesis_c,
-    Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, Identificador,
+    Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, Identificador, Mas, Menos, Not,
     Numero,   Contract, Enum, Pragma, Solidity, Struct,Function,Modificador, Coma, Caret, Punto, This, Break, Continue, 
     String, Return, Returns,  Op_Aritmetico, Visibilidad, Pregunta, PALABRA_RESERVADA, UNIDAD, TRANSAC,ERROR_CEROS_A_LA_IZQUIERDA, ERROR_CARACTERES_NO_VALIDOS, ERROR_IDENTIFICADOR
     , ERROR_NOTACION_CIENTIFICA, STRING, ERROR_STRING, OPERADOR, ERROR_COMENTARIO,ERROR_HEXADECIMAL,  ERROR;
 
-non terminal INICIO, CONTRATO, OP_TERNARIO, DECLARACION_FOR, IF, IF_ELSE, LISTA, PARAMETROS,
-    WHILE, DO_WHILE, FOR, EXPRESION_BOOLEANA, SENTENCIA, SENTENCIA_FOR, ENUMERADOR, VARIABLES, ASIGNACION, ESTRUCTURA, 
-    FUNCION, MODIFICADORES, RETURNS, CUERPO, FUNCION_HEADER, ASIGNACION_BASICA, ASIGNACION_COMPLEJA, LLAMADA_FUNCION, ARGUMENTOS,
-    EXPRESION, ESTRUCTURA_CONTROL, IDENTIFICADOR_CUERPO, CUERPO_EC, EXPRESION_AUX ;
+non terminal INICIO, CONTRATO, OP_TERNARIO, DECLARACION_FOR, IF, IF_ELSE, LISTA, PARAMETROS, OP_ARITMETICO, OP_UNARIO, 
+    WHILE, DO_WHILE, FOR, EXPRESION_BOOLEANA, SENTENCIA, SENTENCIA_FOR, ENUMERADOR, VARIABLES, ASIGNACION, ESTRUCTURA, IDENTIFICADOR_COMPLEJO,
+    FUNCION, MODIFICADORES, RETURNS, CUERPO, FUNCION_HEADER, ASIGNACION_BASICA, ASIGNACION_COMPLEJA, ARGUMENTOS,
+    EXPRESION, ESTRUCTURA_CONTROL, IDENTIFICADOR_CUERPO, CUERPO_EC, EXPRESION_AUX, ATRIBUCION_IGUAL, LITERAL ;
 
 start with INICIO;
 
@@ -252,64 +253,72 @@ MODIFICADORES ::=
     Visibilidad 
 ;
 CUERPO ::=
-    ASIGNACION_BASICA CUERPO |
     EXPRESION P_coma CUERPO |
     ESTRUCTURA_CONTROL CUERPO |
 
-    ASIGNACION_BASICA |
     EXPRESION P_coma |
     ESTRUCTURA_CONTROL 
 ;
+IDENTIFICADOR_COMPLEJO ::=
+    This Parentesis_a Parentesis_c |
+    This Parentesis_a ARGUMENTOS Parentesis_c |
+    This |
+    Identificador Parentesis_a Parentesis_c |
+    Identificador Parentesis_a ARGUMENTOS Parentesis_c |
+    Identificador
+;
 IDENTIFICADOR_CUERPO ::=
-    This Punto Identificador Parentesis_a Parentesis_c |
-    This Punto Identificador Parentesis_a ARGUMENTOS Parentesis_c |
-    This Punto Identificador |
-    Identificador Punto Identificador Parentesis_a ARGUMENTOS Parentesis_c |
-    Identificador Punto Identificador Parentesis_a Parentesis_c |
-    Identificador Punto Identificador 
+    IDENTIFICADOR_COMPLEJO Punto IDENTIFICADOR_CUERPO  |
+    IDENTIFICADOR_COMPLEJO
 ;
 ASIGNACION_BASICA ::= 
-    IDENTIFICADOR_CUERPO Igual EXPRESION P_coma |
-    Identificador Igual EXPRESION P_coma 
+    IDENTIFICADOR_CUERPO ATRIBUCION_IGUAL EXPRESION
 ;
 ASIGNACION_COMPLEJA ::= 
-    IDENTIFICADOR_CUERPO Igual EXPRESION P_coma |
-    T_dato Identificador Igual EXPRESION P_coma | 
-    Identificador Igual EXPRESION P_coma 
+    IDENTIFICADOR_CUERPO ATRIBUCION_IGUAL EXPRESION |
+    T_dato Identificador Igual EXPRESION 
 ;
-LLAMADA_FUNCION ::= 
-    Identificador Parentesis_a ARGUMENTOS Parentesis_c |
-    Identificador Parentesis_a Parentesis_c
+ATRIBUCION_IGUAL ::=
+    Op_atribucion |
+    Igual
 ;
 ARGUMENTOS ::=
     EXPRESION Coma ARGUMENTOS |
     EXPRESION
 ;
+LITERAL ::= 
+    Numero |
+    String |
+    Op_booleano
+;
 EXPRESION ::=
     EXPRESION_AUX |
+    ASIGNACION_BASICA |
     OP_TERNARIO
 ;
 EXPRESION_AUX ::= 
-    Numero Op_Aritmetico EXPRESION |
-    String Op_Aritmetico EXPRESION |
-    Op_booleano Op_Aritmetico EXPRESION |
-    Identificador Op_Aritmetico EXPRESION |
-    LLAMADA_FUNCION Op_Aritmetico EXPRESION | 
-    IDENTIFICADOR_CUERPO Op_Aritmetico EXPRESION |
+    Parentesis_a EXPRESION Parentesis_c |
 
-    Numero Op_logico EXPRESION |
-    String Op_logico EXPRESION |
-    Op_booleano Op_logico EXPRESION |
-    Identificador Op_logico EXPRESION |
-    LLAMADA_FUNCION Op_logico EXPRESION | 
+    OP_UNARIO EXPRESION | 
+
+    LITERAL OP_ARITMETICO EXPRESION |
+    IDENTIFICADOR_CUERPO OP_ARITMETICO EXPRESION |
+
+    LITERAL Op_logico EXPRESION |
     IDENTIFICADOR_CUERPO Op_logico EXPRESION |
     
-    Numero |
-    String |
-    Op_booleano |
-    Identificador |
-    LLAMADA_FUNCION | 
+    LITERAL |
     IDENTIFICADOR_CUERPO 
+;
+OP_ARITMETICO ::=
+    Op_Aritmetico |
+    Mas |
+    Menos
+;
+OP_UNARIO ::=
+    Mas |
+    Menos |
+    Not
 ;
 ESTRUCTURA_CONTROL ::= 
     IF_ELSE |
@@ -329,51 +338,42 @@ SENTENCIA ::=
     Return EXPRESION P_coma
 ;
 CUERPO_EC ::=
-    ASIGNACION_BASICA CUERPO_EC |
     EXPRESION P_coma CUERPO_EC |
     SENTENCIA CUERPO_EC |
 
-    ASIGNACION_BASICA |
     EXPRESION P_coma |
     SENTENCIA 
 ;
 OP_TERNARIO ::= 
-    Parentesis_a EXPRESION_BOOLEANA Parentesis_c Pregunta EXPRESION Dos_Puntos EXPRESION
+    Parentesis_a EXPRESION Parentesis_c Pregunta EXPRESION Dos_Puntos EXPRESION
 ;
 IF ::= 
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c |
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c
+    If Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c |
+    If Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c
 ;
 EXPRESION_BOOLEANA ::= 
-    EXPRESION
+    P_coma
 ;
 IF_ELSE ::= 
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a CUERPO_EC Llave_c |
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a Llave_c |
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a CUERPO_EC Llave_c |
-    If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c Else Llave_a Llave_c 
+    If Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a CUERPO_EC Llave_c |
+    If Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a Llave_c |
+    If Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c Else Llave_a CUERPO_EC Llave_c |
+    If Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c Else Llave_a Llave_c 
 ;
 WHILE ::= 
-    While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c |
-    While Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c
+    While Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c |
+    While Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c
 ;
 DO_WHILE ::= 
-    Do Llave_a CUERPO_EC Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma |
-    Do Llave_a Llave_c While Parentesis_a EXPRESION_BOOLEANA Parentesis_c P_coma
+    Do Llave_a CUERPO_EC Llave_c While Parentesis_a EXPRESION Parentesis_c P_coma |
+    Do Llave_a Llave_c While Parentesis_a EXPRESION Parentesis_c P_coma
 ;
 FOR ::= 
     For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a CUERPO_EC Llave_c |
     For Parentesis_a SENTENCIA_FOR Parentesis_c Llave_a Llave_c
 ;
 SENTENCIA_FOR ::=
-    ASIGNACION_COMPLEJA P_coma EXPRESION P_coma EXPRESION |
-    P_coma EXPRESION P_coma EXPRESION |
-    ASIGNACION_COMPLEJA P_coma P_coma EXPRESION |
-    ASIGNACION_COMPLEJA P_coma EXPRESION P_coma |
-    P_coma P_coma EXPRESION |
-    P_coma EXPRESION P_coma |
-    ASIGNACION_COMPLEJA P_coma P_coma | 
-    P_coma P_coma 
+    ASIGNACION_COMPLEJA P_coma EXPRESION P_coma EXPRESION 
 ;
 
 

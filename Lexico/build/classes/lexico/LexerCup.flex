@@ -120,8 +120,7 @@ WHITE=[ \t\r\n]
 ( ">" | "<" | "==" | "!=" | ">=" | "<=" | "<<" | ">>" | "||" | "&&" ) {return new Symbol(sym.Op_logico, yychar, yyline, yytext());}
 
 /* Operadores Atribucion */
-( "+=" | "-="  | "*=" | "/=" | "%=" | "=" ) {return new Symbol(sym.Op_atribucion, yychar, yyline, yytext());}
-
+( "+=" | "-="  | "*=" | "/=" | "%=" ) {return new Symbol(sym.Op_atribucion, yychar, yyline, yytext());}
 
 /*Operadores Booleanos*/
 ( true | false ) {return new Symbol(sym.Op_booleano, yychar, yyline, yytext());}
@@ -177,10 +176,11 @@ WHITE=[ \t\r\n]
 "solidity"    {return new Symbol(sym.Solidity, yychar, yyline, yytext());}
 "struct"    {return new Symbol(sym.Struct, yychar, yyline, yytext()); }
 "function"    {return new Symbol(sym.Function, yychar, yyline, yytext()); }
-("+" | "-" | "*" | "/" | "%" | "(" | ")" | "+=" | "-=" | "*=" | "/=")    {return new Symbol(sym.Op_Aritmetico, yychar, yyline, yytext()); }
-( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&" | "!" )  {return new Symbol(sym.Op_logico, yychar, yyline, yytext()); }
-
-
+("*" | "/" | "%")    {return new Symbol(sym.Op_Aritmetico, yychar, yyline, yytext()); }
+( "==" | ">=" | ">" | "<=" | "<" | "!=" | "||" | "&&")  {return new Symbol(sym.Op_logico, yychar, yyline, yytext()); }
+("+")  {return new Symbol(sym.Mas, yychar, yyline, yytext()); }
+("-")  {return new Symbol(sym.Menos, yychar, yyline, yytext()); }
+("!")  {return new Symbol(sym.Not, yychar, yyline, yytext()); }
 
 
 
