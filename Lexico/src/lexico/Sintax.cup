@@ -275,8 +275,7 @@ IF ::=
     If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a Llave_c
 ;
 EXPRESION_BOOLEANA ::= 
-    Op_booleano | 
-    EXPRESION Op_relacional EXPRESION
+    EXPRESION
 ;
 IF_ELSE ::= 
     If Parentesis_a EXPRESION_BOOLEANA Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a CUERPO_EC Llave_c |
