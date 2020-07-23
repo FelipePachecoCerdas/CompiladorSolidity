@@ -6,24 +6,35 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 parser code
-{:
-  public ArrayList<Symbol> errores = new ArrayList<>();
+{:  public ArrayList<Symbol> errores = new ArrayList<>();
   public ArrayList<String> erroresStr = new ArrayList<>();
   
   public void syntax_error(Symbol s) {
-    System.out.println("ERROR CON: " + s.value + " -> " + Integer.toString(s.sym) + " " + Integer.toString(s.right + 1) + ": " + Integer.toString(s.left + 1) );
-    String cadena = "";
-
-    for (int i = 0; i < this.stack.size(); i++) {
-      Symbol sp = this.stack.get(i);
-      //System.out.println(sp.value+" "+Integer.toString(sp.sym));      
-    }
     for (int i = this.stack.size() - 1; i > 0; i--) {
       Symbol sp = this.stack.get(i);
+       String cadena = "";
       System.out.println(sp.value + " " + Integer.toString(sp.right + 1) + ": " + Integer.toString(sp.left + 1) );
       cadena = sp.value + " " + cadena;
+      System.out.println(cadena );
+        if("4".equals(Integer.toString(sp.sym))){
+            System.out.println(cadena );
+            for(int j = i-1; j > 0; j--){
+                sp = this.stack.get(j);
+                cadena = sp.value + " " + cadena;
+                System.out.println(cadena );
+                if ("struct".equals(sp.value)) {
+                cadena += "~" + s.value + "~ ...";
+                Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+                errores.add(sp2);
+                erroresStr.add("Variable_Struct");
+                break;
+                }
+            }
+            break;  
+        }
       if ("enum".equals(sp.value)) {
         System.out.println("Soy un error de enum xd");
+        //System.out.println("Soy un error de enum xd");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
@@ -31,9 +42,17 @@ parser code
         erroresStr.add("Enum");
         break;
       }
+      if ("struct".equals(sp.value)) {
+        //System.out.println("Soy un error de struct chama");
+        cadena += "~" + s.value + "~ ...";
+        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
+        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        errores.add(sp2);
+        erroresStr.add("Struct");
+        break;
+      }
         }
   }
-
   @Override
   public int error_sync_size() {
     return 2;
@@ -143,14 +162,65 @@ VARIABLES ::=
     T_dato Visibilidad Identificador ASIGNACION P_coma |
     T_dato Identificador ASIGNACION P_coma |
     T_dato Corchete_a Corchete_c Visibilidad Identificador ASIGNACION P_coma |
-    T_dato Corchete_a Corchete_c Identificador ASIGNACION P_coma 
+    T_dato Corchete_a Corchete_c Identificador ASIGNACION P_coma |
+
+    T_dato Visibilidad error P_coma VARIABLES |
+    T_dato error P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad error P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c error P_coma VARIABLES |
+
+    T_dato Visibilidad error ASIGNACION P_coma VARIABLES |
+    T_dato error ASIGNACION P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad error ASIGNACION P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c error ASIGNACION P_coma VARIABLES |
+
+    T_dato Visibilidad error P_coma |
+    T_dato error P_coma |
+    T_dato Corchete_a Corchete_c Visibilidad error P_coma |
+    T_dato Corchete_a Corchete_c error P_coma |
+
+    T_dato Visibilidad error ASIGNACION P_coma |
+    T_dato error ASIGNACION P_coma |
+    T_dato Corchete_a Corchete_c Visibilidad error ASIGNACION P_coma |
+    T_dato Corchete_a Corchete_c error ASIGNACION P_coma 
+
+
+    T_dato error Corchete_c Visibilidad Identificador P_coma VARIABLES |
+    T_dato error Corchete_c Identificador P_coma VARIABLES |
+
+    T_dato error Corchete_c Visibilidad Identificador ASIGNACION P_coma VARIABLES |
+    T_dato error Corchete_c Identificador ASIGNACION P_coma VARIABLES |
+
+    T_dato error Corchete_c Visibilidad Identificador P_coma |
+    T_dato error Corchete_c Identificador P_coma |
+
+    T_dato error Corchete_c Visibilidad Identificador ASIGNACION P_coma |
+    T_dato error Corchete_c Identificador ASIGNACION P_coma |
+
+     T_dato Corchete_a error Visibilidad Identificador P_coma VARIABLES |
+    T_dato Corchete_a error Identificador P_coma VARIABLES |
+
+    T_dato Corchete_a error Visibilidad Identificador ASIGNACION P_coma VARIABLES |
+    T_dato Corchete_a error Identificador ASIGNACION P_coma VARIABLES |
+
+    T_dato Corchete_a error Visibilidad Identificador P_coma |
+    T_dato Corchete_a error Identificador P_coma |
+
+    T_dato Corchete_a error Visibilidad Identificador ASIGNACION P_coma |
+    T_dato Corchete_a error Identificador ASIGNACION P_coma 
 ;
 ASIGNACION ::= 
     Igual EXPRESION
 ;
 ESTRUCTURA ::=
     Struct Identificador Llave_a VARIABLES Llave_c ESTRUCTURA |
-    Struct Identificador Llave_a VARIABLES Llave_c
+    Struct Identificador Llave_a VARIABLES Llave_c |
+
+    Struct error Llave_a VARIABLES Llave_c ESTRUCTURA |
+    Struct Identificador error VARIABLES Llave_c ESTRUCTURA |
+
+    Struct error Llave_a VARIABLES Llave_c |
+    Struct Identificador error VARIABLES Llave_c
 ;
 FUNCION_HEADER ::=
     Function Identificador Parentesis_a PARAMETROS Parentesis_c |
