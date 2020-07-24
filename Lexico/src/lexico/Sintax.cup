@@ -274,14 +274,14 @@ FUNCION_HEADER ::=
     
 ;
 FUNCION ::=
-    FUNCION_HEADER Llave_a VARIABLES P_coma Llave_c FUNCION |
-    FUNCION_HEADER Llave_a VARIABLES CUERPO P_coma Llave_c FUNCION |
-    FUNCION_HEADER Llave_a CUERPO P_coma Llave_c FUNCION |
-    FUNCION_HEADER Llave_a P_coma Llave_c FUNCION |
-    FUNCION_HEADER Llave_a VARIABLES P_coma Llave_c |
-    FUNCION_HEADER Llave_a VARIABLES CUERPO P_coma Llave_c |
-    FUNCION_HEADER Llave_a CUERPO P_coma Llave_c |
-    FUNCION_HEADER Llave_a P_coma Llave_c 
+    FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
+    FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
+    FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
+    FUNCION_HEADER Llave_a Llave_c FUNCION |
+    FUNCION_HEADER Llave_a VARIABLES Llave_c |
+    FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c |
+    FUNCION_HEADER Llave_a CUERPO Llave_c |
+    FUNCION_HEADER Llave_a Llave_c 
 ;
 RETURNS ::= 
     Returns Parentesis_a T_dato Identificador  Parentesis_c|
