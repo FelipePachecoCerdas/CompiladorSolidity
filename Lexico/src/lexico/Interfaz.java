@@ -150,8 +150,8 @@ public class Interfaz extends javax.swing.JFrame {
     ButtonAnalize = new javax.swing.JButton();
     jLabel2 = new javax.swing.JLabel();
     jLabel3 = new javax.swing.JLabel();
-    jLabel4 = new javax.swing.JLabel();
     jLabel5 = new javax.swing.JLabel();
+    jLabel6 = new javax.swing.JLabel();
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
@@ -184,13 +184,13 @@ public class Interfaz extends javax.swing.JFrame {
     jLabel3.setForeground(Color.decode("#ffa931"));
     jLabel3.setText("Errores Sintácticos");
 
-    jLabel4.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-    jLabel4.setForeground(Color.decode("#9a0f98"));
-    jLabel4.setText("Tokens");
-
     jLabel5.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
     jLabel5.setForeground(Color.decode("#a0c334"));
     jLabel5.setText("Errores Léxicos");
+
+    jLabel6.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+    jLabel6.setForeground(Color.decode("#9a0f98"));
+    jLabel6.setText("Tokens");
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -198,25 +198,27 @@ public class Interfaz extends javax.swing.JFrame {
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
         .addContainerGap(250, Short.MAX_VALUE)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
             .addGap(273, 273, 273)
             .addComponent(ButtonAnalize)
             .addGap(561, 561, 561))
-          .addGroup(layout.createSequentialGroup()
-            .addComponent(jLabel4)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             .addComponent(jLabel5)
             .addGap(257, 257, 257))))
       .addGroup(layout.createSequentialGroup()
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addGap(428, 428, 428)
-            .addComponent(jLabel2))
-          .addGroup(layout.createSequentialGroup()
-            .addGap(484, 484, 484)
-            .addComponent(jLabel3)))
+        .addGap(428, 428, 428)
+        .addComponent(jLabel2)
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+      .addGroup(layout.createSequentialGroup()
+        .addGap(517, 517, 517)
+        .addComponent(jLabel3)
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+          .addGap(260, 260, 260)
+          .addComponent(jLabel6)
+          .addContainerGap(844, Short.MAX_VALUE)))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -226,12 +228,15 @@ public class Interfaz extends javax.swing.JFrame {
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(ButtonAnalize)
         .addGap(1, 1, 1)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(jLabel4)
-          .addComponent(jLabel5))
+        .addComponent(jLabel5)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 340, Short.MAX_VALUE)
         .addComponent(jLabel3)
         .addGap(183, 183, 183))
+      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+          .addGap(122, 122, 122)
+          .addComponent(jLabel6)
+          .addContainerGap(545, Short.MAX_VALUE)))
     );
 
     pack();
@@ -288,6 +293,12 @@ public class Interfaz extends javax.swing.JFrame {
       //txtAnalizarSin.setText("Analisis realizado correctamente");
       //txtAnalizarSin.setForeground(new Color(25, 111, 61));
     } catch (Exception ex) {
+      for (int j = 0; j < st.errores.size(); j++) {
+
+        Symbol e = st.errores.get(j);
+        String[] row = {e.value.toString(), st.erroresStr.get(j), Integer.toString(e.right + 1) + ": " + Integer.toString(e.left + 1)};
+        modelo3.addRow(row);
+      }
       System.out.println("BAD");
       //Symbol sym = s.getS();
       //String[] row = {"", "Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"", ""};
@@ -312,8 +323,8 @@ public class Interfaz extends javax.swing.JFrame {
   private javax.swing.JButton ButtonAnalize;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
-  private javax.swing.JLabel jLabel4;
   private javax.swing.JLabel jLabel5;
+  private javax.swing.JLabel jLabel6;
   private javax.swing.JPanel jPanel1;
   // End of variables declaration//GEN-END:variables
   public void ProbarLexerFile() throws IOException {
