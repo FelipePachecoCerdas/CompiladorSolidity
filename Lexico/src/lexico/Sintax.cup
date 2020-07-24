@@ -10,18 +10,21 @@ parser code
   public ArrayList<String> erroresStr = new ArrayList<>();
   
   public void syntax_error(Symbol s) {
-     System.out.println("ERROR EN " + s.value + " " + Integer.toString(s.right + 1) + ": " + Integer.toString(s.left + 1) );
+    System.out.println("ERROR EN " + s.value + " " + Integer.toString(s.right + 1) + ": " + Integer.toString(s.left + 1) );
+    String cadena = "";
     for (int i = this.stack.size() - 1; i > 0; i--) {
       Symbol sp = this.stack.get(i);
-       String cadena = "";
+       
       System.out.println(sp.value + " " + Integer.toString(sp.right + 1) + ": " + Integer.toString(sp.left + 1) );
       cadena = sp.value + " " + cadena;
       System.out.println(cadena );
-        if("4".equals(Integer.toString(sp.sym))){
-            System.out.println(cadena );
+        if(sym.T_dato == sp.sym){
+            
             for(int j = i-1; j > 0; j--){
+                
                 sp = this.stack.get(j);
-                cadena = sp.value + " " + cadena;
+                //cadena = sp.value + " " + cadena;
+                System.out.println(sp.value + " " + Integer.toString(sp.right + 1) + ": " + Integer.toString(sp.left + 1) );
                 System.out.println(cadena );
                 if ("struct".equals(sp.value)) {
                 cadena += "~" + s.value + "~ ...";
@@ -30,6 +33,21 @@ parser code
                 erroresStr.add("Variable_Struct");
                 break;
                 }
+                if ("function".equals(sp.value)) {
+                cadena += "~" + s.value + "~ ...";
+                Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+                errores.add(sp2);
+                erroresStr.add("Parametro_Function");
+                break;
+                }
+                if ("returns".equals(sp.value)) {
+                cadena += "~" + s.value + "~ ...";
+                Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+                errores.add(sp2);
+                erroresStr.add("Returns_Function");
+                break;
+                }
+                
             }
             break;  
         }
@@ -50,6 +68,16 @@ parser code
         Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
         errores.add(sp2);
         erroresStr.add("Struct");
+        break;
+      }
+      if ("function".equals(sp.value)) {
+        System.out.println("Soy un error de function chama");
+        cadena += "~" + s.value + "~ ...";
+        System.out.println(cadena);
+        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
+        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        errores.add(sp2);
+        erroresStr.add("Function");
         break;
       }
         }
@@ -227,7 +255,23 @@ FUNCION_HEADER ::=
     Function Identificador Parentesis_a PARAMETROS Parentesis_c |
     Function Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
     Function Identificador Parentesis_a PARAMETROS Parentesis_c RETURNS |
-    Function Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS 
+    Function Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+
+    Function error Parentesis_a PARAMETROS Parentesis_c |
+    Function error Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
+    Function error Parentesis_a PARAMETROS Parentesis_c RETURNS |
+    Function error Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+    
+    Function Identificador error  PARAMETROS Parentesis_c |
+    Function Identificador error  PARAMETROS Parentesis_c MODIFICADORES |
+    Function Identificador error  PARAMETROS Parentesis_c RETURNS |
+    Function Identificador error  PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+    
+    Function Identificador Parentesis_a PARAMETROS error |
+    Function Identificador Parentesis_a PARAMETROS error MODIFICADORES |
+    Function Identificador Parentesis_a PARAMETROS error RETURNS |
+    Function Identificador Parentesis_a PARAMETROS error MODIFICADORES RETURNS 
+    
 ;
 FUNCION ::=
     FUNCION_HEADER Llave_a VARIABLES Return EXPRESION P_coma Llave_c FUNCION |
@@ -240,11 +284,15 @@ FUNCION ::=
     FUNCION_HEADER Llave_a Return EXPRESION P_coma Llave_c 
 ;
 RETURNS ::= 
-    Returns Parentesis_a T_dato Identificador  Parentesis_c
+    Returns Parentesis_a T_dato Identificador  Parentesis_c|
+    Returns error T_dato Identificador Parentesis_c |
+    Returns Parentesis_a T_dato error Parentesis_c
 ;
 PARAMETROS ::=
     T_dato Identificador Coma PARAMETROS |
-    T_dato Identificador
+    T_dato Identificador |
+    T_dato error Coma PARAMETROS |
+    T_dato error
 ;
 MODIFICADORES ::=
     Modificador MODIFICADORES |

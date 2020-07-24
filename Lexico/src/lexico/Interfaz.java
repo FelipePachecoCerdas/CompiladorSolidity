@@ -265,7 +265,7 @@ public class Interfaz extends javax.swing.JFrame {
         if (s.value == "struct") {
           break;
         }
-        System.out.println(s.value + ": " + Integer.toString(s.sym));
+        //System.out.println(s.value + ": " + Integer.toString(s.sym));
 
       }
     } catch (IOException e) {
