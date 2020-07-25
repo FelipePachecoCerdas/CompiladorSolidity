@@ -1078,8 +1078,7 @@ start with INICIO;
 INICIO ::= 
     Pragma Solidity Numero Numero P_coma CONTRATO |
     Pragma Solidity Caret Numero Numero P_coma CONTRATO |
-    Pragma error P_coma CONTRATO |
-    Pragma Solidity Caret Numero Numero P_coma error CONTRATO
+    Pragma error CONTRATO
 ;
 CONTRATO ::=
     Contract Identificador Llave_a Llave_c CONTRATO |
