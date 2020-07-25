@@ -150,15 +150,7 @@ parser code
         erroresStr.add("Inicio");
         break;
       }
-      if (";".equals(sp.value)) {
-        //System.out.println("Soy un error de Expresion");
-        cadena += "~" + s.value + "~ ...";
-        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
-        errores.add(sp2);
-        erroresStr.add("Expresion");
-        break;
-      }
+
       if ("contract".equals(sp.value)) {
         //System.out.println("Soy un error de inicio");
         cadena += "~" + s.value + "~ ...";
@@ -539,84 +531,116 @@ ESTRUCTURA ::=
     Struct error ESTRUCTURA    
 ;
 FUNCION_HEADER ::=
-    
-     Identificador Parentesis_a PARAMETROS Parentesis_c |
-     Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
-     Identificador Parentesis_a PARAMETROS Parentesis_c RETURNS |
-     Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS |
 
-     error Parentesis_a PARAMETROS Parentesis_c |
-     error Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
-     error Parentesis_a PARAMETROS Parentesis_c RETURNS |
-     error Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+    Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+    Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
+    Parentesis_a PARAMETROS Parentesis_c RETURNS |
+    Parentesis_a PARAMETROS Parentesis_c |    
     
-     Identificador error  PARAMETROS Parentesis_c |
-     Identificador error  PARAMETROS Parentesis_c MODIFICADORES |
-     Identificador error  PARAMETROS Parentesis_c RETURNS |
-     Identificador error  PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+     Parentesis_a  Parentesis_c MODIFICADORES RETURNS |
+     Parentesis_a  Parentesis_c MODIFICADORES |
+     Parentesis_a  Parentesis_c RETURNS |
+     Parentesis_a  Parentesis_c |
     
-    Identificador Parentesis_a PARAMETROS error | 
-    Identificador Parentesis_a PARAMETROS error MODIFICADORES |
-    Identificador Parentesis_a PARAMETROS error RETURNS |
-    Identificador Parentesis_a PARAMETROS error MODIFICADORES RETURNS |
+     error  PARAMETROS Parentesis_c |
+     error  PARAMETROS Parentesis_c MODIFICADORES |
+     error  PARAMETROS Parentesis_c RETURNS |
+     error  PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+     error  Parentesis_c |
+     error  Parentesis_c MODIFICADORES |
+     error  Parentesis_c RETURNS |
+     error  Parentesis_c MODIFICADORES RETURNS |
+    
+     Parentesis_a PARAMETROS error | 
+     Parentesis_a PARAMETROS error MODIFICADORES |
+     Parentesis_a PARAMETROS error RETURNS |
+     Parentesis_a PARAMETROS error MODIFICADORES RETURNS |
+     Parentesis_a  error MODIFICADORES |
+     Parentesis_a  error RETURNS |
+     Parentesis_a  error MODIFICADORES RETURNS |
 
-     
 
-    Identificador Parentesis_a  Parentesis_c |
-    Identificador Parentesis_a  Parentesis_c MODIFICADORES |
-    Identificador Parentesis_a  Parentesis_c RETURNS |
-    Identificador Parentesis_a  Parentesis_c MODIFICADORES RETURNS |
+     error  PARAMETROS error |
+     error  PARAMETROS error MODIFICADORES |
+     error  PARAMETROS error RETURNS |
+     error  PARAMETROS error MODIFICADORES RETURNS |
+     error  MODIFICADORES |
+     error  RETURNS |
+     error  MODIFICADORES RETURNS 
 
-    error Parentesis_a  Parentesis_c |
-    error Parentesis_a  Parentesis_c MODIFICADORES |
-    error Parentesis_a  Parentesis_c RETURNS |
-    error Parentesis_a  Parentesis_c MODIFICADORES RETURNS |
-    
-    Identificador error   Parentesis_c |
-    Identificador error   Parentesis_c MODIFICADORES |
-    Identificador error   Parentesis_c RETURNS |
-    Identificador error   Parentesis_c MODIFICADORES RETURNS |
-    
-    Identificador Parentesis_a  error MODIFICADORES |
-    Identificador Parentesis_a  error RETURNS |
-    Identificador Parentesis_a  error MODIFICADORES RETURNS 
+
     
 ;
 FUNCION ::=
-    Function FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
-    Function FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
-    Function FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
-    Function FUNCION_HEADER Llave_a Llave_c FUNCION |
-    Function FUNCION_HEADER Llave_a VARIABLES Llave_c |
-    Function FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c |
-    Function FUNCION_HEADER Llave_a CUERPO Llave_c |
-    Function FUNCION_HEADER Llave_a Llave_c |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES Llave_c |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c |
+    Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c |
+    Function Identificador FUNCION_HEADER Llave_a Llave_c |
     
-    Function FUNCION_HEADER error VARIABLES Llave_c FUNCION |
-    Function FUNCION_HEADER error VARIABLES CUERPO Llave_c FUNCION |
-    Function FUNCION_HEADER error CUERPO Llave_c FUNCION |
-    Function FUNCION_HEADER error Llave_c FUNCION |
-    Function FUNCION_HEADER error VARIABLES Llave_c |
-    Function FUNCION_HEADER error VARIABLES CUERPO Llave_c |
-    Function FUNCION_HEADER error CUERPO Llave_c |
-    Function FUNCION_HEADER error Llave_c |
-    
-    Function FUNCION_HEADER Llave_a VARIABLES error FUNCION |
-    Function FUNCION_HEADER Llave_a VARIABLES CUERPO error FUNCION |
-    Function FUNCION_HEADER Llave_a CUERPO error FUNCION |
-    Function FUNCION_HEADER Llave_a error FUNCION |
-    Function FUNCION_HEADER Llave_a VARIABLES error |
-    Function FUNCION_HEADER Llave_a VARIABLES CUERPO error |
-    Function FUNCION_HEADER Llave_a CUERPO error |
-    Function FUNCION_HEADER Llave_a error |
+    Function error FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
+    Function error FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
+    Function error FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
+    Function error FUNCION_HEADER Llave_a Llave_c FUNCION |
+    Function error FUNCION_HEADER Llave_a VARIABLES Llave_c |
+    Function error FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c |
+    Function error FUNCION_HEADER Llave_a CUERPO Llave_c |
+    Function error FUNCION_HEADER Llave_a Llave_c |
 
-    Function FUNCION_HEADER error VARIABLES error FUNCION |
-    Function FUNCION_HEADER error VARIABLES CUERPO error FUNCION |
-    Function FUNCION_HEADER error CUERPO error FUNCION |
-    Function FUNCION_HEADER error FUNCION |
-    Function FUNCION_HEADER error VARIABLES error |
-    Function FUNCION_HEADER error VARIABLES CUERPO error |
-    Function FUNCION_HEADER error CUERPO error 
+    Function Identificador FUNCION_HEADER error VARIABLES Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER error VARIABLES CUERPO Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER error CUERPO Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER error Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER error VARIABLES Llave_c |
+    Function Identificador FUNCION_HEADER error VARIABLES CUERPO Llave_c |
+    Function Identificador FUNCION_HEADER error CUERPO Llave_c |
+    Function Identificador FUNCION_HEADER error Llave_c |
+    
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES error FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO error FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a CUERPO error FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a error FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES error |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO error |
+    Function Identificador FUNCION_HEADER Llave_a CUERPO error |
+    Function Identificador FUNCION_HEADER Llave_a error |
+
+    Function error FUNCION_HEADER error VARIABLES Llave_c FUNCION |
+    Function error FUNCION_HEADER error VARIABLES CUERPO Llave_c FUNCION |
+    Function error FUNCION_HEADER error CUERPO Llave_c FUNCION |
+    Function error FUNCION_HEADER error Llave_c FUNCION |
+    Function error FUNCION_HEADER error VARIABLES Llave_c |
+    Function error FUNCION_HEADER error VARIABLES CUERPO Llave_c |
+    Function error FUNCION_HEADER error CUERPO Llave_c |
+    Function error FUNCION_HEADER error Llave_c |
+
+    Function error FUNCION_HEADER Llave_a VARIABLES error FUNCION |
+    Function error FUNCION_HEADER Llave_a VARIABLES CUERPO error FUNCION |
+    Function error FUNCION_HEADER Llave_a CUERPO error FUNCION |
+    Function error FUNCION_HEADER Llave_a error FUNCION |
+    Function error FUNCION_HEADER Llave_a VARIABLES error |
+    Function error FUNCION_HEADER Llave_a VARIABLES CUERPO error |
+    Function error FUNCION_HEADER Llave_a CUERPO error |
+    Function error FUNCION_HEADER Llave_a error |
+
+    Function Identificador FUNCION_HEADER error VARIABLES error FUNCION |
+    Function Identificador FUNCION_HEADER error VARIABLES CUERPO error FUNCION |
+    Function Identificador FUNCION_HEADER error CUERPO error FUNCION |
+    Function Identificador FUNCION_HEADER error FUNCION |
+    Function Identificador FUNCION_HEADER error VARIABLES error |
+    Function Identificador FUNCION_HEADER error VARIABLES CUERPO error |
+    Function Identificador FUNCION_HEADER error CUERPO error |
+    
+    Function error FUNCION_HEADER error VARIABLES error FUNCION |
+    Function error FUNCION_HEADER error VARIABLES CUERPO error FUNCION |
+    Function error FUNCION_HEADER error CUERPO error FUNCION |
+    Function error FUNCION_HEADER error FUNCION |
+    Function error FUNCION_HEADER error VARIABLES error |
+    Function error FUNCION_HEADER error VARIABLES CUERPO error |
+    Function error FUNCION_HEADER error CUERPO error 
 ;
 RETURNS ::= 
     Returns Parentesis_a T_dato Identificador  Parentesis_c|
