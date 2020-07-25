@@ -21,10 +21,10 @@ parser code
         if(sym.T_dato == sp.sym){
               for(int j = i-1; j > 0; j--){                
                   sp = this.stack.get(j);
-                  cadena = sp.value + " " + cadena;
+                  cadena = ((sp.value == null) ? ".." :  sp.value)+ " " + cadena;
                   if ("struct".equals(sp.value)) {
                       cadena += "~" + s.value + "~ ...";
-                      Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+                      Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
                       erroresStr.add("Variable_Struct");
                       break;
@@ -35,14 +35,14 @@ parser code
                           cadena = sp.value + " " + cadena;
                           if ("function".equals(sp.value)) {
                               cadena += "~" + s.value + "~ ...";
-                              Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+                              Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                               errores.add(sp2);
                               erroresStr.add("Parametro_Function");
                               break;
                           }
                           if ("returns".equals(sp.value)) {
                               cadena += "~" + s.value + "~ ...";
-                              Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+                              Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                               errores.add(sp2);
                               erroresStr.add("Returns_Function");
                               break;
@@ -53,7 +53,7 @@ parser code
                   if ("returns".equals(sp.value)) {
                             System.out.println("Wh");
                               cadena += "~" + s.value + "~ ...";
-                              Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+                              Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                               errores.add(sp2);
                               erroresStr.add("Returns_Function");
                               break;
@@ -61,14 +61,14 @@ parser code
 
                   if ("contract".equals(sp.value)){
                       cadena += "~" + s.value + "~ ...";
-                      Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+                      Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
                       erroresStr.add("Variable_Contract");
                       break;
                   }
                   if ("function".equals(sp.value)){
                       cadena += "~" + s.value + "~ ...";
-                      Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+                      Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
                       erroresStr.add("Variable_Function");
                       break;
@@ -78,7 +78,7 @@ parser code
         }
         if ("returns".equals(sp.value)) {
           cadena += "~" + s.value + "~ ...";
-          Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+          Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
           errores.add(sp2);
           erroresStr.add("Returns_Function");
           break;
@@ -88,16 +88,16 @@ parser code
         //System.out.println("Soy un error de enum xd");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Enum");
+        erroresStr.add("Enum"+" (" + Integer.toString(sp.right+1) + ")");
         break;
       }
       if ("struct".equals(sp.value)) {
         //System.out.println("Soy un error de struct chama");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
         erroresStr.add("Struct");
         break;
@@ -107,7 +107,7 @@ parser code
         cadena += "~" + s.value + "~ ...";
         System.out.println(cadena);
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
         erroresStr.add("Function");
         break;
@@ -116,7 +116,7 @@ parser code
         //System.out.println("Soy un error de inicio");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
         erroresStr.add("Inicio");
         break;
@@ -125,7 +125,7 @@ parser code
         //System.out.println("Soy un error de Expresion");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
         erroresStr.add("Expresion");
         break;
@@ -134,7 +134,7 @@ parser code
         //System.out.println("Soy un error de inicio");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
         erroresStr.add("Inicio");
         break;
@@ -143,7 +143,7 @@ parser code
         //System.out.println("Soy un error de if");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
 
         errores.add(sp2);
         erroresStr.add("If");
@@ -155,7 +155,7 @@ parser code
         //System.out.println("Soy un error de for");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
         erroresStr.add("For");
 
@@ -165,7 +165,7 @@ parser code
         //System.out.println("Soy un error de while");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
         erroresStr.add("While");
 
@@ -175,7 +175,7 @@ parser code
         //System.out.println("Soy un error de do");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(sp.sym, sp.left, sp.right, cadena);
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
         erroresStr.add("Do");
 
@@ -320,25 +320,25 @@ LISTA ::=
     Identificador
 ;
 VARIABLES ::=
-    T_dato Visibilidad Identificador P_coma VARIABLES |
-    T_dato Identificador P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c Visibilidad Identificador P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c Identificador P_coma VARIABLES |
+    T_dato Visibilidad LISTA P_coma VARIABLES |
+    T_dato LISTA P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad LISTA P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c LISTA P_coma VARIABLES |
 
-    T_dato Visibilidad Identificador ASIGNACION P_coma VARIABLES |
-    T_dato Identificador ASIGNACION P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c Visibilidad Identificador ASIGNACION P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c Identificador ASIGNACION P_coma VARIABLES |
+    T_dato Visibilidad LISTA ASIGNACION P_coma VARIABLES |
+    T_dato LISTA ASIGNACION P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION P_coma VARIABLES |
+    T_dato Corchete_a Corchete_c LISTA ASIGNACION P_coma VARIABLES |
 
-    T_dato Visibilidad Identificador P_coma |
-    T_dato Identificador P_coma |
-    T_dato Corchete_a Corchete_c Visibilidad Identificador P_coma |
-    T_dato Corchete_a Corchete_c Identificador P_coma |
+    T_dato Visibilidad LISTA P_coma |
+    T_dato LISTA P_coma |
+    T_dato Corchete_a Corchete_c Visibilidad LISTA P_coma |
+    T_dato Corchete_a Corchete_c LISTA P_coma |
 
-    T_dato Visibilidad Identificador ASIGNACION P_coma |
-    T_dato Identificador ASIGNACION P_coma |
-    T_dato Corchete_a Corchete_c Visibilidad Identificador ASIGNACION P_coma |
-    T_dato Corchete_a Corchete_c Identificador ASIGNACION P_coma |
+    T_dato Visibilidad LISTA ASIGNACION P_coma |
+    T_dato LISTA ASIGNACION P_coma |
+    T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION P_coma |
+    T_dato Corchete_a Corchete_c LISTA ASIGNACION P_coma |
 
     T_dato Visibilidad error P_coma VARIABLES |
     T_dato error P_coma VARIABLES |
@@ -361,50 +361,50 @@ VARIABLES ::=
     T_dato Corchete_a Corchete_c error ASIGNACION P_coma 
 
 
-    T_dato error Corchete_c Visibilidad Identificador P_coma VARIABLES |
-    T_dato error Corchete_c Identificador P_coma VARIABLES |
+    T_dato error Corchete_c Visibilidad LISTA P_coma VARIABLES |
+    T_dato error Corchete_c LISTA P_coma VARIABLES |
 
-    T_dato error Corchete_c Visibilidad Identificador ASIGNACION P_coma VARIABLES |
-    T_dato error Corchete_c Identificador ASIGNACION P_coma VARIABLES |
+    T_dato error Corchete_c Visibilidad LISTA ASIGNACION P_coma VARIABLES |
+    T_dato error Corchete_c LISTA ASIGNACION P_coma VARIABLES |
 
-    T_dato error Corchete_c Visibilidad Identificador P_coma |
-    T_dato error Corchete_c Identificador P_coma |
+    T_dato error Corchete_c Visibilidad LISTA P_coma |
+    T_dato error Corchete_c LISTA P_coma |
 
-    T_dato error Corchete_c Visibilidad Identificador ASIGNACION P_coma |
-    T_dato error Corchete_c Identificador ASIGNACION P_coma |
+    T_dato error Corchete_c Visibilidad LISTA ASIGNACION P_coma |
+    T_dato error Corchete_c LISTA ASIGNACION P_coma |
 
-    T_dato Corchete_a error Visibilidad Identificador P_coma VARIABLES |
-    T_dato Corchete_a error Identificador P_coma VARIABLES |
+    T_dato Corchete_a error Visibilidad LISTA P_coma VARIABLES |
+    T_dato Corchete_a error LISTA P_coma VARIABLES |
 
-    T_dato Corchete_a error Visibilidad Identificador ASIGNACION P_coma VARIABLES |
-    T_dato Corchete_a error Identificador ASIGNACION P_coma VARIABLES |
+    T_dato Corchete_a error Visibilidad LISTA ASIGNACION P_coma VARIABLES |
+    T_dato Corchete_a error LISTA ASIGNACION P_coma VARIABLES |
 
-    T_dato Corchete_a error Visibilidad Identificador P_coma |
-    T_dato Corchete_a error Identificador P_coma |
+    T_dato Corchete_a error Visibilidad LISTA P_coma |
+    T_dato Corchete_a error LISTA P_coma |
 
-    T_dato Corchete_a error Visibilidad Identificador ASIGNACION P_coma |
-    T_dato Corchete_a error Identificador ASIGNACION P_coma |
+    T_dato Corchete_a error Visibilidad LISTA ASIGNACION P_coma |
+    T_dato Corchete_a error LISTA ASIGNACION P_coma |
 
 
-    T_dato Visibilidad Identificador error VARIABLES |
-    T_dato Identificador error VARIABLES |
-    T_dato Corchete_a Corchete_c Visibilidad Identificador error VARIABLES |
-    T_dato Corchete_a Corchete_c Identificador error VARIABLES |
+    T_dato Visibilidad LISTA error VARIABLES |
+    T_dato LISTA error VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad LISTA error VARIABLES |
+    T_dato Corchete_a Corchete_c LISTA error VARIABLES |
 
-    T_dato Visibilidad Identificador ASIGNACION error VARIABLES |
-    T_dato Identificador ASIGNACION error VARIABLES |
-    T_dato Corchete_a Corchete_c Visibilidad Identificador ASIGNACION error VARIABLES |
-    T_dato Corchete_a Corchete_c Identificador ASIGNACION error VARIABLES |
+    T_dato Visibilidad LISTA ASIGNACION error VARIABLES |
+    T_dato LISTA ASIGNACION error VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION error VARIABLES |
+    T_dato Corchete_a Corchete_c LISTA ASIGNACION error VARIABLES |
 
-    T_dato Visibilidad Identificador error |
-    T_dato Identificador error |
-    T_dato Corchete_a Corchete_c Visibilidad Identificador error |
-    T_dato Corchete_a Corchete_c Identificador error |
+    T_dato Visibilidad LISTA error |
+    T_dato LISTA error |
+    T_dato Corchete_a Corchete_c Visibilidad LISTA error |
+    T_dato Corchete_a Corchete_c LISTA error |
 
-    T_dato Visibilidad Identificador ASIGNACION error |
-    T_dato Identificador ASIGNACION error |
-    T_dato Corchete_a Corchete_c Visibilidad Identificador ASIGNACION error |
-    T_dato Corchete_a Corchete_c Identificador ASIGNACION error 
+    T_dato Visibilidad LISTA ASIGNACION error |
+    T_dato LISTA ASIGNACION error |
+    T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION error |
+    T_dato Corchete_a Corchete_c LISTA ASIGNACION error 
 ;
 ASIGNACION ::= 
     Igual EXPRESION
@@ -423,6 +423,7 @@ ESTRUCTURA ::=
     Struct Identificador Llave_a VARIABLES error 
 ;
 FUNCION_HEADER ::=
+    
      Identificador Parentesis_a PARAMETROS Parentesis_c |
      Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
      Identificador Parentesis_a PARAMETROS Parentesis_c RETURNS |
@@ -440,8 +441,29 @@ FUNCION_HEADER ::=
     
     Identificador Parentesis_a PARAMETROS error | 
     Identificador Parentesis_a PARAMETROS error MODIFICADORES |
-     Identificador Parentesis_a PARAMETROS error RETURNS |
-     Identificador Parentesis_a PARAMETROS error MODIFICADORES RETURNS 
+    Identificador Parentesis_a PARAMETROS error RETURNS |
+    Identificador Parentesis_a PARAMETROS error MODIFICADORES RETURNS |
+
+     
+
+    Identificador Parentesis_a  Parentesis_c |
+    Identificador Parentesis_a  Parentesis_c MODIFICADORES |
+    Identificador Parentesis_a  Parentesis_c RETURNS |
+    Identificador Parentesis_a  Parentesis_c MODIFICADORES RETURNS |
+
+    error Parentesis_a  Parentesis_c |
+    error Parentesis_a  Parentesis_c MODIFICADORES |
+    error Parentesis_a  Parentesis_c RETURNS |
+    error Parentesis_a  Parentesis_c MODIFICADORES RETURNS |
+    
+    Identificador error   Parentesis_c |
+    Identificador error   Parentesis_c MODIFICADORES |
+    Identificador error   Parentesis_c RETURNS |
+    Identificador error   Parentesis_c MODIFICADORES RETURNS |
+    
+    Identificador Parentesis_a  error MODIFICADORES |
+    Identificador Parentesis_a  error RETURNS |
+    Identificador Parentesis_a  error MODIFICADORES RETURNS 
     
 ;
 FUNCION ::=
@@ -476,14 +498,20 @@ RETURNS ::=
     Returns Parentesis_a T_dato Identificador  Parentesis_c|
     Returns error T_dato Identificador Parentesis_c |
     Returns Parentesis_a T_dato error Parentesis_c |
-    Returns Parentesis_a T_dato Identificador error
+    Returns Parentesis_a T_dato Identificador error |
+    Returns Parentesis_a Parentesis_c
     
 ;
 PARAMETROS ::=
     T_dato Identificador Coma PARAMETROS |
     T_dato Identificador |
+    error Identificador Coma PARAMETROS |
+    error Coma PARAMETROS|
+    error Identificador |
     T_dato error Coma PARAMETROS |
-    T_dato error
+    T_dato error |
+    error
+    
 ;
 MODIFICADORES ::=
     Modificador MODIFICADORES |
