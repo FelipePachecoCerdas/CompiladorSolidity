@@ -24,11 +24,53 @@ parser code
                   sp = this.stack.get(j);
                   cadena2 = ((sp.value == null) ? ".." :  sp.value)+ " " + cadena2;
                   if ("struct".equals(sp.value)) {
+
+                    boolean set = false;
+
+                    for (int r = this.stack.size() - 1; r > i; r--) {
+                      Symbol toc = this.stack.get(r); 
+
+                      if ((toc.sym == sym.Numero || s.sym == sym.Numero ||  
+                          toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
+                          toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
+                        set = true;
+                        erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }
+                      if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
+                        set = true;
+                        erroresStr.add("Wrong_Ternary_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }      
+                      if (toc.sym == sym.Op_Aritmetico || toc.sym == sym.Op_logico || toc.sym == sym.Mas || toc.sym == sym.Menos ||
+                          s.sym == sym.Op_Aritmetico || s.sym == sym.Op_logico || s.sym == sym.Mas || s.sym == sym.Menos) {
+                        set = true;
+                        erroresStr.add("Missing_Expression_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }
+                      if (toc.sym == sym.Op_atribucion || s.sym == sym.Op_atribucion || toc.sym == sym.Igual || s.sym == sym.Igual) {
+                        set = true;
+                        erroresStr.add("Missing_Assignment_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }      
+                      if (toc.sym == sym.Parentesis_c || s.sym == sym.Parentesis_c || toc.sym == sym.Parentesis_a || s.sym == sym.Parentesis_a) {
+                        set = true;
+                        erroresStr.add("Missing_Parenthesis_Or_Expression"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }         
+
+                      if (toc.sym == sym.Not || s.sym == sym.Not) {
+                        set = true;
+                        erroresStr.add("Missing_Expression_On_Not"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }
+                    }
+
                       Symbol sp3 = (this.stack.get(j+1).value == null ? this.stack.get(j+2) : this.stack.get(j+1));
                       cadena =sp.value+" "+sp3.value+" ... "+ cadena + "~" + s.value + "~ ...";
                       Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
-                      erroresStr.add("Variable_Struct");
+                      if (!set) erroresStr.add("Struct_Variable"+" (" + Integer.toString(sp.right+1) + ")");
                       break;
                   }
                   if("(".equals(sp.value)){
@@ -40,7 +82,7 @@ parser code
                               cadena2 += "~" + s.value + "~ ...";
                               Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena2);
                               errores.add(sp2);
-                              erroresStr.add("Parametro_Function");
+                              erroresStr.add("Parametro_Function"+" (" + Integer.toString(sp.right+1) + ")");
                               break;
                           }
                           if ("returns".equals(sp.value)) {
@@ -51,7 +93,7 @@ parser code
                                     cadena2 += "~" + s.value + "~ ...";
                                     Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena2);
                                     errores.add(sp2);
-                                    erroresStr.add("Returns_Function");
+                                    erroresStr.add("Returns_Function"+" (" + Integer.toString(sp.right+1) + ")");
                                     break;
                                 }
                              }
@@ -68,7 +110,7 @@ parser code
                                     cadena2 += "~" + s.value + "~ ...";
                                     Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena2);
                                     errores.add(sp2);
-                                    erroresStr.add("Returns_Function");
+                                    erroresStr.add("Returns_Function"+" (" + Integer.toString(sp.right+1) + ")");
                                     break;
                                 }
                              }
@@ -77,19 +119,113 @@ parser code
                           }
 
                   if ("contract".equals(sp.value)){
+
+                    boolean set = false;
+
+                    for (int r = this.stack.size() - 1; r > i; r--) {
+                      Symbol toc = this.stack.get(r); 
+
+                      if ((toc.sym == sym.Numero || s.sym == sym.Numero ||  
+                          toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
+                          toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
+                        set = true;
+                        erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }
+                      if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
+                        set = true;
+                        erroresStr.add("Wrong_Ternary_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }      
+                      if (toc.sym == sym.Op_Aritmetico || toc.sym == sym.Op_logico || toc.sym == sym.Mas || toc.sym == sym.Menos ||
+                          s.sym == sym.Op_Aritmetico || s.sym == sym.Op_logico || s.sym == sym.Mas || s.sym == sym.Menos) {
+                        set = true;
+                        erroresStr.add("Missing_Expression_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }
+                      if (toc.sym == sym.Op_atribucion || s.sym == sym.Op_atribucion || toc.sym == sym.Igual || s.sym == sym.Igual) {
+                        set = true;
+                        erroresStr.add("Missing_Assignment_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }      
+                      if (toc.sym == sym.Parentesis_c || s.sym == sym.Parentesis_c || toc.sym == sym.Parentesis_a || s.sym == sym.Parentesis_a) {
+                        set = true;
+                        erroresStr.add("Missing_Parenthesis_Or_Expression"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }         
+
+                      if (toc.sym == sym.Not || s.sym == sym.Not) {
+                        set = true;
+                        erroresStr.add("Missing_Expression_On_Not"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }
+                    }
+
                       Symbol sp3 = (this.stack.get(j+1).value == null ? this.stack.get(j+2) : this.stack.get(j+1));
                       cadena =sp.value+" "+sp3.value+" ... "+ cadena + "~" + s.value + "~ ...";
                       Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
-                      erroresStr.add("Variable_Contract");
+                      if (!set) erroresStr.add("Contract_Variable"+" (" + Integer.toString(sp.right+1) + ")");
                       break;
+
+                    //cadena += "~" + s.value + "~ ...";
+                    //Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
+                    //errores.add(sp2);
+                    //if (!set) erroresStr.add("If"+" (" + Integer.toString(sp.right+1) + ")");
+                    //break;
+
+
+
+
                   }
                   if ("function".equals(sp.value)){
+
+                    boolean set = false;
+
+                    for (int r = this.stack.size() - 1; r > i; r--) {
+                      Symbol toc = this.stack.get(r); 
+
+                      if ((toc.sym == sym.Numero || s.sym == sym.Numero ||  
+                          toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
+                          toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
+                        set = true;
+                        erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Function_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }
+                      if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
+                        set = true;
+                        erroresStr.add("Wrong_Ternary_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Function_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }      
+                      if (toc.sym == sym.Op_Aritmetico || toc.sym == sym.Op_logico || toc.sym == sym.Mas || toc.sym == sym.Menos ||
+                          s.sym == sym.Op_Aritmetico || s.sym == sym.Op_logico || s.sym == sym.Mas || s.sym == sym.Menos) {
+                        set = true;
+                        erroresStr.add("Missing_Expression_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Function_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }
+                      if (toc.sym == sym.Op_atribucion || s.sym == sym.Op_atribucion || toc.sym == sym.Igual || s.sym == sym.Igual) {
+                        set = true;
+                        erroresStr.add("Missing_Assignment_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Function_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }      
+                      if (toc.sym == sym.Parentesis_c || s.sym == sym.Parentesis_c || toc.sym == sym.Parentesis_a || s.sym == sym.Parentesis_a) {
+                        set = true;
+                        erroresStr.add("Missing_Parenthesis_Or_Expression"+" (" + Integer.toString(toc.right+1) + ")" + " on Function_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }         
+
+                      if (toc.sym == sym.Not || s.sym == sym.Not) {
+                        set = true;
+                        erroresStr.add("Missing_Expression_On_Not"+" (" + Integer.toString(toc.right+1) + ")" + " on Function_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        break;
+                      }
+                    }
+
                       Symbol sp3 = (this.stack.get(j+1).value == null ? this.stack.get(j+2) : this.stack.get(j+1));
                       cadena =sp.value+" "+sp3.value+" ... "+ cadena + "~" + s.value + "~ ...";
                       Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
-                      erroresStr.add("Variable_Function");
+                      if (!set) erroresStr.add("Function_Variable"+" (" + Integer.toString(sp.right+1) + ")");
                       break;
                   }
               }
@@ -105,7 +241,7 @@ parser code
                       cadena += "~" + s.value + "~ ...";
                       Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
-                      erroresStr.add("Returns_Function");
+                      erroresStr.add("Returns_Function"+" (" + Integer.toString(sp.right+1) + ")");
                       break;
                   }
                }
@@ -128,17 +264,166 @@ parser code
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Struct");
+        erroresStr.add("Struct"+" (" + Integer.toString(sp.right+1) + ")");
         break;
       }
       if ("function".equals(sp.value)) {
-        System.out.println("Soy un error de function chama");
+        System.out.println("Soy un error de function chama!!!");
+
+        boolean set = false;
+
+        boolean duperFound = false;
+
+          for (int x = this.stack.size() - 1; x > 0; x--) { 
+              if ("function".equals(this.stack.get(x).value)) break;
+              if ("{".equals(this.stack.get(x).value)) duperFound = true;
+          } 
+          if (!duperFound) {
+              cadena += "~" + s.value + "~ ...";
+              Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
+              errores.add(sp2);
+              erroresStr.add("Function"+" (" + Integer.toString(sp.right+1) + ")");
+              break;
+          } 
+
+        for (int r = this.stack.size() - 1; r > i; r--) {
+          Symbol toc = this.stack.get(r); 
+          
+          if ((toc.sym == sym.Numero || s.sym == sym.Numero ||  
+              toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
+              toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Wrong_Ternary_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_atribucion || s.sym == sym.Op_atribucion || toc.sym == sym.Igual || s.sym == sym.Igual) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Assignment_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_Aritmetico || toc.sym == sym.Op_logico || toc.sym == sym.Mas || toc.sym == sym.Menos ||
+              s.sym == sym.Op_Aritmetico || s.sym == sym.Op_logico || s.sym == sym.Mas || s.sym == sym.Menos) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Parentesis_c || s.sym == sym.Parentesis_c || toc.sym == sym.Parentesis_a || s.sym == sym.Parentesis_a) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Parenthesis_Or_Expression"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }         
+
+          if (toc.sym == sym.Not || s.sym == sym.Not) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_On_Not"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+        }
         cadena += "~" + s.value + "~ ...";
-        System.out.println(cadena);
-        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Function");
+        if (!set) erroresStr.add("Function"+" (" + Integer.toString(sp.right+1) + ")");
         break;
       }
       if ("pragma".equals(sp.value)) {
@@ -147,68 +432,625 @@ parser code
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Inicio");
+        erroresStr.add("File_Structure"+" (" + Integer.toString(sp.right+1) + ")");
         break;
-      }
+      }/*
       if (";".equals(sp.value)) {
         //System.out.println("Soy un error de Expresion");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Expresion");
+        erroresStr.add("Expression"+" (" + Integer.toString(sp.right+1) + ")");
         break;
-      }
+      }*/
       if ("contract".equals(sp.value)) {
         //System.out.println("Soy un error de inicio");
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Inicio");
+        erroresStr.add("Contract"+" (" + Integer.toString(sp.right+1) + ")");
         break;
       }
       if ("if".equals(sp.value)) {
         //System.out.println("Soy un error de if");
+        boolean set = false;
+
+        for (int r = this.stack.size() - 1; r > i; r--) {
+          Symbol toc = this.stack.get(r); 
+          if (toc.sym == sym.Else || s.sym == sym.Else) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false; 
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("if".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            Symbol prev = (toc.sym == sym.Else) ? this.stack.get(r-1): this.stack.get(this.stack.size() - 1);
+            if ("}".equals(prev.value)) erroresStr.add("Wrong_Else_Placement"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            else erroresStr.add("Missing_Closing_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            set = true;
+            
+            break;
+          }      
+
+          
+          if ((toc.sym == sym.Numero || s.sym == sym.Numero ||  
+              toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
+              toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("if".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "if ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false; 
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("if".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "if ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Wrong_Ternary_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_atribucion || s.sym == sym.Op_atribucion || toc.sym == sym.Igual || s.sym == sym.Igual) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false; 
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("if".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "if ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Assignment_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_Aritmetico || toc.sym == sym.Op_logico || toc.sym == sym.Mas || toc.sym == sym.Menos ||
+              s.sym == sym.Op_Aritmetico || s.sym == sym.Op_logico || s.sym == sym.Mas || s.sym == sym.Menos) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("if".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "if ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Parentesis_c || s.sym == sym.Parentesis_c || toc.sym == sym.Parentesis_a || s.sym == sym.Parentesis_a) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("if".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "if ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Parenthesis_Or_Expression"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }         
+
+          if (toc.sym == sym.Not || s.sym == sym.Not) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("if".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "if ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_On_Not"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+        }
         cadena += "~" + s.value + "~ ...";
-        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
-
         errores.add(sp2);
-        erroresStr.add("If");
-        
-
+        if (!set) erroresStr.add("If"+" (" + Integer.toString(sp.right+1) + ")");
         break;
+
+
       }
       if ("for".equals(sp.value)) {
         //System.out.println("Soy un error de for");
+        boolean set = false;
+
+        for (int r = this.stack.size() - 1; r > i; r--) {
+          Symbol toc = this.stack.get(r); 
+          
+          if ((toc.sym == sym.Numero || s.sym == sym.Numero ||  
+              toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
+              toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("for".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "for ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false; 
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("for".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "for ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Wrong_Ternary_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_atribucion || s.sym == sym.Op_atribucion || toc.sym == sym.Igual || s.sym == sym.Igual) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false; 
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("for".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "for ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Assignment_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_Aritmetico || toc.sym == sym.Op_logico || toc.sym == sym.Mas || toc.sym == sym.Menos ||
+              s.sym == sym.Op_Aritmetico || s.sym == sym.Op_logico || s.sym == sym.Mas || s.sym == sym.Menos) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("for".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "for ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Parentesis_c || s.sym == sym.Parentesis_c || toc.sym == sym.Parentesis_a || s.sym == sym.Parentesis_a) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("for".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "for ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Parenthesis_Or_Expression"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }         
+
+          if (toc.sym == sym.Not || s.sym == sym.Not) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("for".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "for ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_On_Not"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+        }
         cadena += "~" + s.value + "~ ...";
-        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("For");
-
+        if (!set) erroresStr.add("For"+" (" + Integer.toString(sp.right+1) + ")");
         break;
+
+
+
+
       }
       if ("while".equals(sp.value)) {
         //System.out.println("Soy un error de while");
+        boolean set = false;
+
+        for (int r = this.stack.size() - 1; r > i; r--) {
+          Symbol toc = this.stack.get(r); 
+          
+          if ((toc.sym == sym.Numero || s.sym == sym.Numero ||  
+              toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
+              toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("while".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "while ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("while".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "while ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Wrong_Ternary_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_atribucion || s.sym == sym.Op_atribucion || toc.sym == sym.Igual || s.sym == sym.Igual) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("while".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "while ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Assignment_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_Aritmetico || toc.sym == sym.Op_logico || toc.sym == sym.Mas || toc.sym == sym.Menos ||
+              s.sym == sym.Op_Aritmetico || s.sym == sym.Op_logico || s.sym == sym.Mas || s.sym == sym.Menos) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("while".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "while ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Parentesis_c || s.sym == sym.Parentesis_c || toc.sym == sym.Parentesis_a || s.sym == sym.Parentesis_a) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("while".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "while ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Parenthesis_Or_Expression"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }         
+
+          if (toc.sym == sym.Not || s.sym == sym.Not) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("while".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "while ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_On_Not"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+        }
         cadena += "~" + s.value + "~ ...";
-        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("While");
-
+        if (!set) erroresStr.add("While"+" (" + Integer.toString(sp.right+1) + ")");
         break;
       }
       if ("do".equals(sp.value)) {
         //System.out.println("Soy un error de do");
+        boolean set = false;
+
+        for (int r = this.stack.size() - 1; r > i; r--) {
+          Symbol toc = this.stack.get(r); 
+          
+          if ((toc.sym == sym.Numero || s.sym == sym.Numero ||  
+              toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
+              toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
+            cadena = ""; boolean superSet = false, found = false, found2 = true;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if ("do".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "do ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
+            cadena = ""; boolean superSet = false, found = false, found2 = true; 
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if ("do".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "do ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Wrong_Ternary_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_atribucion || s.sym == sym.Op_atribucion || toc.sym == sym.Igual || s.sym == sym.Igual) {
+            cadena = ""; boolean superSet = false, found = false, found2 = true; 
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if ("do".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "do ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Assignment_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }      
+          if (toc.sym == sym.Op_Aritmetico || toc.sym == sym.Op_logico || toc.sym == sym.Mas || toc.sym == sym.Menos ||
+              s.sym == sym.Op_Aritmetico || s.sym == sym.Op_logico || s.sym == sym.Mas || s.sym == sym.Menos) {
+            cadena = ""; boolean superSet = false, found = false, found2 = true;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if ("do".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "do ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+          if (toc.sym == sym.Parentesis_c || s.sym == sym.Parentesis_c || toc.sym == sym.Parentesis_a || s.sym == sym.Parentesis_a) {
+            cadena = ""; boolean superSet = false, found = false, found2 = true;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if ("do".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "do ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Parenthesis_Or_Expression"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }         
+
+          if (toc.sym == sym.Not || s.sym == sym.Not) {
+            cadena = ""; boolean superSet = false, found = false, found2 = true;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if ("do".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "do ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Missing_Expression_On_Not"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }
+        }
         cadena += "~" + s.value + "~ ...";
-        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Do");
-
+        if (!set) erroresStr.add("Do"+" (" + Integer.toString(sp.right+1) + ")");
         break;
+
+
+
       }
         }
   }
@@ -495,7 +1337,7 @@ VARIABLES ::=
     T_dato error Corchete_c Visibilidad error ASIGNACION error  |
     T_dato Corchete_a error Visibilidad error ASIGNACION error  |
     T_dato Corchete_a error ASIGNACION error  |
-    T_dato error Corchete_c error ASIGNACION error  
+    T_dato error Corchete_c error ASIGNACION error 
 ;
 ASIGNACION ::= 
     Igual EXPRESION
@@ -539,84 +1381,83 @@ ESTRUCTURA ::=
     Struct error ESTRUCTURA    
 ;
 FUNCION_HEADER ::=
-    
-     Identificador Parentesis_a PARAMETROS Parentesis_c |
-     Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
-     Identificador Parentesis_a PARAMETROS Parentesis_c RETURNS |
-     Identificador Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS |
 
-     error Parentesis_a PARAMETROS Parentesis_c |
-     error Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
-     error Parentesis_a PARAMETROS Parentesis_c RETURNS |
-     error Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+    Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+    Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
+    Parentesis_a PARAMETROS Parentesis_c RETURNS |
+    Parentesis_a PARAMETROS Parentesis_c |    
     
-     Identificador error  PARAMETROS Parentesis_c |
-     Identificador error  PARAMETROS Parentesis_c MODIFICADORES |
-     Identificador error  PARAMETROS Parentesis_c RETURNS |
-     Identificador error  PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+     Parentesis_a  Parentesis_c MODIFICADORES RETURNS |
+     Parentesis_a  Parentesis_c MODIFICADORES |
+     Parentesis_a  Parentesis_c RETURNS |
+     Parentesis_a  Parentesis_c |
     
-    Identificador Parentesis_a PARAMETROS error | 
-    Identificador Parentesis_a PARAMETROS error MODIFICADORES |
-    Identificador Parentesis_a PARAMETROS error RETURNS |
-    Identificador Parentesis_a PARAMETROS error MODIFICADORES RETURNS |
+     error  PARAMETROS Parentesis_c |
+     error  PARAMETROS Parentesis_c MODIFICADORES |
+     error  PARAMETROS Parentesis_c RETURNS |
+     error  PARAMETROS Parentesis_c MODIFICADORES RETURNS |
+     error  Parentesis_c |
+     error  Parentesis_c MODIFICADORES |
+     error  Parentesis_c RETURNS |
+     error  Parentesis_c MODIFICADORES RETURNS |
+    
+     Parentesis_a PARAMETROS error | 
+     Parentesis_a PARAMETROS error MODIFICADORES |
+     Parentesis_a PARAMETROS error RETURNS |
+     Parentesis_a PARAMETROS error MODIFICADORES RETURNS |
+     Parentesis_a  error MODIFICADORES |
+     Parentesis_a  error RETURNS |
+     Parentesis_a  error MODIFICADORES RETURNS |
 
-     
 
-    Identificador Parentesis_a  Parentesis_c |
-    Identificador Parentesis_a  Parentesis_c MODIFICADORES |
-    Identificador Parentesis_a  Parentesis_c RETURNS |
-    Identificador Parentesis_a  Parentesis_c MODIFICADORES RETURNS |
+     error  PARAMETROS error |
+     error  PARAMETROS error MODIFICADORES |
+     error  PARAMETROS error RETURNS |
+     error  PARAMETROS error MODIFICADORES RETURNS |
+     error  MODIFICADORES |
+     error  RETURNS |
+     error  MODIFICADORES RETURNS 
 
-    error Parentesis_a  Parentesis_c |
-    error Parentesis_a  Parentesis_c MODIFICADORES |
-    error Parentesis_a  Parentesis_c RETURNS |
-    error Parentesis_a  Parentesis_c MODIFICADORES RETURNS |
-    
-    Identificador error   Parentesis_c |
-    Identificador error   Parentesis_c MODIFICADORES |
-    Identificador error   Parentesis_c RETURNS |
-    Identificador error   Parentesis_c MODIFICADORES RETURNS |
-    
-    Identificador Parentesis_a  error MODIFICADORES |
-    Identificador Parentesis_a  error RETURNS |
-    Identificador Parentesis_a  error MODIFICADORES RETURNS 
-    
 ;
 FUNCION ::=
-    Function FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
-    Function FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
-    Function FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
-    Function FUNCION_HEADER Llave_a Llave_c FUNCION |
-    Function FUNCION_HEADER Llave_a VARIABLES Llave_c |
-    Function FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c |
-    Function FUNCION_HEADER Llave_a CUERPO Llave_c |
-    Function FUNCION_HEADER Llave_a Llave_c |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES Llave_c |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c |
+    Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c |
+    Function Identificador FUNCION_HEADER Llave_a Llave_c |
     
-    Function FUNCION_HEADER error VARIABLES Llave_c FUNCION |
-    Function FUNCION_HEADER error VARIABLES CUERPO Llave_c FUNCION |
-    Function FUNCION_HEADER error CUERPO Llave_c FUNCION |
-    Function FUNCION_HEADER error Llave_c FUNCION |
-    Function FUNCION_HEADER error VARIABLES Llave_c |
-    Function FUNCION_HEADER error VARIABLES CUERPO Llave_c |
-    Function FUNCION_HEADER error CUERPO Llave_c |
-    Function FUNCION_HEADER error Llave_c |
-    
-    Function FUNCION_HEADER Llave_a VARIABLES error FUNCION |
-    Function FUNCION_HEADER Llave_a VARIABLES CUERPO error FUNCION |
-    Function FUNCION_HEADER Llave_a CUERPO error FUNCION |
-    Function FUNCION_HEADER Llave_a error FUNCION |
-    Function FUNCION_HEADER Llave_a VARIABLES error |
-    Function FUNCION_HEADER Llave_a VARIABLES CUERPO error |
-    Function FUNCION_HEADER Llave_a CUERPO error |
-    Function FUNCION_HEADER Llave_a error |
+    Function error FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
+    Function error FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
+    Function error FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
+    Function error FUNCION_HEADER Llave_a Llave_c FUNCION |
+    Function error FUNCION_HEADER Llave_a VARIABLES Llave_c |
+    Function error FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c |
+    Function error FUNCION_HEADER Llave_a CUERPO Llave_c |
+    Function error FUNCION_HEADER Llave_a Llave_c |
 
-    Function FUNCION_HEADER error VARIABLES error FUNCION |
-    Function FUNCION_HEADER error VARIABLES CUERPO error FUNCION |
-    Function FUNCION_HEADER error CUERPO error FUNCION |
-    Function FUNCION_HEADER error FUNCION |
-    Function FUNCION_HEADER error VARIABLES error |
-    Function FUNCION_HEADER error VARIABLES CUERPO error |
-    Function FUNCION_HEADER error CUERPO error 
+    Function Identificador FUNCION_HEADER error VARIABLES Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER error VARIABLES CUERPO Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER error CUERPO Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER error Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER error VARIABLES Llave_c |
+    Function Identificador FUNCION_HEADER error VARIABLES CUERPO Llave_c |
+    Function Identificador FUNCION_HEADER error CUERPO Llave_c |
+    Function Identificador FUNCION_HEADER error Llave_c |
+    
+    Function error FUNCION_HEADER error VARIABLES Llave_c FUNCION |
+    Function error FUNCION_HEADER error VARIABLES CUERPO Llave_c FUNCION |
+    Function error FUNCION_HEADER error CUERPO Llave_c FUNCION |
+    Function error FUNCION_HEADER error Llave_c FUNCION |
+    Function error FUNCION_HEADER error VARIABLES Llave_c |
+    Function error FUNCION_HEADER error VARIABLES CUERPO Llave_c |
+    Function error FUNCION_HEADER error CUERPO Llave_c |
+    Function error FUNCION_HEADER error Llave_c |
+
+    Function Identificador FUNCION_HEADER Llave_a error Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a error Llave_c 
 ;
 RETURNS ::= 
     Returns Parentesis_a T_dato Identificador  Parentesis_c|
@@ -659,6 +1500,8 @@ MODIFICADORES ::=
 CUERPO ::=
     EXPRESION P_coma CUERPO |
     ESTRUCTURA_CONTROL CUERPO |
+    error P_coma CUERPO |
+    error CUERPO |
 
     EXPRESION P_coma |
     ESTRUCTURA_CONTROL 
@@ -699,6 +1542,9 @@ LITERAL ::=
 EXPRESION ::=
     EXPRESION OP_ARITMETICO EXPRESION_TERM |
     EXPRESION Op_logico EXPRESION_TERM |
+    EXPRESION OP_ARITMETICO error |
+    EXPRESION Op_logico error |
+
     EXPRESION_TERM 
 ;
 
@@ -744,6 +1590,8 @@ SENTENCIA ::=
 CUERPO_EC ::=
     EXPRESION P_coma CUERPO_EC |
     SENTENCIA CUERPO_EC |
+    error P_coma CUERPO_EC |
+    error CUERPO_EC |
 
     EXPRESION P_coma |
     SENTENCIA 

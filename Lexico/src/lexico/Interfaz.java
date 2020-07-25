@@ -91,7 +91,7 @@ public class Interfaz extends javax.swing.JFrame {
     this.add(scroll2);
 
     Object[][] rows3 = {};
-    Object[] cols3 = {"Hilera Errónea", "Tipo de Error", "Línea: Columna"};
+    Object[] cols3 = {"Hilera Errónea", "Tipo de Error", "Línea: Carácter"};
     modelo3 = new DefaultTableModel(rows3, cols3);
 
     tabla3 = new JTable(modelo3);
@@ -288,7 +288,7 @@ public class Interfaz extends javax.swing.JFrame {
         String[] row = {e.value.toString(), st.erroresStr.get(j), Integer.toString(e.right + 1) + ": " + Integer.toString(e.left + 1)};
         modelo3.addRow(row);
       }
-      System.out.println("Parsing done");
+      System.out.println("Parsing done " + Integer.toString(st.errores.size()));
       //String[] row = {"", "Analisis realizado correctamente", ""};
       //modelo3.addRow(row);
       //txtAnalizarSin.setText("Analisis realizado correctamente");
