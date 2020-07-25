@@ -434,6 +434,7 @@ parser code
         errores.add(sp2);
         erroresStr.add("File_Structure"+" (" + Integer.toString(sp.right+1) + ")");
         break;
+<<<<<<< HEAD
       }/*
       if (";".equals(sp.value)) {
         //System.out.println("Soy un error de Expresion");
@@ -444,6 +445,9 @@ parser code
         erroresStr.add("Expression"+" (" + Integer.toString(sp.right+1) + ")");
         break;
       }*/
+=======
+      }
+>>>>>>> master
       if ("contract".equals(sp.value)) {
         //System.out.println("Soy un error de inicio");
         cadena += "~" + s.value + "~ ...";
@@ -1427,7 +1431,7 @@ FUNCION ::=
     Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c |
     Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c |
     Function Identificador FUNCION_HEADER Llave_a Llave_c |
-    
+
     Function error FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
     Function error FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
     Function error FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
@@ -1456,7 +1460,7 @@ FUNCION ::=
     Function error FUNCION_HEADER error Llave_c |
 
     Function Identificador FUNCION_HEADER Llave_a error Llave_c FUNCION |
-    Function Identificador FUNCION_HEADER Llave_a error Llave_c 
+    Function Identificador FUNCION_HEADER Llave_a error Llave_c
 ;
 RETURNS ::= 
     Returns Parentesis_a T_dato Identificador  Parentesis_c|
