@@ -16,14 +16,16 @@ parser code
       Symbol sp = this.stack.get(i);
        
       System.out.println(sp.value + " " + Integer.toString(sp.right + 1) + ": " + Integer.toString(sp.left + 1) );
-      cadena = sp.value + " " + cadena;
+      cadena = ((sp.value == null) ? ".." :  sp.value)+ " " + cadena;
       System.out.println(cadena );
         if(sym.T_dato == sp.sym){
+              String cadena2= cadena;
               for(int j = i-1; j > 0; j--){                
                   sp = this.stack.get(j);
-                  cadena = ((sp.value == null) ? ".." :  sp.value)+ " " + cadena;
+                  cadena2 = ((sp.value == null) ? ".." :  sp.value)+ " " + cadena2;
                   if ("struct".equals(sp.value)) {
-                      cadena += "~" + s.value + "~ ...";
+                      Symbol sp3 = (this.stack.get(j+1).value == null ? this.stack.get(j+2) : this.stack.get(j+1));
+                      cadena =sp.value+" "+sp3.value+" ... "+ cadena + "~" + s.value + "~ ...";
                       Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
                       erroresStr.add("Variable_Struct");
@@ -32,42 +34,59 @@ parser code
                   if("(".equals(sp.value)){
                       for(int k = j-1; k > 0; k--){ 
                           sp = this.stack.get(k);
-                          cadena = sp.value + " " + cadena;
+                          cadena2 = ((sp.value == null) ? ".." :  sp.value)+ " " + cadena2;
                           if ("function".equals(sp.value)) {
-                              cadena += "~" + s.value + "~ ...";
-                              Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
+                              
+                              cadena2 += "~" + s.value + "~ ...";
+                              Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena2);
                               errores.add(sp2);
                               erroresStr.add("Parametro_Function");
                               break;
                           }
                           if ("returns".equals(sp.value)) {
-                              cadena += "~" + s.value + "~ ...";
-                              Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
-                              errores.add(sp2);
-                              erroresStr.add("Returns_Function");
-                              break;
+                              for(int l=k-1;l>0; l--){
+                              sp = this.stack.get(l);
+                              cadena2 = ((sp.value == null) ? ".." :  sp.value)+ " " + cadena2;
+                                if ("function".equals(sp.value)) {                             
+                                    cadena2 += "~" + s.value + "~ ...";
+                                    Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena2);
+                                    errores.add(sp2);
+                                    erroresStr.add("Returns_Function");
+                                    break;
+                                }
+                             }
+                             break;
                           }
                       }
                       break;
                   }
                   if ("returns".equals(sp.value)) {
-                            System.out.println("Wh");
-                              cadena += "~" + s.value + "~ ...";
-                              Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
-                              errores.add(sp2);
-                              erroresStr.add("Returns_Function");
-                              break;
+                              for(int k=j-1;k>0; k--){
+                              sp = this.stack.get(k);
+                              cadena2 = ((sp.value == null) ? ".." :  sp.value)+ " " + cadena2;
+                                if ("function".equals(sp.value)) {                             
+                                    cadena2 += "~" + s.value + "~ ...";
+                                    Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena2);
+                                    errores.add(sp2);
+                                    erroresStr.add("Returns_Function");
+                                    break;
+                                }
+                             }
+                             
+                             break;
                           }
 
                   if ("contract".equals(sp.value)){
-                      cadena += "~" + s.value + "~ ...";
+                      Symbol sp3 = (this.stack.get(j+1).value == null ? this.stack.get(j+2) : this.stack.get(j+1));
+                      cadena =sp.value+" "+sp3.value+" ... "+ cadena + "~" + s.value + "~ ...";
                       Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
                       erroresStr.add("Variable_Contract");
                       break;
                   }
                   if ("function".equals(sp.value)){
-                      cadena += "~" + s.value + "~ ...";
+                      Symbol sp3 = (this.stack.get(j+1).value == null ? this.stack.get(j+2) : this.stack.get(j+1));
+                      cadena =sp.value+" "+sp3.value+" ... "+ cadena + "~" + s.value + "~ ...";
                       Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
                       errores.add(sp2);
                       erroresStr.add("Variable_Function");
@@ -77,11 +96,21 @@ parser code
               break;  
         }
         if ("returns".equals(sp.value)) {
-          cadena += "~" + s.value + "~ ...";
-          Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
-          errores.add(sp2);
-          erroresStr.add("Returns_Function");
-          break;
+        System.out.println("Es aquí la verdad");
+            for(int j=i-1;j>0; j--){
+                sp = this.stack.get(j);
+                cadena = ((sp.value == null) ? ".." :  sp.value)+ " " + cadena;
+                  if ("function".equals(sp.value)) {   
+                        System.out.println(cadena);
+                      cadena += "~" + s.value + "~ ...";
+                      Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
+                      errores.add(sp2);
+                      erroresStr.add("Returns_Function");
+                      break;
+                  }
+               }
+               System.out.println("Toy aquí");
+               break;
         }
       if ("enum".equals(sp.value)) {
         System.out.println("Soy un error de enum xd");
@@ -340,6 +369,8 @@ VARIABLES ::=
     T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION P_coma |
     T_dato Corchete_a Corchete_c LISTA ASIGNACION P_coma |
 
+
+
     T_dato Visibilidad error P_coma VARIABLES |
     T_dato error P_coma VARIABLES |
     T_dato Corchete_a Corchete_c Visibilidad error P_coma VARIABLES |
@@ -358,7 +389,9 @@ VARIABLES ::=
     T_dato Visibilidad error ASIGNACION P_coma |
     T_dato error ASIGNACION P_coma |
     T_dato Corchete_a Corchete_c Visibilidad error ASIGNACION P_coma |
-    T_dato Corchete_a Corchete_c error ASIGNACION P_coma 
+    T_dato Corchete_a Corchete_c error ASIGNACION P_coma |
+
+
 
 
     T_dato error Corchete_c Visibilidad LISTA P_coma VARIABLES |
@@ -373,6 +406,8 @@ VARIABLES ::=
     T_dato error Corchete_c Visibilidad LISTA ASIGNACION P_coma |
     T_dato error Corchete_c LISTA ASIGNACION P_coma |
 
+
+
     T_dato Corchete_a error Visibilidad LISTA P_coma VARIABLES |
     T_dato Corchete_a error LISTA P_coma VARIABLES |
 
@@ -385,6 +420,18 @@ VARIABLES ::=
     T_dato Corchete_a error Visibilidad LISTA ASIGNACION P_coma |
     T_dato Corchete_a error LISTA ASIGNACION P_coma |
 
+
+    T_dato error Corchete_c Visibilidad error P_coma VARIABLES |
+    T_dato error Corchete_c error P_coma VARIABLES |
+
+    T_dato error Corchete_c Visibilidad error ASIGNACION P_coma VARIABLES |
+    T_dato error Corchete_c error ASIGNACION P_coma VARIABLES |
+
+    T_dato error Corchete_c Visibilidad error P_coma |
+    T_dato error Corchete_c error P_coma |
+
+    T_dato error Corchete_c Visibilidad error ASIGNACION P_coma |
+    T_dato error Corchete_c error ASIGNACION P_coma |
 
     T_dato Visibilidad LISTA error VARIABLES |
     T_dato LISTA error VARIABLES |
@@ -404,23 +451,92 @@ VARIABLES ::=
     T_dato Visibilidad LISTA ASIGNACION error |
     T_dato LISTA ASIGNACION error |
     T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION error |
-    T_dato Corchete_a Corchete_c LISTA ASIGNACION error 
+    T_dato Corchete_a Corchete_c LISTA ASIGNACION error |
+
+
+
+
+    T_dato Visibilidad error VARIABLES |
+    T_dato error VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad error VARIABLES |
+    T_dato Corchete_a Corchete_c error VARIABLES |
+
+    T_dato Visibilidad error ASIGNACION error VARIABLES |
+    T_dato error ASIGNACION error VARIABLES |
+    T_dato Corchete_a Corchete_c Visibilidad error ASIGNACION error VARIABLES |
+    T_dato Corchete_a Corchete_c error ASIGNACION error VARIABLES |
+
+    T_dato Visibilidad error |
+    T_dato error |
+    T_dato Corchete_a Corchete_c Visibilidad error |
+    T_dato Corchete_a Corchete_c error |
+
+    T_dato Visibilidad error ASIGNACION error |
+    T_dato error ASIGNACION error |
+    T_dato Corchete_a Corchete_c Visibilidad error ASIGNACION error |
+    T_dato Corchete_a Corchete_c error ASIGNACION error |
+    
+    
+
+    T_dato error Corchete_c Visibilidad error VARIABLES |
+    T_dato Corchete_a error Visibilidad error VARIABLES |
+    T_dato Corchete_a error VARIABLES |
+    T_dato error Corchete_c error VARIABLES |
+
+    T_dato error Corchete_c Visibilidad error ASIGNACION error VARIABLES |
+    T_dato Corchete_a error Visibilidad error ASIGNACION error VARIABLES |
+    T_dato Corchete_a error ASIGNACION error VARIABLES |
+    T_dato error Corchete_c error ASIGNACION error VARIABLES |
+
+    T_dato error Corchete_c Visibilidad error  |
+    T_dato Corchete_a error Visibilidad error  |
+    T_dato error Corchete_c error  |
+
+    T_dato error Corchete_c Visibilidad error ASIGNACION error  |
+    T_dato Corchete_a error Visibilidad error ASIGNACION error  |
+    T_dato Corchete_a error ASIGNACION error  |
+    T_dato error Corchete_c error ASIGNACION error  
 ;
 ASIGNACION ::= 
     Igual EXPRESION
 ;
 ESTRUCTURA ::=
     Struct Identificador Llave_a VARIABLES Llave_c ESTRUCTURA |
+    Struct Identificador Llave_a Llave_c ESTRUCTURA |
     Struct Identificador Llave_a VARIABLES Llave_c |
+    Struct Identificador Llave_a Llave_c |
 
     Struct error Llave_a VARIABLES Llave_c ESTRUCTURA |
-    Struct Identificador error VARIABLES Llave_c ESTRUCTURA |
-
+    Struct error Llave_a Llave_c ESTRUCTURA |
     Struct error Llave_a VARIABLES Llave_c |
+    Struct error Llave_a Llave_c |
+
+    Struct Identificador error VARIABLES Llave_c ESTRUCTURA |
+    Struct Identificador error Llave_c ESTRUCTURA |
     Struct Identificador error VARIABLES Llave_c |
+    Struct Identificador error Llave_c |
+    
 
     Struct Identificador Llave_a VARIABLES error ESTRUCTURA |
-    Struct Identificador Llave_a VARIABLES error 
+    Struct Identificador Llave_a error ESTRUCTURA |
+    Struct Identificador Llave_a VARIABLES error |
+    Struct Identificador Llave_a error |
+
+    Struct error VARIABLES Llave_c ESTRUCTURA |
+    Struct error Llave_c ESTRUCTURA |
+    Struct error VARIABLES Llave_c |
+    Struct error Llave_c |
+    
+    Struct Identificador error VARIABLES error ESTRUCTURA |
+    Struct Identificador error ESTRUCTURA |
+    Struct Identificador error VARIABLES error |
+
+    Struct error Llave_a VARIABLES error ESTRUCTURA |
+    Struct error Llave_a error ESTRUCTURA |
+    Struct error Llave_a VARIABLES error |
+    Struct error Llave_a error |
+
+    Struct error ESTRUCTURA    
 ;
 FUNCION_HEADER ::=
     
@@ -492,15 +608,36 @@ FUNCION ::=
     Function FUNCION_HEADER Llave_a VARIABLES error |
     Function FUNCION_HEADER Llave_a VARIABLES CUERPO error |
     Function FUNCION_HEADER Llave_a CUERPO error |
-    Function FUNCION_HEADER Llave_a error 
+    Function FUNCION_HEADER Llave_a error |
+
+    Function FUNCION_HEADER error VARIABLES error FUNCION |
+    Function FUNCION_HEADER error VARIABLES CUERPO error FUNCION |
+    Function FUNCION_HEADER error CUERPO error FUNCION |
+    Function FUNCION_HEADER error FUNCION |
+    Function FUNCION_HEADER error VARIABLES error |
+    Function FUNCION_HEADER error VARIABLES CUERPO error |
+    Function FUNCION_HEADER error CUERPO error 
 ;
 RETURNS ::= 
     Returns Parentesis_a T_dato Identificador  Parentesis_c|
+    Returns Parentesis_a Parentesis_c  |
     Returns error T_dato Identificador Parentesis_c |
     Returns Parentesis_a T_dato error Parentesis_c |
     Returns Parentesis_a T_dato Identificador error |
-    Returns Parentesis_a Parentesis_c
-    
+    Returns Parentesis_a error Identificador Parentesis_c |
+
+    Returns error T_dato Identificador error |
+    Returns Parentesis_a T_dato error |
+    Returns Parentesis_a error Identificador error |
+
+    Returns error T_dato error Parentesis_c | 
+
+    Returns error Identificador Parentesis_c |
+
+    Returns error Parentesis_c |
+    Returns Parentesis_a error |
+    Returns error T_dato error |
+    Returns error Identificador error    
 ;
 PARAMETROS ::=
     T_dato Identificador Coma PARAMETROS |
