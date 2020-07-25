@@ -1456,7 +1456,17 @@ FUNCION ::=
     Function error FUNCION_HEADER error CUERPO Llave_c |
     Function error FUNCION_HEADER error Llave_c |
 
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES Llave_c error FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c error FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c error FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a Llave_c error FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES Llave_c error |
+    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c error |
+    Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c error |
+    Function Identificador FUNCION_HEADER Llave_a Llave_c error |
+
     Function Identificador FUNCION_HEADER Llave_a error Llave_c FUNCION |
+    Function Identificador FUNCION_HEADER Llave_a error FUNCION |
     Function Identificador FUNCION_HEADER Llave_a error Llave_c
 ;
 RETURNS ::= 
