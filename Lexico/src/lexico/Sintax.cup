@@ -150,15 +150,6 @@ parser code
         erroresStr.add("Inicio");
         break;
       }
-      if (";".equals(sp.value)) {
-        //System.out.println("Soy un error de Expresion");
-        cadena += "~" + s.value + "~ ...";
-        //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
-        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
-        errores.add(sp2);
-        erroresStr.add("Expresion");
-        break;
-      }
       if ("contract".equals(sp.value)) {
         //System.out.println("Soy un error de inicio");
         cadena += "~" + s.value + "~ ...";
@@ -236,8 +227,7 @@ start with INICIO;
 INICIO ::= 
     Pragma Solidity Numero Numero P_coma CONTRATO |
     Pragma Solidity Caret Numero Numero P_coma CONTRATO |
-    Pragma error P_coma CONTRATO |
-    Pragma Solidity Caret Numero Numero P_coma error CONTRATO
+    Pragma error CONTRATO
 ;
 CONTRATO ::=
     Contract Identificador Llave_a Llave_c CONTRATO |
