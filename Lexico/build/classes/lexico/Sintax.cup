@@ -251,20 +251,91 @@ parser code
       if ("enum".equals(sp.value)) {
         System.out.println("Soy un error de enum xd");
         //System.out.println("Soy un error de enum xd");
+        for (int r = this.stack.size() - 1; r > i; r--) {
+          Symbol toc = this.stack.get(r); 
+          if (toc.sym == sym.Llave_c || toc.sym == sym.Llave_a) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Wrong_Contract_Structure"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }         
+        }
+
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Enum"+" (" + Integer.toString(sp.right+1) + ")");
+        if (!set) erroresStr.add("Enum"+" (" + Integer.toString(sp.right+1) + ")");
         break;
       }
       if ("struct".equals(sp.value)) {
+
         //System.out.println("Soy un error de struct chama");
+
+
+
+
+        boolean set = false;
+
+        boolean duperFound = false;
+
+          for (int x = this.stack.size() - 1; x > 0; x--) { 
+              if ("function".equals(this.stack.get(x).value)) break;
+              if ("{".equals(this.stack.get(x).value)) duperFound = true;
+          } 
+          if (!duperFound) {
+              cadena += "~" + s.value + "~ ...";
+              Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
+              errores.add(sp2);
+              erroresStr.add("Function"+" (" + Integer.toString(sp.right+1) + ")");
+              break;
+          } 
+
+        for (int r = this.stack.size() - 1; r > i; r--) {
+          Symbol toc = this.stack.get(r); 
+          if (toc.sym == sym.Llave_c || toc.sym == sym.Llave_a) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Wrong_Contract_Structure"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }         
+        }
+
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Struct"+" (" + Integer.toString(sp.right+1) + ")");
+        if (!set) erroresStr.add("Struct"+" (" + Integer.toString(sp.right+1) + ")");
         break;
       }
       if ("function".equals(sp.value)) {
@@ -376,6 +447,28 @@ parser code
             erroresStr.add("Missing_Expression_Operand"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
             break;
           }
+          if (toc.sym == sym.Llave_c || toc.sym == sym.Llave_a) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Wrong_Contract_Structure"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }         
+
           if (toc.sym == sym.Parentesis_c || s.sym == sym.Parentesis_c || toc.sym == sym.Parentesis_a || s.sym == sym.Parentesis_a) {
             cadena = ""; boolean superSet = false, found = false, found2 = false;  
             for (int x = this.stack.size() - 1; x > 0; x--) { 
@@ -447,11 +540,36 @@ parser code
 
       if ("contract".equals(sp.value)) {
         //System.out.println("Soy un error de inicio");
+        for (int r = this.stack.size() - 1; r > i; r--) {
+          Symbol toc = this.stack.get(r); 
+          if (toc.sym == sym.Llave_c || toc.sym == sym.Llave_a) {
+            cadena = ""; boolean superSet = false, found = false, found2 = false;  
+            for (int x = this.stack.size() - 1; x > 0; x--) { 
+                if ("{".equals(this.stack.get(x).value)) found = true;
+                if (")".equals(this.stack.get(x).value)) found2 = true;
+                if ("function".equals(this.stack.get(x).value)) { 
+                    cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena; 
+                    superSet = true; break; 
+                }
+                if (";".equals(this.stack.get(x).value) || "{".equals(this.stack.get(x).value)) break; 
+                cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
+            } 
+            if (!superSet) cadena = "function ( .. ) ... " + cadena;           
+            if (superSet && !found && found2) {set = true;
+                erroresStr.add("Missing_Opening_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract"+" (" + Integer.toString(sp.right+1) + ")");
+                break;
+            }
+            set = true;
+            erroresStr.add("Wrong_Contract_Structure"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract"+" (" + Integer.toString(sp.right+1) + ")");
+            break;
+          }         
+        }
+
         cadena += "~" + s.value + "~ ...";
         //if (this.lookahead != null) for (Symbol x : this.lookahead) System.out.println(x.value);
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
-        erroresStr.add("Contract"+" (" + Integer.toString(sp.right+1) + ")");
+        if (!set) erroresStr.add("Contract"+" (" + Integer.toString(sp.right+1) + ")");
         break;
       }
       if ("if".equals(sp.value)) {
