@@ -14,7 +14,7 @@ parser code
     String cadena = "";
 
     if (s.left+1 == 0 || s.right+1 == 0) {
-        cadena += "~" + "EOF" + "~ ...";
+        cadena += "~" + "EOF" + "~";
         Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
         errores.add(sp2);
         erroresStr.add("Reached_EOF_While_Parsing");
