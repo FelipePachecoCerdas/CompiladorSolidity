@@ -12,6 +12,15 @@ parser code
   public void syntax_error(Symbol s) {
     System.out.println("ERROR EN " + s.value + " " + Integer.toString(s.right + 1) + ": " + Integer.toString(s.left + 1) );
     String cadena = "";
+
+    if (s.left+1 == 0 || s.right+1 == 0) {
+        cadena += "~" + "EOF" + "~ ...";
+        Symbol sp2 = new Symbol(s.sym, s.left, s.right, cadena);
+        errores.add(sp2);
+        erroresStr.add("Reached_EOF_While_Parsing");
+        return;
+    }
+
     for (int i = this.stack.size() - 1; i > 0; i--) {
       Symbol sp = this.stack.get(i);
        
@@ -34,7 +43,7 @@ parser code
                           toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
                           toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
                         set = true;
-                        erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        erroresStr.add("Missing_Operator_Or_Semicolon"+" (" + Integer.toString(toc.right+1) + ")" + " on Struct_Variable"+" (" + Integer.toString(sp.right+1) + ")");
                         break;
                       }
                       if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
@@ -129,7 +138,7 @@ parser code
                           toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
                           toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
                         set = true;
-                        erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                        erroresStr.add("Missing_Operator_Or_Semicolon"+" (" + Integer.toString(toc.right+1) + ")" + " on Contract_Variable"+" (" + Integer.toString(sp.right+1) + ")");
                         break;
                       }
                       if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
@@ -189,7 +198,7 @@ parser code
                           toc.sym == sym.String || s.sym == sym.String || toc.sym == sym.Identificador || s.sym == sym.Identificador || 
                           toc.sym == sym.Op_booleano || s.sym == sym.Op_booleano) && (toc.value != null)) {
                         set = true;
-                        erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Function_Variable"+" (" + Integer.toString(sp.right+1) + ")");
+                         erroresStr.add("Missing_Operator_Or_Semicolon"+" (" + Integer.toString(toc.right+1) + ")" + " on Function_Variable"+" (" + Integer.toString(sp.right+1) + ")");
                         break;
                       }
                       if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
@@ -381,7 +390,7 @@ parser code
                 break;
             }
             set = true;
-            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
+            erroresStr.add("Missing_Operator_Or_Semicolon"+" (" + Integer.toString(toc.right+1) + ")" + " on Function"+" (" + Integer.toString(sp.right+1) + ")");
             break;
           }
           if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
@@ -593,7 +602,7 @@ parser code
                 cadena = ((this.stack.get(x).value == null) ? ".." :  this.stack.get(x).value)+ " " + cadena;
             } 
             Symbol prev = (toc.sym == sym.Else) ? this.stack.get(r-1): this.stack.get(this.stack.size() - 1);
-            if ("}".equals(prev.value)) erroresStr.add("Wrong_Else_Placement"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            if ("}".equals(prev.value)) erroresStr.add("Wrong_Placement"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
             else erroresStr.add("Missing_Closing_Bracket"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
             set = true;
             
@@ -621,7 +630,7 @@ parser code
                 break;
             }
             set = true;
-            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
+            erroresStr.add("Missing_Operator_Or_Semicolon"+" (" + Integer.toString(toc.right+1) + ")" + " on If"+" (" + Integer.toString(sp.right+1) + ")");
             break;
           }
           if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
@@ -767,7 +776,7 @@ parser code
                 break;
             }
             set = true;
-            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
+            erroresStr.add("Missing_Operator_Or_Semicolon"+" (" + Integer.toString(toc.right+1) + ")" + " on For"+" (" + Integer.toString(sp.right+1) + ")");
             break;
           }
           if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
@@ -915,7 +924,7 @@ parser code
                 break;
             }
             set = true;
-            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
+            erroresStr.add("Missing_Operator_Or_Semicolon"+" (" + Integer.toString(toc.right+1) + ")" + " on While"+" (" + Integer.toString(sp.right+1) + ")");
             break;
           }
           if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
@@ -1058,7 +1067,7 @@ parser code
                 break;
             }
             set = true;
-            erroresStr.add("Missing_Operator"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
+            erroresStr.add("Missing_Operator_Or_Semicolon"+" (" + Integer.toString(toc.right+1) + ")" + " on Do"+" (" + Integer.toString(sp.right+1) + ")");
             break;
           }
           if (toc.sym == sym.Dos_Puntos || s.sym == sym.Dos_Puntos || toc.sym == sym.Pregunta || s.sym == sym.Pregunta) {
