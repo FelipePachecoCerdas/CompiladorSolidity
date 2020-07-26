@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.Border;
@@ -46,7 +47,7 @@ public class Interfaz extends javax.swing.JFrame {
   JTable table;
   DefaultTableModel modelo, modelo2, modelo3;
   JTable tabla, tabla2, tabla3;
-  String infoArchivo;
+  String infoArchivo, msBox = "";
 
   /**
    * Creates new form Interfaz
@@ -289,6 +290,8 @@ public class Interfaz extends javax.swing.JFrame {
         modelo3.addRow(row);
       }
       System.out.println("Parsing done " + Integer.toString(st.errores.size()));
+      this.msBox += " Análisis sintácico realizado exitosamente." + ((modelo3.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo3.getRowCount()) + " errores sintácicos.") : " No se han encontrado errores sintácicos.");
+      JOptionPane.showMessageDialog(null, this.msBox, "Estado de Compilación", JOptionPane.INFORMATION_MESSAGE);
       //String[] row = {"", "Analisis realizado correctamente", ""};
       //modelo3.addRow(row);
       //txtAnalizarSin.setText("Analisis realizado correctamente");
@@ -300,7 +303,10 @@ public class Interfaz extends javax.swing.JFrame {
         String[] row = {e.value.toString(), st.erroresStr.get(j), Integer.toString(e.right + 1) + ": " + Integer.toString(e.left + 1)};
         modelo3.addRow(row);
       }
-      System.out.println("BAD");
+      this.msBox += " Análisis sintácico realizado exitosamente." + ((modelo3.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo3.getRowCount()) + " errores sintácicos.") : " No se han encontrado errores sintácicos.");
+      JOptionPane.showMessageDialog(null, this.msBox, "Estado de Compilación", JOptionPane.INFORMATION_MESSAGE);
+
+      System.out.println("Errores");
       //Symbol sym = s.getS();
       //String[] row = {"", "Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"", ""};
       //modelo3.addRow(row);
@@ -392,9 +398,8 @@ public class Interfaz extends javax.swing.JFrame {
 
       }
       this.updateRowHeights();
-
+      this.msBox = "Análisis léxico realizado exitosamente." + ((modelo2.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo2.getRowCount()) + " errores léxicos.") : " No se han encontrado errores léxicos.");
 //jTextPane1.setText(Resultados);//mostrando los resultados
-
       /*
     for (String palabra : palabras.keySet()) {
       Resultados = Resultados + palabra;
