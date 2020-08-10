@@ -59,6 +59,8 @@ public class Interfaz extends javax.swing.JFrame {
     Object[][] rows = {};
     Object[] cols = {"Token", "Tipo", "Apariciones"};
     modelo = new DefaultTableModel(rows, cols);
+    //Ayudador.getInstance().ponerTipo("hola");
+    //Ayudador.getInstance().intentar("", "");
 
     tabla = new JTable(modelo);
     tabla.setBounds(0, 0, 500, 300);
