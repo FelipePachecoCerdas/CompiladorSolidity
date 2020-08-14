@@ -107,6 +107,14 @@ public class InterfazSemantica extends javax.swing.JFrame {
     Object[] cols3 = {"Código"};
     modelo3 = new DefaultTableModel(rows3, cols3);
 
+    String codigo = sem.getAsm();
+    String[] lineas = codigo.split("\n");
+
+    for (String linea : lineas) {
+      String[] row = {linea};
+      modelo3.addRow(row);
+    }
+
     tabla3 = new JTable(modelo3);
     tabla3.setBounds(0, 0, 800, 150);
     tabla3.setRowHeight(25);
@@ -228,83 +236,6 @@ public class InterfazSemantica extends javax.swing.JFrame {
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
-  private void ProbarSintactico() {
-
-    int k = modelo3.getRowCount();
-    for (int j = 0; j < k; j++) {
-      modelo3.removeRow(0);
-    }
-
-    String ST = infoArchivo;
-    lexico.LexerCup lc = new lexico.LexerCup(new StringReader(ST));
-    lexico.LexerCup lc2 = new lexico.LexerCup(new StringReader(ST));
-
-    try {
-      Symbol s;
-      while ((s = (lc2.next_token())).value != null) {
-        if (s.value == "struct") {
-          break;
-        }
-        //System.out.println(s.value + ": " + Integer.toString(s.sym));
-
-      }
-    } catch (IOException e) {
-    }
-
-    Sintax st = new Sintax(lc);
-
-    try {
-      st.parse();
-
-      for (int j = 0; j < st.errores.size(); j++) {
-
-        Symbol e = st.errores.get(j);
-        String[] row = {e.value.toString(), st.erroresStr.get(j), Integer.toString(e.right + 1) + ": " + Integer.toString(e.left + 1)};
-        modelo3.addRow(row);
-      }
-      System.out.println("Parsing done " + Integer.toString(st.errores.size()));
-      this.msBox += " Análisis sintácico realizado exitosamente." + ((modelo3.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo3.getRowCount()) + " errores sintácicos.") : " No se han encontrado errores sintácicos.");
-      JOptionPane.showMessageDialog(null, this.msBox, "Estado de Compilación", JOptionPane.INFORMATION_MESSAGE);
-      //String[] row = {"", "Analisis realizado correctamente", ""};
-      //modelo3.addRow(row);
-      //txtAnalizarSin.setText("Analisis realizado correctamente");
-      //txtAnalizarSin.setForeground(new Color(25, 111, 61));
-    } catch (Exception ex) {
-      for (int j = 0; j < st.errores.size(); j++) {
-
-        Symbol e = st.errores.get(j);
-        String[] row = {e.value.toString(), st.erroresStr.get(j), Integer.toString(e.right + 1) + ": " + Integer.toString(e.left + 1)};
-        modelo3.addRow(row);
-      }
-      this.msBox += " Análisis sintácico realizado exitosamente." + ((modelo3.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo3.getRowCount()) + " errores sintácicos.") : " No se han encontrado errores sintácicos.");
-      JOptionPane.showMessageDialog(null, this.msBox, "Estado de Compilación", JOptionPane.INFORMATION_MESSAGE);
-
-      System.out.println("Errores");
-      //Symbol sym = s.getS();
-      //String[] row = {"", "Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"", ""};
-      //modelo3.addRow(row);
-      //txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
-      //txtAnalizarSin.setForeground(Color.red);
-    }
-    Semantico sem = Semantico.self();
-
-    for (String s : sem.ts.keySet()) {
-      SimboloTS info = sem.ts.get(s);
-      System.out.println("Variable: " + s + ", Tipo: " + info.tipoDato + ", Valor: " + info.valor + ", Alcance: " + info.alcance);
-    }
-    /*
-        try {
-            s.parse();
-            Symbol sym = s.getS();
-            txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
-            txtAnalizarSin.setForeground(Color.red);
-            System.out.println("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
-
-        } catch (Exception ex) {
-            txtAnalizarSin.setText("Analisis realizado correctamente");
-            txtAnalizarSin.setForeground(new Color(25, 111, 61));
-        }*/
-  }
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
@@ -312,85 +243,6 @@ public class InterfazSemantica extends javax.swing.JFrame {
   private javax.swing.JLabel jLabel6;
   private javax.swing.JPanel jPanel1;
   // End of variables declaration//GEN-END:variables
-  public void ProbarLexerFile() throws IOException {
-
-    JFileChooser elegidor = new JFileChooser();
-    int returnVal = elegidor.showOpenDialog(this);
-
-    if (returnVal == JFileChooser.APPROVE_OPTION) {
-      File file = elegidor.getSelectedFile();
-
-      File archivo = new File(elegidor.getSelectedFile().getAbsolutePath());
-
-      infoArchivo = new String(Files.readAllBytes(archivo.toPath()));
-
-      Reader reader;
-      reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "ISO-8859-15"));//TextInput.getText()
-
-      Lexer lexer = new Lexer(reader);
-
-      int k = modelo.getRowCount();
-      for (int j = 0; j < k; j++) {
-        modelo.removeRow(0);
-      }
-
-      k = modelo2.getRowCount();
-      for (int j = 0; j < k; j++) {
-        modelo2.removeRow(0);
-      }
-
-//se comienza a evaluar cada caracter
-      LinkedHashMap<String, LinkedHashMap<String, Integer>> palabras = SingletoneEscaner.getInstance().usarJflex(lexer);
-
-      for (String palabra : palabras.keySet()) {
-        int i = palabra.indexOf(' ');
-        String tipo = palabra.substring(0, i);
-        String token = palabra.substring(i + 1, palabra.length());
-        String apariciones = "";
-        for (String linea : palabras.get(palabra).keySet()) {
-          apariciones = apariciones + " " + linea + "(" + palabras.get(palabra).get(linea) + "),";
-        }
-        apariciones = apariciones.substring(0, apariciones.length() - 1);
-
-        String[] row = {token, tipo, apariciones};
-        switch (tipo) {
-
-          case "IDENTIFICADOR":
-          case "OPERADOR":
-          case "PALABRA_RESERVADA":
-          case "TRANSAC":
-          case "UNIDAD":
-          case "LITERAL":
-            modelo.addRow(row);
-            break;
-          case "ERROR_IDENTIFICADOR":
-          case "ERROR_COMENTARIO":
-          case "ERROR_STRING":
-          case "ERROR_CARACTERES_NO_VALIDOS":
-          case "ERROR_HEXADECIMAL":
-          case "ERROR_CEROS_A_LA_IZQUIERDA":
-          case "ERROR_NOTACION_CIENTIFICA":
-            modelo2.addRow(row);
-            break;
-        }
-
-      }
-      this.updateRowHeights();
-      this.msBox = "Análisis léxico realizado exitosamente." + ((modelo2.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo2.getRowCount()) + " errores léxicos.") : " No se han encontrado errores léxicos.");
-//jTextPane1.setText(Resultados);//mostrando los resultados
-      /*
-    for (String palabra : palabras.keySet()) {
-      Resultados = Resultados + palabra;
-      for (String linea : palabras.get(palabra).keySet()) {
-        Resultados = Resultados + " " + linea + "(" + palabras.get(palabra).get(linea) + "),";
-      }
-      Resultados = Resultados.substring(0, Resultados.length() - 1) + "\n";
-    }*/
-    } else {
-      System.out.println("Open command cancelled by user.");
-    }
-
-  }
 
   private void updateRowHeights() {
     for (int row = 0; row < tabla.getRowCount(); row++) {

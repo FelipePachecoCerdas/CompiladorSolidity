@@ -314,14 +314,14 @@ FUNCION_HEADER ::=
 
 ;
 FUNCION ::=
-    Function Identificador FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
-    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
-    Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
-    Function Identificador FUNCION_HEADER Llave_a Llave_c FUNCION |
-    Function Identificador FUNCION_HEADER Llave_a VARIABLES Llave_c |
-    Function Identificador FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c |
-    Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c |
-    Function Identificador FUNCION_HEADER Llave_a Llave_c |
+    Function Identificador:i FUNCION_HEADER Llave_a VARIABLES Llave_c {: Semantico.self().funcion_nombre(i); :} FUNCION |
+    Function Identificador:i FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c {: Semantico.self().funcion_nombre(i); :} FUNCION |
+    Function Identificador:i FUNCION_HEADER Llave_a CUERPO Llave_c {: Semantico.self().funcion_nombre(i); :} FUNCION |
+    Function Identificador:i FUNCION_HEADER Llave_a Llave_c {: Semantico.self().funcion_nombre(i); :} FUNCION |
+    Function Identificador:i FUNCION_HEADER Llave_a VARIABLES Llave_c {: Semantico.self().funcion_nombre(i); :} |
+    Function Identificador:i FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c {: Semantico.self().funcion_nombre(i); :} |
+    Function Identificador:i FUNCION_HEADER Llave_a CUERPO Llave_c {: Semantico.self().funcion_nombre(i); :} |
+    Function Identificador:i FUNCION_HEADER Llave_a Llave_c {: Semantico.self().funcion_nombre(i); :} |
 
     Function Identificador FUNCION_HEADER Llave_a CUERPO VARIABLES error Llave_c FUNCION |
 
