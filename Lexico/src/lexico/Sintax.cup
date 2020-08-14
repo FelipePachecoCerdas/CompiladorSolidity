@@ -4,6 +4,7 @@ import java_cup.runtime.Symbol;
 import java.util.Stack;
 import java.util.ArrayList;
 import java.util.Iterator;
+import lexico.Ayudador;
 
 parser code
 {:  public ArrayList<Symbol> errores = new ArrayList<>();
@@ -1316,29 +1317,29 @@ ENUMERADOR ::=
     Enum Identificador error Llave_c 
 ;
 LISTA ::= 
-    Identificador Coma LISTA |
-    Identificador
+    Identificador:i Coma LISTA {: Ayudador.getInstance().intentar(i, "global"); :}|
+    Identificador:i {: Ayudador.getInstance().intentar(i, "global"); :}
 ;
 VARIABLES ::=
-    T_dato Visibilidad LISTA P_coma VARIABLES |
-    T_dato LISTA P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c Visibilidad LISTA P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c LISTA P_coma VARIABLES |
+    T_dato:t Visibilidad LISTA P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t LISTA P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t Corchete_a Corchete_c Visibilidad LISTA P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t Corchete_a Corchete_c LISTA P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
 
-    T_dato Visibilidad LISTA ASIGNACION P_coma VARIABLES |
-    T_dato LISTA ASIGNACION P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c LISTA ASIGNACION P_coma VARIABLES |
+    T_dato:t Visibilidad LISTA ASIGNACION P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t LISTA ASIGNACION P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t Corchete_a Corchete_c Visibilidad LISTA ASIGNACION P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t Corchete_a Corchete_c LISTA ASIGNACION P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
 
-    T_dato Visibilidad LISTA P_coma |
-    T_dato LISTA P_coma |
-    T_dato Corchete_a Corchete_c Visibilidad LISTA P_coma |
-    T_dato Corchete_a Corchete_c LISTA P_coma |
+    T_dato:t Visibilidad LISTA P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t LISTA P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t Corchete_a Corchete_c Visibilidad LISTA P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t Corchete_a Corchete_c LISTA P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
 
-    T_dato Visibilidad LISTA ASIGNACION P_coma |
-    T_dato LISTA ASIGNACION P_coma |
-    T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION P_coma |
-    T_dato Corchete_a Corchete_c LISTA ASIGNACION P_coma |
+    T_dato:t Visibilidad LISTA ASIGNACION P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t LISTA ASIGNACION P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t Corchete_a Corchete_c Visibilidad LISTA ASIGNACION P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t Corchete_a Corchete_c LISTA ASIGNACION P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
 
 
 
