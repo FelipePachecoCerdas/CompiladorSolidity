@@ -315,6 +315,12 @@ public class Interfaz extends javax.swing.JFrame {
       //txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
       //txtAnalizarSin.setForeground(Color.red);
     }
+    Semantico sem = Semantico.self();
+
+    for (String s : sem.ts.keySet()) {
+      SimboloTS info = sem.ts.get(s);
+      System.out.println("Variable: " + s + ", Tipo: " + info.tipoDato + ", Valor: " + info.valor + ", Alcance: " + info.alcance);
+    }
     /*
         try {
             s.parse();

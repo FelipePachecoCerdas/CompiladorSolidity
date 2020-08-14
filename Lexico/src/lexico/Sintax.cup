@@ -4,7 +4,7 @@ import java_cup.runtime.Symbol;
 import java.util.Stack;
 import java.util.ArrayList;
 import java.util.Iterator;
-import lexico.Ayudador;
+import lexico.Semantico;
 
 parser code
 {:  public ArrayList<Symbol> errores = new ArrayList<>();
@@ -149,30 +149,22 @@ ENUMERADOR ::=
     Enum Identificador error Llave_c 
 ;
 LISTA ::= 
-    Identificador:i Coma LISTA {: Ayudador.getInstance().intentar(i, "global"); :}|
-    Identificador:i {: Ayudador.getInstance().intentar(i, "global"); :}
+    Identificador:i Coma {: Semantico.self().variables_nombre(i); :} LISTA  |
+    Identificador:i {: Semantico.self().variables_nombre(i); :} |
+    Identificador:i ASIGNACION Coma {: Semantico.self().variables_nombre(i); :} LISTA  |
+    Identificador:i ASIGNACION {: Semantico.self().variables_nombre(i); :} 
 ;
 VARIABLES ::=
-    T_dato:t Visibilidad LISTA P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t LISTA P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t Corchete_a Corchete_c Visibilidad LISTA P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t Corchete_a Corchete_c LISTA P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
+    T_dato:t Visibilidad LISTA P_coma {: Semantico.self().variables_tipo(t); :} VARIABLES |
+    T_dato:t LISTA P_coma {: Semantico.self().variables_tipo(t); :} VARIABLES |
+    T_dato:t Corchete_a Corchete_c Visibilidad LISTA P_coma VARIABLES |
+    T_dato:t Corchete_a Corchete_c LISTA P_coma VARIABLES |
 
-    T_dato:t Visibilidad LISTA ASIGNACION P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t LISTA ASIGNACION P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t Corchete_a Corchete_c Visibilidad LISTA ASIGNACION P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t Corchete_a Corchete_c LISTA ASIGNACION P_coma VARIABLES {: Ayudador.getInstance().ponerTipo(t); :}|
 
-    T_dato:t Visibilidad LISTA P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t LISTA P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t Corchete_a Corchete_c Visibilidad LISTA P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t Corchete_a Corchete_c LISTA P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
-
-    T_dato:t Visibilidad LISTA ASIGNACION P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t LISTA ASIGNACION P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t Corchete_a Corchete_c Visibilidad LISTA ASIGNACION P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
-    T_dato:t Corchete_a Corchete_c LISTA ASIGNACION P_coma {: Ayudador.getInstance().ponerTipo(t); :}|
-
+    T_dato:t Visibilidad LISTA P_coma {: Semantico.self().variables_tipo(t); :} |
+    T_dato:t LISTA P_coma {: Semantico.self().variables_tipo(t); :} |
+    T_dato:t Corchete_a Corchete_c Visibilidad LISTA P_coma |
+    T_dato:t Corchete_a Corchete_c LISTA P_coma |
 
 
     T_dato Visibilidad error P_coma VARIABLES |
@@ -180,83 +172,43 @@ VARIABLES ::=
     T_dato Corchete_a Corchete_c Visibilidad error P_coma VARIABLES |
     T_dato Corchete_a Corchete_c error P_coma VARIABLES |
 
-    T_dato Visibilidad error ASIGNACION P_coma VARIABLES |
-    T_dato error ASIGNACION P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c Visibilidad error ASIGNACION P_coma VARIABLES |
-    T_dato Corchete_a Corchete_c error ASIGNACION P_coma VARIABLES |
-
     T_dato Visibilidad error P_coma |
     T_dato error P_coma |
     T_dato Corchete_a Corchete_c Visibilidad error P_coma |
     T_dato Corchete_a Corchete_c error P_coma |
-
-    T_dato Visibilidad error ASIGNACION P_coma |
-    T_dato error ASIGNACION P_coma |
-    T_dato Corchete_a Corchete_c Visibilidad error ASIGNACION P_coma |
-    T_dato Corchete_a Corchete_c error ASIGNACION P_coma |
-
 
 
 
     T_dato error Corchete_c Visibilidad LISTA P_coma VARIABLES |
     T_dato error Corchete_c LISTA P_coma VARIABLES |
 
-    T_dato error Corchete_c Visibilidad LISTA ASIGNACION P_coma VARIABLES |
-    T_dato error Corchete_c LISTA ASIGNACION P_coma VARIABLES |
-
     T_dato error Corchete_c Visibilidad LISTA P_coma |
     T_dato error Corchete_c LISTA P_coma |
-
-    T_dato error Corchete_c Visibilidad LISTA ASIGNACION P_coma |
-    T_dato error Corchete_c LISTA ASIGNACION P_coma |
 
 
 
     T_dato Corchete_a error Visibilidad LISTA P_coma VARIABLES |
     T_dato Corchete_a error LISTA P_coma VARIABLES |
 
-    T_dato Corchete_a error Visibilidad LISTA ASIGNACION P_coma VARIABLES |
-    T_dato Corchete_a error LISTA ASIGNACION P_coma VARIABLES |
-
     T_dato Corchete_a error Visibilidad LISTA P_coma |
     T_dato Corchete_a error LISTA P_coma |
-
-    T_dato Corchete_a error Visibilidad LISTA ASIGNACION P_coma |
-    T_dato Corchete_a error LISTA ASIGNACION P_coma |
 
 
     T_dato error Corchete_c Visibilidad error P_coma VARIABLES |
     T_dato error Corchete_c error P_coma VARIABLES |
 
-    T_dato error Corchete_c Visibilidad error ASIGNACION P_coma VARIABLES |
-    T_dato error Corchete_c error ASIGNACION P_coma VARIABLES |
-
     T_dato error Corchete_c Visibilidad error P_coma |
     T_dato error Corchete_c error P_coma |
-
-    T_dato error Corchete_c Visibilidad error ASIGNACION P_coma |
-    T_dato error Corchete_c error ASIGNACION P_coma |
 
     T_dato Visibilidad LISTA error VARIABLES |
     T_dato LISTA error VARIABLES |
     T_dato Corchete_a Corchete_c Visibilidad LISTA error VARIABLES |
     T_dato Corchete_a Corchete_c LISTA error VARIABLES |
 
-    T_dato Visibilidad LISTA ASIGNACION error VARIABLES |
-    T_dato LISTA ASIGNACION error VARIABLES |
-    T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION error VARIABLES |
-    T_dato Corchete_a Corchete_c LISTA ASIGNACION error VARIABLES |
-
     T_dato Visibilidad LISTA error |
     T_dato LISTA error |
     T_dato Corchete_a Corchete_c Visibilidad LISTA error |
     T_dato Corchete_a Corchete_c LISTA error |
-
-    T_dato Visibilidad LISTA ASIGNACION error |
-    T_dato LISTA ASIGNACION error |
-    T_dato Corchete_a Corchete_c Visibilidad LISTA ASIGNACION error |
-    T_dato Corchete_a Corchete_c LISTA ASIGNACION error |
-
 
 
 
@@ -265,21 +217,11 @@ VARIABLES ::=
     T_dato Corchete_a Corchete_c Visibilidad error VARIABLES |
     T_dato Corchete_a Corchete_c error VARIABLES |
 
-    T_dato Visibilidad error ASIGNACION error VARIABLES |
-    T_dato error ASIGNACION error VARIABLES |
-    T_dato Corchete_a Corchete_c Visibilidad error ASIGNACION error VARIABLES |
-    T_dato Corchete_a Corchete_c error ASIGNACION error VARIABLES |
-
     T_dato Visibilidad error |
     T_dato error |
     T_dato Corchete_a Corchete_c Visibilidad error |
     T_dato Corchete_a Corchete_c error |
 
-    T_dato Visibilidad error ASIGNACION error |
-    T_dato error ASIGNACION error |
-    T_dato Corchete_a Corchete_c Visibilidad error ASIGNACION error |
-    T_dato Corchete_a Corchete_c error ASIGNACION error |
-    
     
 
     T_dato error Corchete_c Visibilidad error VARIABLES |
@@ -287,19 +229,9 @@ VARIABLES ::=
     T_dato Corchete_a error VARIABLES |
     T_dato error Corchete_c error VARIABLES |
 
-    T_dato error Corchete_c Visibilidad error ASIGNACION error VARIABLES |
-    T_dato Corchete_a error Visibilidad error ASIGNACION error VARIABLES |
-    T_dato Corchete_a error ASIGNACION error VARIABLES |
-    T_dato error Corchete_c error ASIGNACION error VARIABLES |
-
     T_dato error Corchete_c Visibilidad error  |
     T_dato Corchete_a error Visibilidad error  |
-    T_dato error Corchete_c error  |
-
-    T_dato error Corchete_c Visibilidad error ASIGNACION error  |
-    T_dato Corchete_a error Visibilidad error ASIGNACION error  |
-    T_dato Corchete_a error ASIGNACION error  |
-    T_dato error Corchete_c error ASIGNACION error 
+    T_dato error Corchete_c error  
 ;
 ASIGNACION ::= 
     Igual EXPRESION
