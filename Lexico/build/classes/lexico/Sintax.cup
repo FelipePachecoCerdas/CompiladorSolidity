@@ -366,8 +366,9 @@ FUNCION ::=
     Function Identificador FUNCION_HEADER Llave_a error Llave_c
 ;
 RETURNS ::= 
-    Returns Parentesis_a T_dato Identificador  Parentesis_c|
+    Returns Parentesis_a T_dato:t Identificador {: Semantico.self().funcion_tipo(t); :} Parentesis_c|
     Returns Parentesis_a Parentesis_c  |
+
     Returns error T_dato Identificador Parentesis_c |
     Returns Parentesis_a T_dato error Parentesis_c |
     Returns Parentesis_a T_dato Identificador error |

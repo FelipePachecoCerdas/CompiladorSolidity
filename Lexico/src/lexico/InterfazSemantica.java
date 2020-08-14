@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -72,7 +73,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
       SimboloTS info = sem.ts.get(s);
       System.out.println("Variable: " + s + ", Tipo: " + info.tipoDato + ", Valor: " + info.valor + ", Alcance: " + info.alcance);
 
-      String[] row = {s, info.tipoDato, (info.tipoDato.equals("int")) ? info.valor.toString() : "null", info.alcance, info.tipoSimbolo};
+      String[] row = {s, info.tipoDato, (info.tipoDato.equals("int") && info.tipoSimbolo.equals("variable")) ? info.valor.toString() : "null", info.alcance, info.tipoSimbolo};
       modelo.addRow(row);
     }
     //Ayudador.getInstance().ponerTipo("hola");
@@ -114,11 +115,13 @@ public class InterfazSemantica extends javax.swing.JFrame {
     modelo3 = new DefaultTableModel(rows3, cols3);
 
     String codigo = sem.getAsm();
-    System.out.println(codigo);
+    String codigoHtml = "<html><body><pre>";
     for (String linea : codigo.split("\n")) {
-      String[] row = {linea};
-      modelo3.addRow(row);
+      codigoHtml += " " + linea + "<br />";
+      //String[] row = {linea};
+      //modelo3.addRow(row);
     }
+    codigoHtml += "</pre></body></html>";
 
     try {
       fileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".asm";
@@ -135,17 +138,30 @@ public class InterfazSemantica extends javax.swing.JFrame {
     }
 
     tabla3 = new JTable(modelo3);
-    tabla3.setBounds(0, 0, 800, 150);
+    tabla3.setBounds(0, 0, 800, 35);
     tabla3.setRowHeight(25);
     tabla3.setLocation(0, 0);
     tabla3.setFont(new Font("Dialog", Font.PLAIN, 13));
 
     JScrollPane scroll3 = new JScrollPane(tabla3, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    scroll3.setBounds(0, 0, 800, 150);
+    scroll3.setBounds(0, 0, 800, 35);
     scroll3.setLocation(175, 525);
     scroll3.updateUI();
     scroll3.getViewport().setBackground(Color.decode("#cf7500"));
     this.add(scroll3);
+
+    JLabel codigoLabel = new JLabel(codigoHtml);
+
+    codigoLabel.setBounds(0, 0, 800, 150);
+    codigoLabel.setForeground(Color.WHITE);
+    codigoLabel.setFont(new Font(Font.DIALOG, Font.PLAIN, codigoLabel.getFont().getSize()));
+    JScrollPane js = new JScrollPane(codigoLabel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    js.setBackground(Color.red);
+    js.setBounds(0, 0, 800, 150);
+    js.getViewport().setBackground(Color.decode("#fa744f"));
+    js.getViewport().setForeground(Color.WHITE);
+    js.setLocation(175, 555);
+    this.add(js);
 
     initComponents();
     String s = "393e46";

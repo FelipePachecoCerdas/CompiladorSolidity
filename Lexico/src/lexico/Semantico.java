@@ -24,6 +24,7 @@ public class Semantico {
 
   public String asm_funcion = "";
   public String nombre_funcion = "";
+  public String tipo_funcion = null;
 
   private static Semantico instancia = null;
 
@@ -67,9 +68,19 @@ public class Semantico {
   public void funcion_nombre(Object nombre) {
     this.nombre_funcion = (String) nombre;
 
+    if (this.tipo_funcion == null) {
+      this.tipo_funcion = "void";
+    }
+
+    SimboloTS info = new SimboloTS(this.tipo_funcion, null, "global", "función");
+    this.ts.put(this.nombre_funcion, info);
+    this.ts_aux.add(this.nombre_funcion);
+
     this.asm_funcion += this.nombre_funcion + ":\n" + TAB + "enter 0,0\n" + TAB + "sub EBX, EBX\n";
     // meter el cuerpo 
     this.asm_funcion += "\n" + TAB + "leave\n" + TAB + "ret\n";
+
+    this.tipo_funcion = null;
   }
 
   public String getAsm() {
@@ -77,6 +88,14 @@ public class Semantico {
     this.asm_inicio += TAB + "call " + this.nombre_funcion + "\n";
 
     return this.asm_variables + this.asm_inicio + this.asm_end + "\n\n" + this.asm_funcion;
+  }
+
+  public void print(Object x) {
+    System.out.println(x.toString());
+  }
+
+  public void funcion_tipo(Object tipo) {
+    this.tipo_funcion = (String) tipo;
   }
 
 }
