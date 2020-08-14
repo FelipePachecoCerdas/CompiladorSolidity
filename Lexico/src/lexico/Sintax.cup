@@ -222,7 +222,6 @@ VARIABLES ::=
     T_dato Corchete_a Corchete_c Visibilidad error |
     T_dato Corchete_a Corchete_c error |
 
-    
 
     T_dato error Corchete_c Visibilidad error VARIABLES |
     T_dato Corchete_a error Visibilidad error VARIABLES |
@@ -234,7 +233,7 @@ VARIABLES ::=
     T_dato error Corchete_c error  
 ;
 ASIGNACION ::= 
-    Igual EXPRESION
+    Igual {: Semantico.self().variables_expresion(); :} EXPRESION
 ;
 ESTRUCTURA ::=
     Struct Identificador Llave_a VARIABLES Llave_c ESTRUCTURA |
@@ -419,7 +418,7 @@ IDENTIFICADOR_COMPLEJO ::=
     This |
     Identificador Parentesis_a Parentesis_c |
     Identificador Parentesis_a ARGUMENTOS Parentesis_c |
-    Identificador
+    Identificador: i {: Semantico.self().expresion_guardarId(i); :}
 ;
 IDENTIFICADOR_CUERPO ::=
     IDENTIFICADOR_COMPLEJO Punto IDENTIFICADOR_CUERPO  |
@@ -434,19 +433,19 @@ ASIGNACION_COMPLEJA ::=
 ;
 ATRIBUCION_IGUAL ::=
     Op_atribucion |
-    Igual
+    Igual:i {: Semantico.self().expresion_guardarOpArit(i); :}
 ;
 ARGUMENTOS ::=
     EXPRESION Coma ARGUMENTOS |
     EXPRESION
 ;
 LITERAL ::= 
-    Numero |
+    Numero:n {: Semantico.self().expresion_guardarNum(n); :} |
     String |
     Op_booleano
 ;
 EXPRESION ::=
-    EXPRESION OP_ARITMETICO EXPRESION_TERM |
+    EXPRESION OP_ARITMETICO EXPRESION_TERM {: Semantico.self().expresion_evalBinary(); :} |
     EXPRESION Op_logico EXPRESION_TERM |
     EXPRESION OP_ARITMETICO error |
     EXPRESION Op_logico error |
@@ -458,7 +457,7 @@ EXPRESION_TERM ::=
     Parentesis_a EXPRESION Parentesis_c |
 
     OP_UNARIO EXPRESION_TERM |
-    ASIGNACION_BASICA |
+    ASIGNACION_BASICA {: Semantico.self().expresion_evalBinary(); :} |
     OP_TERNARIO |
 
     LITERAL |
@@ -467,8 +466,8 @@ EXPRESION_TERM ::=
 ;
 OP_ARITMETICO ::=
     Op_Aritmetico |
-    Mas |
-    Menos
+    Mas:m {: Semantico.self().expresion_guardarOpArit(m); :} |
+    Menos:n {: Semantico.self().expresion_guardarOpArit(n); :}
 ;
 OP_UNARIO ::=
     Mas |

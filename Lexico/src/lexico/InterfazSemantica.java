@@ -115,6 +115,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
     modelo3 = new DefaultTableModel(rows3, cols3);
 
     String codigo = sem.getAsm();
+    sem.printPila();
     String codigoHtml = "<html><body><pre>";
     for (String linea : codigo.split("\n")) {
       codigoHtml += " " + linea + "<br />";

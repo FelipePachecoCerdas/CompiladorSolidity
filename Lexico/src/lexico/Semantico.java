@@ -7,6 +7,7 @@ package lexico;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Stack;
 
 /**
  *
@@ -15,6 +16,8 @@ import java.util.LinkedHashMap;
 public class Semantico {
 
   public LinkedHashMap<String, SimboloTS> ts = new LinkedHashMap<>();
+  public Stack<RegistroSemantico> pilaSem = new Stack<>();
+
   public ArrayList<String> ts_aux = new ArrayList<>();
   public final String TAB = "    ";
 
@@ -25,6 +28,7 @@ public class Semantico {
   public String asm_funcion = "";
   public String nombre_funcion = "";
   public String tipo_funcion = null;
+  public boolean expresion_variable = false;
 
   private static Semantico instancia = null;
 
@@ -55,7 +59,7 @@ public class Semantico {
   }
 
   public void variables_nombre(Object nombre) {
-    System.out.print(nombre.toString() + " ");
+    System.out.println(nombre.toString() + " ");
     SimboloTS info = new SimboloTS(null, null, "global", "variable");
     this.ts.put((String) nombre, info);
     this.ts_aux.add((String) nombre);
@@ -94,8 +98,46 @@ public class Semantico {
     System.out.println(x.toString());
   }
 
+  public void variables_expresion() {
+    this.expresion_variable = true;
+  }
+
   public void funcion_tipo(Object tipo) {
     this.tipo_funcion = (String) tipo;
+  }
+
+  public void expresion_guardarNum(Object numero) {
+    RegistroSemantico_DataObject rs_do = new RegistroSemantico_DataObject("constante", "int", Integer.parseInt((String) numero));
+    pilaSem.push(rs_do);
+  }
+
+  public void expresion_guardarId(Object identificador_) {
+    String identificador = (String) identificador_;
+    // Validar que this.ts.get(identificador) exista !!!!!!!!!!!
+    RegistroSemantico_DataObject rs_do = new RegistroSemantico_DataObject("direccion", this.ts.get(identificador).tipoDato, identificador);
+    pilaSem.push(rs_do);
+  }
+
+  public void expresion_guardarOpArit(Object operador) {
+    RegistroSemantico_Operador rs_op = new RegistroSemantico_Operador("aritmetico", (String) operador);
+    pilaSem.push(rs_op);
+  }
+
+  public void expresion_evalBinary() {
+    RegistroSemantico_DataObject rs_do1 = (RegistroSemantico_DataObject) this.pilaSem.pop();
+    RegistroSemantico_Operador rs_op = (RegistroSemantico_Operador) this.pilaSem.pop();
+    RegistroSemantico_DataObject rs_do2 = (RegistroSemantico_DataObject) this.pilaSem.pop();
+
+    System.out.println("EVALUANDO " + rs_do1.valor.toString() + rs_op.operador + rs_do2.valor.toString());
+
+    rs_do1.valor = "dummy";
+    this.pilaSem.push(rs_do1);
+  }
+
+  public void printPila() {
+    for (RegistroSemantico rs : this.pilaSem) {
+      System.out.println(rs.toString());
+    }
   }
 
 }
