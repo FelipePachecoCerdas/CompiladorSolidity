@@ -11,15 +11,18 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -51,8 +54,11 @@ public class InterfazSemantica extends javax.swing.JFrame {
 
   /**
    * Creates new form Interfaz
+   *
+   * @param fileDir
+   * @param fileName
    */
-  public InterfazSemantica() {
+  public InterfazSemantica(String fileDir, String fileName) {
     javax.swing.UIManager.getDefaults().put("ScrollBar.minimumThumbSize", new Dimension(29, 29));
     javax.swing.UIManager.getDefaults().put("TableHeader.cellBorder", BorderFactory.createEmptyBorder(20, 20, 20, 21));
 
@@ -108,11 +114,24 @@ public class InterfazSemantica extends javax.swing.JFrame {
     modelo3 = new DefaultTableModel(rows3, cols3);
 
     String codigo = sem.getAsm();
-    String[] lineas = codigo.split("\n");
-
-    for (String linea : lineas) {
+    System.out.println(codigo);
+    for (String linea : codigo.split("\n")) {
       String[] row = {linea};
       modelo3.addRow(row);
+    }
+
+    try {
+      fileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".asm";
+      File file = new File(fileDir + "\\" + fileName);
+      Writer output = new BufferedWriter(new FileWriter(file));
+
+      for (String linea : codigo.split("\n")) {
+        output.write(linea + "\n");
+      }
+
+      output.close();
+    } catch (IOException e) {
+      System.out.println("Could not create file");
     }
 
     tabla3 = new JTable(modelo3);

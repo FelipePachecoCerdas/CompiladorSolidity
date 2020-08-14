@@ -47,7 +47,7 @@ public class Interfaz extends javax.swing.JFrame {
   JTable table;
   DefaultTableModel modelo, modelo2, modelo3;
   JTable tabla, tabla2, tabla3;
-  String infoArchivo, msBox = "";
+  String infoArchivo, msBox = "", fileDir, fileName;
 
   /**
    * Creates new form Interfaz
@@ -256,7 +256,7 @@ public class Interfaz extends javax.swing.JFrame {
 
   private void ButtonAnalizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAnalizeActionPerformed
     // TODO add your handling code here:
-    InterfazSemantica interfazSem = new InterfazSemantica();
+    InterfazSemantica interfazSem = new InterfazSemantica(this.fileDir, this.fileName);
     interfazSem.setVisible(true);
   }//GEN-LAST:event_ButtonAnalizeActionPerformed
 
@@ -358,6 +358,8 @@ public class Interfaz extends javax.swing.JFrame {
       File file = elegidor.getSelectedFile();
 
       File archivo = new File(elegidor.getSelectedFile().getAbsolutePath());
+      this.fileDir = elegidor.getSelectedFile().getParent();
+      this.fileName = elegidor.getSelectedFile().getName();
 
       infoArchivo = new String(Files.readAllBytes(archivo.toPath()));
 

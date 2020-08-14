@@ -18,7 +18,7 @@ public class Semantico {
   public ArrayList<String> ts_aux = new ArrayList<>();
   public final String TAB = "    ";
 
-  public String asm_variables = ".DATA\n.UDATA\n";
+  public String asm_variables = ".DATA\n.UDATA";
   public String asm_inicio = ".CODE\n" + TAB + ".STARUP\n\ninicio:\n";
   public final String asm_end = "\nfin:\n" + TAB + ".EXIT";
 
