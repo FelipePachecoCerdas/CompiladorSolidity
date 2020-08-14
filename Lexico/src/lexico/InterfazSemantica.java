@@ -57,7 +57,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
     javax.swing.UIManager.getDefaults().put("TableHeader.cellBorder", BorderFactory.createEmptyBorder(20, 20, 20, 21));
 
     Object[][] rows = {};
-    Object[] cols = {"Identificador", "Tipo", "Valor", "Alcance"};
+    Object[] cols = {"Identificador", "Tipo Dato", "Valor", "Alcance", "Tipo"};
     modelo = new DefaultTableModel(rows, cols);
 
     Semantico sem = Semantico.self();
@@ -66,7 +66,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
       SimboloTS info = sem.ts.get(s);
       System.out.println("Variable: " + s + ", Tipo: " + info.tipoDato + ", Valor: " + info.valor + ", Alcance: " + info.alcance);
 
-      String[] row = {s, info.tipoDato, (info.tipoDato.equals("int")) ? info.valor.toString() : "null", info.alcance};
+      String[] row = {s, info.tipoDato, (info.tipoDato.equals("int")) ? info.valor.toString() : "null", info.alcance, info.tipoSimbolo};
       modelo.addRow(row);
     }
     //Ayudador.getInstance().ponerTipo("hola");
@@ -134,6 +134,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
     tabla.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
     tabla.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
     tabla.getColumnModel().getColumn(3).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
+    tabla.getColumnModel().getColumn(4).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
 
     tabla2.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129"), 2));
     tabla2.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129"), 2));

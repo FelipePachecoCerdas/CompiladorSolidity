@@ -55,7 +55,7 @@ public class Semantico {
 
   public void variables_nombre(Object nombre) {
     System.out.print(nombre.toString() + " ");
-    SimboloTS info = new SimboloTS(null, null, "global");
+    SimboloTS info = new SimboloTS(null, null, "global", "variable");
     this.ts.put((String) nombre, info);
     this.ts_aux.add((String) nombre);
 
