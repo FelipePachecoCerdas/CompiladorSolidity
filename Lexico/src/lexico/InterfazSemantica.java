@@ -42,7 +42,7 @@ import javax.swing.table.TableColumn;
  *
  * @author usuario
  */
-public class Interfaz extends javax.swing.JFrame {
+public class InterfazSemantica extends javax.swing.JFrame {
 
   JTable table;
   DefaultTableModel modelo, modelo2, modelo3;
@@ -52,13 +52,23 @@ public class Interfaz extends javax.swing.JFrame {
   /**
    * Creates new form Interfaz
    */
-  public Interfaz() {
+  public InterfazSemantica() {
     javax.swing.UIManager.getDefaults().put("ScrollBar.minimumThumbSize", new Dimension(29, 29));
     javax.swing.UIManager.getDefaults().put("TableHeader.cellBorder", BorderFactory.createEmptyBorder(20, 20, 20, 21));
 
     Object[][] rows = {};
-    Object[] cols = {"Token", "Tipo", "Apariciones"};
+    Object[] cols = {"Identificador", "Tipo", "Valor", "Alcance"};
     modelo = new DefaultTableModel(rows, cols);
+
+    Semantico sem = Semantico.self();
+
+    for (String s : sem.ts.keySet()) {
+      SimboloTS info = sem.ts.get(s);
+      System.out.println("Variable: " + s + ", Tipo: " + info.tipoDato + ", Valor: " + info.valor + ", Alcance: " + info.alcance);
+
+      String[] row = {s, info.tipoDato, (info.tipoDato.equals("int")) ? info.valor.toString() : "null", info.alcance};
+      modelo.addRow(row);
+    }
     //Ayudador.getInstance().ponerTipo("hola");
     //Ayudador.getInstance().intentar("", "");
 
@@ -94,7 +104,7 @@ public class Interfaz extends javax.swing.JFrame {
     this.add(scroll2);
 
     Object[][] rows3 = {};
-    Object[] cols3 = {"Hilera Errónea", "Tipo de Error", "Línea: Carácter"};
+    Object[] cols3 = {"Código"};
     modelo3 = new DefaultTableModel(rows3, cols3);
 
     tabla3 = new JTable(modelo3);
@@ -115,14 +125,13 @@ public class Interfaz extends javax.swing.JFrame {
     tabla.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
     tabla.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
     tabla.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
+    tabla.getColumnModel().getColumn(3).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
 
     tabla2.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129"), 2));
     tabla2.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129"), 2));
     tabla2.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#729d39"), Color.decode("#a7d129"), 2));
 
     tabla3.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#fa744f"), Color.decode("#ffa931"), 2));
-    tabla3.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#fa744f"), Color.decode("#ffa931"), 2));
-    tabla3.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer(Color.decode("#fa744f"), Color.decode("#ffa931"), 2));
 
     tabla.getTableHeader().setDefaultRenderer(new ColorRenderer(Color.decode("#900c3f"), Color.decode("#900c3f"), 1));
     tabla2.getTableHeader().setDefaultRenderer(new ColorRenderer(Color.decode("#445c3c"), Color.decode("#a7d129"), 1));
@@ -132,9 +141,6 @@ public class Interfaz extends javax.swing.JFrame {
     tabla3.setShowGrid(true);
 
     tabla2.getColumnModel().getColumn(1).setPreferredWidth(200);    //Surname
-    tabla3.getColumnModel().getColumn(1).setPreferredWidth(50);    //Surname
-    tabla3.getColumnModel().getColumn(2).setPreferredWidth(50);    //Surname
-    tabla3.getColumnModel().getColumn(0).setPreferredWidth(300);    //Surname
     this.setLocationRelativeTo(null);
     this.getContentPane().setBackground(Color.decode("#121212"));
 
@@ -150,12 +156,10 @@ public class Interfaz extends javax.swing.JFrame {
   private void initComponents() {
 
     jPanel1 = new javax.swing.JPanel();
-    ButtonAnalize = new javax.swing.JButton();
     jLabel2 = new javax.swing.JLabel();
     jLabel3 = new javax.swing.JLabel();
     jLabel5 = new javax.swing.JLabel();
     jLabel6 = new javax.swing.JLabel();
-    ButtonAnalize1 = new javax.swing.JButton();
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
@@ -170,54 +174,33 @@ public class Interfaz extends javax.swing.JFrame {
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-    ButtonAnalize.setBackground(Color.decode("#4ecca3"));
-    ButtonAnalize.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-    ButtonAnalize.setText("Información Semántica");
-    ButtonAnalize.setAutoscrolls(true);
-    ButtonAnalize.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        ButtonAnalizeActionPerformed(evt);
-      }
-    });
-
     jLabel2.setBackground(new java.awt.Color(255, 255, 255));
     jLabel2.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
     jLabel2.setForeground(Color.decode("#29c7ac"));
-    jLabel2.setText("Analizador Léxico");
+    jLabel2.setText("Análisis Semántico");
 
     jLabel3.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
     jLabel3.setForeground(Color.decode("#ffa931"));
-    jLabel3.setText("Errores Sintácticos");
+    jLabel3.setText("Código Ensamblador");
 
     jLabel5.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
     jLabel5.setForeground(Color.decode("#a0c334"));
-    jLabel5.setText("Errores Léxicos");
+    jLabel5.setText("Errores Semánticos");
 
     jLabel6.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
     jLabel6.setForeground(Color.decode("#9a0f98"));
-    jLabel6.setText("Tokens");
-
-    ButtonAnalize1.setBackground(Color.decode("#4ecca3"));
-    ButtonAnalize1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-    ButtonAnalize1.setText("Analizar");
-    ButtonAnalize1.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        ButtonAnalize1ActionPerformed(evt);
-      }
-    });
+    jLabel6.setText("Tabla de Símbolos");
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-        .addGap(270, 270, 270)
+        .addGap(211, 211, 211)
         .addComponent(jLabel6)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 175, Short.MAX_VALUE)
-        .addComponent(ButtonAnalize1)
-        .addGap(134, 134, 134)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addComponent(jLabel5)
-        .addGap(217, 217, 217))
+        .addGap(179, 179, 179))
       .addGroup(layout.createSequentialGroup()
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
@@ -225,49 +208,25 @@ public class Interfaz extends javax.swing.JFrame {
             .addComponent(jLabel2))
           .addGroup(layout.createSequentialGroup()
             .addGap(465, 465, 465)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(ButtonAnalize)
-              .addComponent(jLabel3))))
-        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jLabel3)))
+        .addContainerGap(412, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addGap(24, 24, 24)
         .addComponent(jLabel2)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addGap(41, 41, 41)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(jLabel5)
-              .addComponent(jLabel6)))
-          .addGroup(layout.createSequentialGroup()
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(ButtonAnalize1)))
+        .addGap(41, 41, 41)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel5)
+          .addComponent(jLabel6))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
         .addComponent(jLabel3)
-        .addGap(165, 165, 165)
-        .addComponent(ButtonAnalize)
-        .addContainerGap())
+        .addGap(210, 210, 210))
     );
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
-
-  private void ButtonAnalizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAnalizeActionPerformed
-    // TODO add your handling code here:
-    InterfazSemantica interfazSem = new InterfazSemantica();
-    interfazSem.setVisible(true);
-  }//GEN-LAST:event_ButtonAnalizeActionPerformed
-
-  private void ButtonAnalize1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAnalize1ActionPerformed
-    try {
-      ProbarLexerFile();//llamando al metodo ProbarLexerFile();
-      ProbarSintactico();
-    } catch (IOException ex) {
-      System.out.println(ex.getMessage());
-    }
-  }//GEN-LAST:event_ButtonAnalize1ActionPerformed
 
   private void ProbarSintactico() {
 
@@ -347,8 +306,6 @@ public class Interfaz extends javax.swing.JFrame {
         }*/
   }
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JButton ButtonAnalize;
-  private javax.swing.JButton ButtonAnalize1;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
   private javax.swing.JLabel jLabel5;
