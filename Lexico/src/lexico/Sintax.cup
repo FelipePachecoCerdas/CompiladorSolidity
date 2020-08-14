@@ -1558,6 +1558,8 @@ FUNCION ::=
     Function Identificador FUNCION_HEADER Llave_a CUERPO Llave_c |
     Function Identificador FUNCION_HEADER Llave_a Llave_c |
 
+    Function Identificador FUNCION_HEADER Llave_a CUERPO VARIABLES error Llave_c FUNCION |
+
     Function error FUNCION_HEADER Llave_a VARIABLES Llave_c FUNCION |
     Function error FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c FUNCION |
     Function error FUNCION_HEADER Llave_a CUERPO Llave_c FUNCION |
