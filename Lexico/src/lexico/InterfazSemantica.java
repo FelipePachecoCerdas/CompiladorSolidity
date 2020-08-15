@@ -94,7 +94,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
     this.add(scroll);
 
     Object[][] rows2 = {};
-    Object[] cols2 = {"Token", "Error", "Apariciones"};
+    Object[] cols2 = {"Token", "Error", "Apariciones"}; // 2;
     modelo2 = new DefaultTableModel(rows2, cols2);
 
     tabla2 = new JTable(modelo2);

@@ -8,6 +8,7 @@ package lexico;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Stack;
+import java_cup.runtime.Symbol;
 
 /**
  *
@@ -20,6 +21,7 @@ public class Semantico {
 
   public ArrayList<String> ts_aux = new ArrayList<>();
   public final String TAB = "    ";
+  public int factor = 1;
 
   public String asm_variables = ".DATA\n.UDATA";
   public String asm_inicio = ".CODE\n" + TAB + ".STARUP\n\ninicio:\n";
@@ -31,6 +33,9 @@ public class Semantico {
   public boolean expresion_variable = false;
 
   private static Semantico instancia = null;
+
+  public ArrayList<Symbol> errores = new ArrayList<>();
+  public ArrayList<String> erroresStr = new ArrayList<>();
 
   private Semantico() {
   }
@@ -103,6 +108,7 @@ public class Semantico {
   }
 
   public void funcion_tipo(Object tipo) {
+    this.factor = 0;
     this.tipo_funcion = (String) tipo;
   }
 
@@ -113,7 +119,8 @@ public class Semantico {
 
   public void expresion_guardarId(Object identificador_) {
     String identificador = (String) identificador_;
-    // Validar que this.ts.get(identificador) exista !!!!!!!!!!!
+    // Validar que this.ts.get(identificador) exista !!!!!!!!!!!  1 + a
+
     RegistroSemantico_DataObject rs_do = new RegistroSemantico_DataObject("direccion", this.ts.get(identificador).tipoDato, identificador);
     pilaSem.push(rs_do);
   }
@@ -124,9 +131,9 @@ public class Semantico {
   }
 
   public void expresion_evalBinary() {
-    RegistroSemantico_DataObject rs_do1 = (RegistroSemantico_DataObject) this.pilaSem.pop();
-    RegistroSemantico_Operador rs_op = (RegistroSemantico_Operador) this.pilaSem.pop();
     RegistroSemantico_DataObject rs_do2 = (RegistroSemantico_DataObject) this.pilaSem.pop();
+    RegistroSemantico_Operador rs_op = (RegistroSemantico_Operador) this.pilaSem.pop();
+    RegistroSemantico_DataObject rs_do1 = (RegistroSemantico_DataObject) this.pilaSem.pop();
 
     System.out.println("EVALUANDO " + rs_do1.valor.toString() + rs_op.operador + rs_do2.valor.toString());
 
@@ -138,6 +145,11 @@ public class Semantico {
     for (RegistroSemantico rs : this.pilaSem) {
       System.out.println(rs.toString());
     }
+  }
+
+  public void expresion_eval(Object symb) {
+
+    //System.out.println("TENGO QUE EVALUAR WEAS L:" + Integer.toString(((Symbol) symb).left + this.factor) + " R:" + Integer.toString(((Symbol) symb).right + this.factor));
   }
 
 }
