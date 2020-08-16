@@ -76,6 +76,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
       String[] row = {s, info.tipoDato, (info.tipoDato.equals("int") && info.tipoSimbolo.equals("variable")) ? info.valor.toString() : "null", info.alcance, info.tipoSimbolo};
       modelo.addRow(row);
     }
+    
     //Ayudador.getInstance().ponerTipo("hola");
     //Ayudador.getInstance().intentar("", "");
 
@@ -96,6 +97,14 @@ public class InterfazSemantica extends javax.swing.JFrame {
     Object[][] rows2 = {};
     Object[] cols2 = {"Token", "Error", "Apariciones"}; // 2;
     modelo2 = new DefaultTableModel(rows2, cols2);
+    
+    for (int i = 0; i < sem.erroresStr.size(); i++) {
+      String s = sem.erroresStr.get(i);
+      Symbol info = sem.errores.get(i);
+      
+      String[] row = { info.value.toString() , s, String.valueOf(info.right)};
+      modelo2.addRow(row);
+    }
 
     tabla2 = new JTable(modelo2);
     tabla2.setBounds(0, 0, 500, 300);
