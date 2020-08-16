@@ -111,6 +111,7 @@ public class Interfaz extends javax.swing.JFrame {
     this.add(scroll3);
 
     initComponents();
+    this.ButtonSemantico.setEnabled(false);
     String s = "393e46";
     tabla.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
     tabla.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer(Color.decode("#581845"), Color.decode("#900c3f"), 2));
@@ -150,7 +151,7 @@ public class Interfaz extends javax.swing.JFrame {
   private void initComponents() {
 
     jPanel1 = new javax.swing.JPanel();
-    ButtonAnalize = new javax.swing.JButton();
+    ButtonSemantico = new javax.swing.JButton();
     jLabel2 = new javax.swing.JLabel();
     jLabel3 = new javax.swing.JLabel();
     jLabel5 = new javax.swing.JLabel();
@@ -170,13 +171,13 @@ public class Interfaz extends javax.swing.JFrame {
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-    ButtonAnalize.setBackground(Color.decode("#4ecca3"));
-    ButtonAnalize.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-    ButtonAnalize.setText("Información Semántica");
-    ButtonAnalize.setAutoscrolls(true);
-    ButtonAnalize.addActionListener(new java.awt.event.ActionListener() {
+    ButtonSemantico.setBackground(Color.decode("#d9c6a5"));
+    ButtonSemantico.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+    ButtonSemantico.setText("Análisis Semántico");
+    ButtonSemantico.setAutoscrolls(true);
+    ButtonSemantico.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        ButtonAnalizeActionPerformed(evt);
+        ButtonSemanticoActionPerformed(evt);
       }
     });
 
@@ -222,19 +223,21 @@ public class Interfaz extends javax.swing.JFrame {
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
             .addGap(428, 428, 428)
-            .addComponent(jLabel2))
+            .addComponent(jLabel2)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(ButtonSemantico))
           .addGroup(layout.createSequentialGroup()
-            .addGap(465, 465, 465)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(ButtonAnalize)
-              .addComponent(jLabel3))))
+            .addGap(466, 466, 466)
+            .addComponent(jLabel3)))
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addGap(24, 24, 24)
-        .addComponent(jLabel2)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel2)
+          .addComponent(ButtonSemantico))
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
             .addGap(41, 41, 41)
@@ -244,24 +247,23 @@ public class Interfaz extends javax.swing.JFrame {
           .addGroup(layout.createSequentialGroup()
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addComponent(ButtonAnalize1)))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 342, Short.MAX_VALUE)
         .addComponent(jLabel3)
-        .addGap(165, 165, 165)
-        .addComponent(ButtonAnalize)
-        .addContainerGap())
+        .addGap(180, 180, 180))
     );
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
-  private void ButtonAnalizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAnalizeActionPerformed
+  private void ButtonSemanticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonSemanticoActionPerformed
     // TODO add your handling code here:
     InterfazSemantica interfazSem = new InterfazSemantica(this.fileDir, this.fileName);
     interfazSem.setVisible(true);
-  }//GEN-LAST:event_ButtonAnalizeActionPerformed
+  }//GEN-LAST:event_ButtonSemanticoActionPerformed
 
   private void ButtonAnalize1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAnalize1ActionPerformed
     try {
+
       ProbarLexerFile();//llamando al metodo ProbarLexerFile();
       ProbarSintactico();
     } catch (IOException ex) {
@@ -321,28 +323,13 @@ public class Interfaz extends javax.swing.JFrame {
       JOptionPane.showMessageDialog(null, this.msBox, "Estado de Compilación", JOptionPane.INFORMATION_MESSAGE);
 
       System.out.println("Errores");
-      //Symbol sym = s.getS();
-      //String[] row = {"", "Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"", ""};
-      //modelo3.addRow(row);
-      //txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
-      //txtAnalizarSin.setForeground(Color.red);
     }
-    /*
-        try {
-            s.parse();
-            Symbol sym = s.getS();
-            txtAnalizarSin.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
-            txtAnalizarSin.setForeground(Color.red);
-            System.out.println("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
+    this.ButtonSemantico.setEnabled(true);
 
-        } catch (Exception ex) {
-            txtAnalizarSin.setText("Analisis realizado correctamente");
-            txtAnalizarSin.setForeground(new Color(25, 111, 61));
-        }*/
   }
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JButton ButtonAnalize;
   private javax.swing.JButton ButtonAnalize1;
+  private javax.swing.JButton ButtonSemantico;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
   private javax.swing.JLabel jLabel5;
