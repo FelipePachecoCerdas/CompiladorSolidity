@@ -299,6 +299,10 @@ public class Interfaz extends javax.swing.JFrame {
     try {
       st.parse();
 
+      if (!st.errores.isEmpty()) {
+        Semantico.self().hayErrores = true;
+      }
+
       for (int j = 0; j < st.errores.size(); j++) {
 
         Symbol e = st.errores.get(j);
@@ -313,6 +317,10 @@ public class Interfaz extends javax.swing.JFrame {
       //txtAnalizarSin.setText("Analisis realizado correctamente");
       //txtAnalizarSin.setForeground(new Color(25, 111, 61));
     } catch (Exception ex) {
+      if (!st.errores.isEmpty()) {
+        Semantico.self().hayErrores = true;
+      }
+
       for (int j = 0; j < st.errores.size(); j++) {
 
         Symbol e = st.errores.get(j);
@@ -342,6 +350,7 @@ public class Interfaz extends javax.swing.JFrame {
     int returnVal = elegidor.showOpenDialog(this);
 
     if (returnVal == JFileChooser.APPROVE_OPTION) {
+      Semantico.self().theEndOfItAll();
       File file = elegidor.getSelectedFile();
 
       File archivo = new File(elegidor.getSelectedFile().getAbsolutePath());
@@ -396,6 +405,7 @@ public class Interfaz extends javax.swing.JFrame {
           case "ERROR_HEXADECIMAL":
           case "ERROR_CEROS_A_LA_IZQUIERDA":
           case "ERROR_NOTACION_CIENTIFICA":
+            Semantico.self().hayErrores = true;
             modelo2.addRow(row);
             break;
         }

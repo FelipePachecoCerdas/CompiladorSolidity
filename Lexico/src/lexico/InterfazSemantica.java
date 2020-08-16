@@ -33,6 +33,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.Border;
@@ -76,10 +77,9 @@ public class InterfazSemantica extends javax.swing.JFrame {
       String[] row = {s, info.tipoDato, (info.tipoDato.equals("int") && info.tipoSimbolo.equals("variable")) ? info.valor.toString() : "null", info.alcance, info.tipoSimbolo};
       modelo.addRow(row);
     }
-    
+
     //Ayudador.getInstance().ponerTipo("hola");
     //Ayudador.getInstance().intentar("", "");
-
     tabla = new JTable(modelo);
     tabla.setBounds(0, 0, 500, 300);
     tabla.setRowHeight(25);
@@ -97,12 +97,12 @@ public class InterfazSemantica extends javax.swing.JFrame {
     Object[][] rows2 = {};
     Object[] cols2 = {"Token", "Error", "Apariciones"}; // 2;
     modelo2 = new DefaultTableModel(rows2, cols2);
-    
+
     for (int i = 0; i < sem.erroresStr.size(); i++) {
       String s = sem.erroresStr.get(i);
       Symbol info = sem.errores.get(i);
-      
-      String[] row = { info.value.toString() , s, String.valueOf(info.right)};
+
+      String[] row = {info.value.toString(), s, String.valueOf(info.right)};
       modelo2.addRow(row);
     }
 
@@ -123,6 +123,9 @@ public class InterfazSemantica extends javax.swing.JFrame {
     Object[] cols3 = {"Código"};
     modelo3 = new DefaultTableModel(rows3, cols3);
 
+    if (!Semantico.self().errores.isEmpty()) {
+      Semantico.self().hayErrores = true;
+    }
     String codigo = sem.getAsm();
     sem.printPila();
     String codigoHtml = "<html><body><pre>";
@@ -132,21 +135,21 @@ public class InterfazSemantica extends javax.swing.JFrame {
       //modelo3.addRow(row);
     }
     codigoHtml += "</pre></body></html>";
+    if (!codigo.equals("")) {
+      try {
+        fileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".asm";
+        File file = new File(fileDir + "\\" + fileName);
+        Writer output = new BufferedWriter(new FileWriter(file));
 
-    try {
-      fileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".asm";
-      File file = new File(fileDir + "\\" + fileName);
-      Writer output = new BufferedWriter(new FileWriter(file));
+        for (String linea : codigo.split("\n")) {
+          output.write(linea + "\n");
+        }
 
-      for (String linea : codigo.split("\n")) {
-        output.write(linea + "\n");
+        output.close();
+      } catch (IOException e) {
+        System.out.println("Could not create file");
       }
-
-      output.close();
-    } catch (IOException e) {
-      System.out.println("Could not create file");
     }
-
     tabla3 = new JTable(modelo3);
     tabla3.setBounds(0, 0, 800, 35);
     tabla3.setRowHeight(25);
@@ -155,7 +158,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
 
     JScrollPane scroll3 = new JScrollPane(tabla3, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll3.setBounds(0, 0, 800, 35);
-    scroll3.setLocation(175, 525);
+    scroll3.setLocation(175, 500);
     scroll3.updateUI();
     scroll3.getViewport().setBackground(Color.decode("#cf7500"));
     this.add(scroll3);
@@ -170,7 +173,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
     js.setBounds(0, 0, 800, 150);
     js.getViewport().setBackground(Color.decode("#fa744f"));
     js.getViewport().setForeground(Color.WHITE);
-    js.setLocation(175, 555);
+    js.setLocation(175, 530);
     this.add(js);
 
     initComponents();
@@ -194,6 +197,8 @@ public class InterfazSemantica extends javax.swing.JFrame {
     tabla2.setShowGrid(true);
     tabla3.setShowGrid(true);
 
+    this.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+
     tabla2.getColumnModel().getColumn(1).setPreferredWidth(200);    //Surname
     this.setLocationRelativeTo(null);
     this.getContentPane().setBackground(Color.decode("#121212"));
@@ -214,6 +219,7 @@ public class InterfazSemantica extends javax.swing.JFrame {
     jLabel3 = new javax.swing.JLabel();
     jLabel5 = new javax.swing.JLabel();
     jLabel6 = new javax.swing.JLabel();
+    jButton1 = new javax.swing.JButton();
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
@@ -245,6 +251,16 @@ public class InterfazSemantica extends javax.swing.JFrame {
     jLabel6.setForeground(Color.decode("#9a0f98"));
     jLabel6.setText("Tabla de Símbolos");
 
+    jButton1.setBackground(Color.decode("#4ecca3"));
+    jButton1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+    jButton1.setForeground(new java.awt.Color(0, 0, 0));
+    jButton1.setText("←");
+    jButton1.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButton1ActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -252,37 +268,45 @@ public class InterfazSemantica extends javax.swing.JFrame {
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
         .addGap(211, 211, 211)
         .addComponent(jLabel6)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 335, Short.MAX_VALUE)
         .addComponent(jLabel5)
         .addGap(179, 179, 179))
       .addGroup(layout.createSequentialGroup()
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addGap(428, 428, 428)
-            .addComponent(jLabel2))
-          .addGroup(layout.createSequentialGroup()
-            .addGap(465, 465, 465)
-            .addComponent(jLabel3)))
-        .addContainerGap(412, Short.MAX_VALUE))
+        .addGap(30, 30, 30)
+        .addComponent(jButton1)
+        .addGap(346, 346, 346)
+        .addComponent(jLabel2)
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(jLabel3)
+        .addGap(455, 455, 455))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addGap(24, 24, 24)
-        .addComponent(jLabel2)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(jLabel2)
+          .addComponent(jButton1))
         .addGap(41, 41, 41)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabel5)
           .addComponent(jLabel6))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 311, Short.MAX_VALUE)
         .addComponent(jLabel3)
-        .addGap(210, 210, 210))
+        .addGap(202, 202, 202))
     );
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
+  private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    this.dispose();
+  }//GEN-LAST:event_jButton1ActionPerformed
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton jButton1;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
   private javax.swing.JLabel jLabel5;

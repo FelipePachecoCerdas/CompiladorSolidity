@@ -30,8 +30,7 @@ public class Semantico {
   public String asm_funcion = "";
   public String asm_cuerpo = "";
   public String nombre_funcion = "";
-  
-  
+
   public String tipo_funcion = null; //Dice si hay returns al inicio de la funcion
   public boolean hayReturn = false; //Dice si hay por lo menos un return en la funcion
   public boolean expresion_variable = false;
@@ -39,6 +38,7 @@ public class Semantico {
   private static Semantico instancia = null;
 
   public boolean variables_terminadas = false;
+  public boolean hayErrores = false;
 
   public ArrayList<Symbol> errores = new ArrayList<>();
   public ArrayList<String> erroresStr = new ArrayList<>();
@@ -73,58 +73,48 @@ public class Semantico {
     this.ultimoIndiceTS = this.ts.size();
   }
 
-  public void variables_nombre(Object nombre , Object symb) {
+  public void variables_nombre(Object nombre, Object symb) {
+
     Symbol simp = (Symbol) symb;
-    if(this.ts.get(nombre.toString()) != null){
-        System.out.println(nombre.toString() + " ya existe ");
-        System.out.println("Doble existencia en L:" + Integer.toString(simp.left + this.factor) + " R:" + Integer.toString(simp.right + this.factor));
-        Symbol sp2 = new Symbol(simp.sym, simp.left + this.factor, simp.right + this.factor, nombre.toString());
-        errores.add(sp2);
-        erroresStr.add("Variable ya definida anteriormente");
-    }
-    else{
-        System.out.println(nombre.toString() + " no existe ");
-        SimboloTS info = new SimboloTS(null, null, "global", "variable");
+    if (this.ts.get(nombre.toString()) != null) {
+      //System.out.println(nombre.toString() + " ya existe ");
+      //System.out.println("Doble existencia en L:" + Integer.toString(simp.left + this.factor) + " R:" + Integer.toString(simp.right + this.factor));
+      Symbol sp2 = new Symbol(simp.sym, simp.left + this.factor, simp.right + this.factor, nombre.toString());
+      errores.add(sp2);
+      erroresStr.add("Variable ya definida anteriormente");
+    } else {
+      if (this.variables_terminadas) {
+        System.out.println("Variable local: " + nombre.toString() + " ");
+        SimboloTS info = new SimboloTS(null, null, "local", "variable");
         this.ts.put((String) nombre, info);
         this.ts_aux.add((String) nombre);
-    }  
-      
-  public void variables_nombre(Object nombre) {
-    if (this.variables_terminadas) {
-      System.out.println("Variable local: " + nombre.toString() + " ");
-      SimboloTS info = new SimboloTS(null, null, "local", "variable");
+        return;
+      }
+
+      SimboloTS info = new SimboloTS(null, null, "global", "variable");
       this.ts.put((String) nombre, info);
       this.ts_aux.add((String) nombre);
-      return;
     }
-    System.out.println("Variable contrato: " + nombre.toString() + " ");
-    SimboloTS info = new SimboloTS(null, null, "global", "variable");
-    this.ts.put((String) nombre, info);
-    this.ts_aux.add((String) nombre);
 
-    /*for (String i : tablaSimbolos.keySet()) {
-      System.out.println(i + " " + tablaSimbolos.get(i)[0] + " " + tablaSimbolos.get(i)[1]);
-    }*/
   }
 
-  public void funcion_nombre(Object nombre ,Object symb) {
+  public void funcion_nombre(Object nombre, Object symb) {
     this.nombre_funcion = (String) nombre;
 
     if (this.tipo_funcion == null) { // No hay returns por lo tanto no debe de haber return
       this.tipo_funcion = "void";
-      if(hayReturn){ //Si es true es que hay return
-          System.out.println("Hay return y no deberia");
-      }  
-    }
-    else{ //Hay returns y por lo tanto ocupa un return
-      if(!hayReturn){ //Si es false es que no hay return, por eso se pone el not para que sea true y se meta al if
-          System.out.println("No hay return");
-          Symbol simp = (Symbol) symb;
-          System.out.println("No return en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
-          Symbol sp2 = new Symbol(simp.sym, simp.left -1, simp.right -1 , nombre.toString());
-          errores.add(sp2);
-          erroresStr.add("Fin de función y no se encontró return");
-      }  
+      if (hayReturn) { //Si es true es que hay return
+        System.out.println("Hay return y no deberia");
+      }
+    } else { //Hay returns y por lo tanto ocupa un return
+      if (!hayReturn) { //Si es false es que no hay return, por eso se pone el not para que sea true y se meta al if
+        System.out.println("No hay return");
+        Symbol simp = (Symbol) symb;
+        System.out.println("No return en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
+        Symbol sp2 = new Symbol(simp.sym, simp.left - 1, simp.right - 1, nombre.toString());
+        errores.add(sp2);
+        erroresStr.add("Fin de función y no se encontró return");
+      }
     }
 
     SimboloTS info = new SimboloTS(this.tipo_funcion, null, "global", "función");
@@ -143,6 +133,10 @@ public class Semantico {
   }
 
   public String getAsm() {
+    if (this.hayErrores) {
+      return "";
+    }
+
     this.asm_inicio = "\n\n" + this.asm_inicio;
     this.asm_inicio += TAB + "call " + this.nombre_funcion + "\n";
 
@@ -365,20 +359,20 @@ public class Semantico {
 
     //System.out.println("TENGO QUE EVALUAR WEAS L:" + Integer.toString(((Symbol) symb).left + this.factor) + " R:" + Integer.toString(((Symbol) symb).right + this.factor));
   }
-  
-  public void evalBreakFuncion(Object b ,Object symb){
-      Symbol simp = (Symbol) symb;
-        System.out.println("Break en funcion");
-        System.out.println("Break en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
-        Symbol sp2 = new Symbol(simp.sym, simp.left , simp.right -1 , b.toString());
-        errores.add(sp2);
-        erroresStr.add("Break en bloque no permitido");
-      
+
+  public void evalBreakFuncion(Object b, Object symb) {
+    Symbol simp = (Symbol) symb;
+    System.out.println("Break en funcion");
+    System.out.println("Break en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
+    Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right - 1, b.toString());
+    errores.add(sp2);
+    erroresStr.add("Break en bloque no permitido");
+
   }
-  
-  public void evalBreakSentencia(Object b ,Object symb){
-      Symbol simp = (Symbol) symb;
-      System.out.println("Break en sentencia");/*
+
+  public void evalBreakSentencia(Object b, Object symb) {
+    Symbol simp = (Symbol) symb;
+    System.out.println("Break en sentencia");/*
       if (pilaSem.search("while") == -1){ //EN PROCESO :V no encuentra un while para el break
         System.out.println("Break en bloque no permitido");
         System.out.println("Doble existencia en L:" + Integer.toString(simp.left + this.factor) + " R:" + Integer.toString(simp.right + this.factor));
@@ -386,18 +380,18 @@ public class Semantico {
         errores.add(sp2);
         erroresStr.add("Break en bloque no permitido");
       }*/
-      
+
   }
-  
-  public void returnEncontrado(Object symb){
-      hayReturn = true;
-      if (this.tipo_funcion == null) { // No hay returns por lo tanto no debe de haber return
-        Symbol simp = (Symbol) symb;
-        System.out.println("Return donde no debe");
-        System.out.println("Return en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
-        Symbol sp2 = new Symbol(simp.sym, simp.left +1, simp.right +1 , "return");
-        errores.add(sp2);
-        erroresStr.add("Return en funcion void");
+
+  public void returnEncontrado(Object symb) {
+    hayReturn = true;
+    if (this.tipo_funcion == null) { // No hay returns por lo tanto no debe de haber return
+      Symbol simp = (Symbol) symb;
+      System.out.println("Return donde no debe");
+      System.out.println("Return en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
+      Symbol sp2 = new Symbol(simp.sym, simp.left + 1, simp.right + 1, "return");
+      errores.add(sp2);
+      erroresStr.add("Return en funcion void");
     }
   }
 
@@ -565,6 +559,7 @@ public class Semantico {
   }
 
   public void theEndOfItAll() {
+    instancia = null;
     // DIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIE
   }
 }
