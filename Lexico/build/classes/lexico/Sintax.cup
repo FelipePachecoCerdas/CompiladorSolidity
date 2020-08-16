@@ -157,6 +157,10 @@ LISTA ::=
     Identificador:i {: Semantico.self().variables_nombre(i , this.parser.getCurToken()); :} |
     Identificador:i ASIGNACION Coma {: Semantico.self().variables_nombre(i , this.parser.getCurToken()); :} LISTA  |
     Identificador:i ASIGNACION {: Semantico.self().variables_nombre(i , this.parser.getCurToken()); :} 
+    Identificador:i Coma {: Semantico.self().variables_nombre(i); :} LISTA  |
+    Identificador:i {: Semantico.self().variables_nombre(i); :} |
+    Identificador:i ASIGNACION Coma {: Semantico.self().variables_nombre(i); Semantico.self().variables_asignarExpresion(); :} LISTA  |
+    Identificador:i ASIGNACION {: Semantico.self().variables_nombre(i); Semantico.self().variables_asignarExpresion(); :}  
 ;
 VARIABLES ::=
     T_dato:t Visibilidad LISTA P_coma {: Semantico.self().variables_tipo(t); :} VARIABLES |
@@ -237,7 +241,7 @@ VARIABLES ::=
     T_dato error Corchete_c error  
 ;
 ASIGNACION ::= 
-    Igual {: Semantico.self().variables_expresion(); :} EXPRESION {: Semantico.self().expresion_eval(this.parser.getCurToken()); :}
+    Igual EXPRESION 
 ;
 ESTRUCTURA ::=
     Struct Identificador Llave_a VARIABLES Llave_c ESTRUCTURA |
@@ -279,15 +283,15 @@ ESTRUCTURA ::=
 ;
 FUNCION_HEADER ::=
 
-    Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS |
-    Parentesis_a PARAMETROS Parentesis_c MODIFICADORES |
-    Parentesis_a PARAMETROS Parentesis_c RETURNS |
-    Parentesis_a PARAMETROS Parentesis_c |    
+    Parentesis_a PARAMETROS Parentesis_c MODIFICADORES RETURNS {: Semantico.self().variablesEnded(); :} |
+    Parentesis_a PARAMETROS Parentesis_c MODIFICADORES {: Semantico.self().variablesEnded(); :} |
+    Parentesis_a PARAMETROS Parentesis_c RETURNS {: Semantico.self().variablesEnded(); :} |
+    Parentesis_a PARAMETROS Parentesis_c {: Semantico.self().variablesEnded(); :} |    
     
-     Parentesis_a  Parentesis_c MODIFICADORES RETURNS |
-     Parentesis_a  Parentesis_c MODIFICADORES |
-     Parentesis_a  Parentesis_c RETURNS |
-     Parentesis_a  Parentesis_c |
+     Parentesis_a  Parentesis_c MODIFICADORES RETURNS {: Semantico.self().variablesEnded(); :} |
+     Parentesis_a  Parentesis_c MODIFICADORES {: Semantico.self().variablesEnded(); :} |
+     Parentesis_a  Parentesis_c RETURNS {: Semantico.self().variablesEnded(); :} |
+     Parentesis_a  Parentesis_c {: Semantico.self().variablesEnded(); :} |
     
      error  PARAMETROS Parentesis_c |
      error  PARAMETROS Parentesis_c MODIFICADORES |
@@ -325,6 +329,14 @@ FUNCION ::=
     Function Identificador:i FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c {: Semantico.self().funcion_nombre(i,this.parser.getCurToken()); :} |
     Function Identificador:i FUNCION_HEADER Llave_a CUERPO Llave_c {: Semantico.self().funcion_nombre(i,this.parser.getCurToken()); :} |
     Function Identificador:i FUNCION_HEADER Llave_a Llave_c {: Semantico.self().funcion_nombre(i,this.parser.getCurToken()); :} |
+    Function Identificador:i FUNCION_HEADER Llave_a VARIABLES Llave_c {: Semantico.self().funcion_nombre(i); Semantico.self().funcion_ended(); :} FUNCION |
+    Function Identificador:i FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c {: Semantico.self().funcion_nombre(i); Semantico.self().funcion_ended(); :} FUNCION |
+    Function Identificador:i FUNCION_HEADER Llave_a CUERPO Llave_c {: Semantico.self().funcion_nombre(i); Semantico.self().funcion_ended(); :} FUNCION |
+    Function Identificador:i FUNCION_HEADER Llave_a Llave_c {: Semantico.self().funcion_nombre(i); Semantico.self().funcion_ended(); :} FUNCION |
+    Function Identificador:i FUNCION_HEADER Llave_a VARIABLES Llave_c {: Semantico.self().funcion_nombre(i); Semantico.self().funcion_ended(); :} |
+    Function Identificador:i FUNCION_HEADER Llave_a VARIABLES CUERPO Llave_c {: Semantico.self().funcion_nombre(i); Semantico.self().funcion_ended(); :} |
+    Function Identificador:i FUNCION_HEADER Llave_a CUERPO Llave_c {: Semantico.self().funcion_nombre(i); Semantico.self().funcion_ended(); :} |
+    Function Identificador:i FUNCION_HEADER Llave_a Llave_c {: Semantico.self().funcion_nombre(i); Semantico.self().funcion_ended(); :} |
 
     Function Identificador FUNCION_HEADER Llave_a CUERPO VARIABLES error Llave_c FUNCION |
 
@@ -391,8 +403,8 @@ RETURNS ::=
     Returns error Identificador error    
 ;
 PARAMETROS ::=
-    T_dato Identificador Coma PARAMETROS |
-    T_dato Identificador |
+    T_dato:t Identificador:i Coma {: Semantico.self().parametros_guardarParam(t, i); :} PARAMETROS |
+    T_dato:t Identificador:i {: Semantico.self().parametros_guardarParam(t, i); :} |
     error Identificador Coma PARAMETROS |
     error Coma PARAMETROS|
     error Identificador |
@@ -408,12 +420,12 @@ MODIFICADORES ::=
     Visibilidad 
 ;
 CUERPO ::=
-    EXPRESION P_coma {: Semantico.self().expresion_eval(this.parser.getCurToken()); :} CUERPO |
+    EXPRESION P_coma {: Semantico.self().expresion_consumirExpresion(); :} CUERPO |
     ESTRUCTURA_CONTROL CUERPO |
     error P_coma CUERPO |
     error CUERPO |
 
-    EXPRESION P_coma {: Semantico.self().expresion_eval(this.parser.getCurToken()); :} |
+    EXPRESION P_coma {: Semantico.self().expresion_consumirExpresion(); :} |
     ESTRUCTURA_CONTROL 
 ;
 IDENTIFICADOR_COMPLEJO ::=
@@ -422,7 +434,7 @@ IDENTIFICADOR_COMPLEJO ::=
     This |
     Identificador Parentesis_a Parentesis_c |
     Identificador Parentesis_a ARGUMENTOS Parentesis_c |
-    Identificador: i {: Semantico.self().expresion_guardarId(i); :}
+    Identificador:i {: Semantico.self().expresion_guardarId(i); :}
 ;
 IDENTIFICADOR_CUERPO ::=
     IDENTIFICADOR_COMPLEJO Punto IDENTIFICADOR_CUERPO  |
@@ -449,8 +461,8 @@ LITERAL ::=
     Op_booleano
 ;
 EXPRESION ::=  
-    EXPRESION OP_ARITMETICO EXPRESION_TERM |
-    EXPRESION Op_logico EXPRESION_TERM |
+    EXPRESION OP_ARITMETICO EXPRESION_TERM {: Semantico.self().expresion_evalBinary(); :} |
+    EXPRESION Op_logico:o {: Semantico.self().expresion_guardarOpLog(o); :} EXPRESION_TERM |
     EXPRESION OP_ARITMETICO error |
     EXPRESION Op_logico error |
 
@@ -488,6 +500,7 @@ ESTRUCTURA_CONTROL ::=
     Continue P_coma |
     Return EXPRESION P_coma {: Semantico.self().expresion_eval(this.parser.getCurToken()); 
                                Semantico.self().returnEncontrado(this.parser.getCurToken());:}
+    Return {: Semantico.self().return_guardar(); :} EXPRESION P_coma {: Semantico.self().expresion_consumirExpresion(); :}
 ;
 SENTENCIA ::=
     IF_ELSE |
@@ -499,14 +512,15 @@ SENTENCIA ::=
     Continue P_coma |
     Return EXPRESION P_coma{: Semantico.self().expresion_eval(this.parser.getCurToken());  
                               Semantico.self().returnEncontrado(this.parser.getCurToken());:}
+    Return {: Semantico.self().return_guardar(); :} EXPRESION P_coma {: Semantico.self().expresion_consumirExpresion(); :}
 ;
 CUERPO_EC ::=
-    EXPRESION P_coma {: Semantico.self().expresion_eval(this.parser.getCurToken()); :} CUERPO_EC |
+    EXPRESION P_coma {: Semantico.self().expresion_consumirExpresion(); :} CUERPO_EC |
     SENTENCIA CUERPO_EC |
     error P_coma CUERPO_EC |
     error CUERPO_EC |
 
-    EXPRESION P_coma {: Semantico.self().expresion_eval(this.parser.getCurToken()); :} |
+    EXPRESION P_coma {: Semantico.self().expresion_consumirExpresion(); :} |
     SENTENCIA 
 ;
 OP_TERNARIO ::= 
