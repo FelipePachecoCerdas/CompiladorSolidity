@@ -707,24 +707,32 @@ public class Semantico {
 
   public void evalBreakFuncion(Object b, Object symb) {
     Symbol simp = (Symbol) symb;
-    System.out.println("Break en funcion");
-    System.out.println("Break en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
-    Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right, b.toString());
+    System.out.println(b.toString() + " en funcion");
+    System.out.println( b.toString() +" en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
+    Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right - 1, b.toString());
     errores.add(sp2);
-    erroresStr.add("Break en bloque no permitido");
+    erroresStr.add( b.toString() + " en bloque no permitido");
 
   }
 
   public void evalBreakSentencia(Object b, Object symb) {
     Symbol simp = (Symbol) symb;
-    System.out.println("Break en sentencia");/*
-      if (pilaSem.search("while") == -1){ //EN PROCESO :V no encuentra un while para el break
-        System.out.println("Break en bloque no permitido");
-        System.out.println("Doble existencia en L:" + Integer.toString(simp.left + this.factor) + " R:" + Integer.toString(simp.right + this.factor));
-        Symbol sp2 = new Symbol(simp.sym, simp.left , simp.right , b.toString());
+    System.out.println("Break en sentencia");
+    boolean siHayWhile = false;
+    
+    for (RegistroSemantico rs : this.pilaSem) {
+        if (rs instanceof RegistroSemantico_While){
+            siHayWhile = true;
+        }
+    }
+    
+    if (!siHayWhile){ // No hay while xd
+        System.out.println(b.toString() + " en funcion");
+        System.out.println( b.toString() +" en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
+        Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right + 1, b.toString());
         errores.add(sp2);
-        erroresStr.add("Break en bloque no permitido");
-      }*/
+        erroresStr.add( b.toString() + " en bloque no permitido");
+    }
 
   }
 
