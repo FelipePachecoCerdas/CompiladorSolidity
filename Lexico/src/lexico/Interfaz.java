@@ -310,7 +310,7 @@ public class Interfaz extends javax.swing.JFrame {
         modelo3.addRow(row);
       }
       System.out.println("Parsing done " + Integer.toString(st.errores.size()));
-      this.msBox += " Análisis sintácico realizado exitosamente." + ((modelo3.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo3.getRowCount()) + " errores sintácicos.") : " No se han encontrado errores sintácicos.");
+      this.msBox += "\nAnálisis sintácico realizado exitosamente." + ((modelo3.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo3.getRowCount()) + " errores sintácicos.") : " No se han encontrado errores sintácicos.");
       JOptionPane.showMessageDialog(null, this.msBox, "Estado de Compilación", JOptionPane.INFORMATION_MESSAGE);
       //String[] row = {"", "Analisis realizado correctamente", ""};
       //modelo3.addRow(row);
@@ -327,7 +327,7 @@ public class Interfaz extends javax.swing.JFrame {
         String[] row = {e.value.toString(), st.erroresStr.get(j), Integer.toString(e.right + 1) + ": " + Integer.toString(e.left + 1)};
         modelo3.addRow(row);
       }
-      this.msBox += " Análisis sintácico realizado exitosamente." + ((modelo3.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo3.getRowCount()) + " errores sintácicos.") : " No se han encontrado errores sintácicos.");
+      this.msBox += "\nAnálisis sintácico realizado exitosamente." + ((modelo3.getRowCount() > 0) ? (" Se han encontrado " + Integer.toString(modelo3.getRowCount()) + " errores sintácicos.") : " No se han encontrado errores sintácicos.");
       JOptionPane.showMessageDialog(null, this.msBox, "Estado de Compilación", JOptionPane.INFORMATION_MESSAGE);
 
       System.out.println("Errores");

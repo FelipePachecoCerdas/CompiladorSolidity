@@ -95,14 +95,14 @@ public class InterfazSemantica extends javax.swing.JFrame {
     this.add(scroll);
 
     Object[][] rows2 = {};
-    Object[] cols2 = {"Token", "Error", "Apariciones"}; // 2;
+    Object[] cols2 = {"Token", "Error", "Linea: Columna"}; // 2;
     modelo2 = new DefaultTableModel(rows2, cols2);
 
     for (int i = 0; i < sem.erroresStr.size(); i++) {
       String s = sem.erroresStr.get(i);
       Symbol info = sem.errores.get(i);
 
-      String[] row = {info.value.toString(), s, String.valueOf(info.right)};
+      String[] row = {info.value.toString(), s, String.valueOf(info.right) + ": " + String.valueOf(info.left)};
       modelo2.addRow(row);
     }
 
@@ -134,6 +134,9 @@ public class InterfazSemantica extends javax.swing.JFrame {
       //String[] row = {linea};
       //modelo3.addRow(row);
     }
+
+    this.msBox = "Análisis semántico realizado exitosamente." + ((sem.hayErrores) ? (" Se han encontrado " + Integer.toString(sem.errores.size()) + " errores semánticos.") : " No se han encontrado errores semáncticos.");
+
     codigoHtml += "</pre></body></html>";
     if (!codigo.equals("")) {
       try {
@@ -146,10 +149,15 @@ public class InterfazSemantica extends javax.swing.JFrame {
         }
 
         output.close();
+        this.msBox += "\nAl no haber errores, se ha guardado el código ensamblador en el archivo \"" + fileDir + "\\" + fileName + "\".";
+
       } catch (IOException e) {
         System.out.println("Could not create file");
       }
+    } else {
+      this.msBox += "\nAl haber errores, no se ha generado archivo de ensamblador.";
     }
+
     tabla3 = new JTable(modelo3);
     tabla3.setBounds(0, 0, 800, 35);
     tabla3.setRowHeight(25);
@@ -202,6 +210,8 @@ public class InterfazSemantica extends javax.swing.JFrame {
     tabla2.getColumnModel().getColumn(1).setPreferredWidth(200);    //Surname
     this.setLocationRelativeTo(null);
     this.getContentPane().setBackground(Color.decode("#121212"));
+    this.setVisible(true);
+    JOptionPane.showMessageDialog(null, this.msBox, "Estado de Compilación", JOptionPane.INFORMATION_MESSAGE);
 
   }
 

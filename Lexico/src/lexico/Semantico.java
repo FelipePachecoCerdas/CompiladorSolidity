@@ -86,7 +86,9 @@ public class Semantico {
     if (this.ts.get(nombre.toString()) != null) {
       //System.out.println(nombre.toString() + " ya existe ");
       //System.out.println("Doble existencia en L:" + Integer.toString(simp.left + this.factor) + " R:" + Integer.toString(simp.right + this.factor));
-      Symbol sp2 = new Symbol(simp.sym, simp.left + this.factor, simp.right + this.factor, nombre.toString());
+      Symbol sp2 = new Symbol(simp.sym, simp.left + this.factor, simp.right + this.factor,
+        nombre.toString()
+      );
       errores.add(sp2);
       erroresStr.add("Variable ya definida anteriormente");
     } else {
@@ -118,7 +120,7 @@ public class Semantico {
         System.out.println("No hay return");
         Symbol simp = (Symbol) symb;
         System.out.println("No return en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
-        Symbol sp2 = new Symbol(simp.sym, simp.left - 1, simp.right - 1, nombre.toString());
+        Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right, nombre.toString());
         errores.add(sp2);
         erroresStr.add("Fin de función y no se encontró return");
       }
@@ -137,6 +139,7 @@ public class Semantico {
 
     this.tipo_funcion = null;
     hayReturn = false;
+
   }
 
   public String getAsm() {
@@ -159,7 +162,7 @@ public class Semantico {
   }
 
   public void funcion_tipo(Object tipo) {
-    this.factor = 0;
+    this.factor = 1;
     this.tipo_funcion = (String) tipo;
   }
 
@@ -186,12 +189,124 @@ public class Semantico {
     pilaSem.push(rs_op);
   }
 
+  public void expresion_guardarOpUnario(Object operador) {
+    RegistroSemantico_Operador rs_op = new RegistroSemantico_Operador("unario", (String) operador);
+    pilaSem.push(rs_op);
+  }
+
   public void expresion_guardarOpLog(Object operador) {
     RegistroSemantico_Operador rs_op = new RegistroSemantico_Operador("logico", (String) operador);
     pilaSem.push(rs_op);
   }
 
-  public void expresion_evalBinary() {
+  public void expresion_evalUnary(Object symb) {
+    Symbol simp = (Symbol) symb;
+
+    RegistroSemantico_DataObject rs_do = (RegistroSemantico_DataObject) this.pilaSem.pop();
+    RegistroSemantico_Operador rs_op = (RegistroSemantico_Operador) this.pilaSem.pop();
+
+    RegistroSemantico_DataObject rs_do_res = new RegistroSemantico_DataObject(null, null, null);
+
+    String exp_str = rs_op.operador + rs_do.valor.toString();
+    System.out.println("EVALUANDO: " + exp_str);
+
+    if (rs_do.tipoDO.equals("ERROR")) {
+      rs_do_res.tipoDO = "ERROR";
+      rs_do_res.valor = "ERROR";
+      this.pilaSem.push(rs_do_res);
+      return;
+    }
+
+    if (rs_do.tipoDO.equals("direccion")) {
+      String error = "";
+
+      if (!this.ts.containsKey((String) rs_do.valor)) {
+        error = "No se puede ejecutar la expresión " + exp_str + " porque el identificador " + (String) rs_do.valor + " no fue definido";
+      } else if (this.ts.get((String) rs_do.valor).tipoSimbolo.equals("parámetro")) {
+        error = "No se puede ejecutar la expresión " + exp_str + " porque el parámetro " + (String) rs_do.valor + " es de contexto local";
+      } else if (this.ts.get((String) rs_do.valor).alcance.equals("local")) {
+        error = "No se puede ejecutar la expresión " + exp_str + " porque la variable " + (String) rs_do.valor + " es de contexto local";
+      }
+
+      if (!error.equals("")) {
+        System.out.println(error);
+        rs_do_res.tipoDO = "ERROR";
+        rs_do_res.valor = "ERROR";
+        this.pilaSem.push(rs_do_res);
+
+        Symbol sp2 = new Symbol(simp.sym, simp.left + 1, simp.right + 1, exp_str);
+        errores.add(sp2);
+        erroresStr.add(error);
+
+        return;
+      }
+    }
+
+    if (rs_op.tipoOperador.equals("unario") && (!rs_do.tipoDato.equals("int"))) {
+      String error = "No se puede ejecutar la expresión " + exp_str + " porque el operador unario " + rs_op.operador + " solo puede operar enteros y "
+        + ((String) rs_do.valor) + " no lo es";
+      System.out.println(error);
+      rs_do_res.tipoDO = "ERROR";
+      rs_do_res.valor = "ERROR";
+      this.pilaSem.push(rs_do_res);
+
+      Symbol sp2 = new Symbol(simp.sym, simp.left + 1, simp.right + 1, exp_str);
+      errores.add(sp2);
+      erroresStr.add(error);
+
+      return;
+    }
+
+    if (rs_do.tipoDO.equals(
+      "registro")) {
+
+      rs_do_res.tipoDato = "int";
+      rs_do_res.tipoDO = "registro";
+      rs_do_res.valor = "EDX";
+
+      String op_asm = "";
+      if (rs_op.operador.equals("+")) {
+        op_asm = "";
+      }
+      if (rs_op.operador.equals("-")) {
+        op_asm = "neg";
+      }
+
+      String exp_asm = "\n; " + exp_str + "\n" + ((op_asm.equals("")) ? "" : (op_asm + " EDX" + "\n"));
+
+      //guardarEnCuerpoActual(exp_asm);
+      System.out.println(exp_asm);
+    } else {
+      // a + 5  // mov EDX, [a] // add EDX, dword 5  // 
+
+      rs_do_res.tipoDato = "int";
+      rs_do_res.tipoDO = "registro";
+      rs_do_res.valor = "EDX";
+
+      String op_asm = "";
+      if (rs_op.operador.equals("+")) {
+        op_asm = "";
+      }
+      if (rs_op.operador.equals("-")) {
+        op_asm = "neg";
+      }
+
+      String rs_do_asm = (rs_do.tipoDO.equals("constante"))
+        ? "dword " + rs_do.valor.toString() : "[" + rs_do.valor + "]";
+
+      String exp_asm = "\n; " + exp_str + "\n" + ((op_asm.equals("")) ? "" : ("mov EDX, " + rs_do_asm + "\n" + op_asm + " EDX" + "\n"));
+
+      //guardarEnCuerpoActual(exp_asm);
+      System.out.println(exp_asm);
+    }
+    //System.out.println(rs_do_res.toString());
+
+    this.pilaSem.push(rs_do_res);
+
+  }
+
+  public void expresion_evalBinary(Object symb) {
+    Symbol simp = (Symbol) symb;
 
     RegistroSemantico_DataObject rs_do2 = (RegistroSemantico_DataObject) this.pilaSem.pop();
     RegistroSemantico_Operador rs_op = (RegistroSemantico_Operador) this.pilaSem.pop();
@@ -228,61 +343,52 @@ public class Semantico {
     }
     
     if (rs_do1.tipoDO.equals("direccion")) {
+      String error = "";
 
       if (!this.ts.containsKey((String) rs_do1.valor)) {
-        String error = "No se puede ejecutar la expresión " + exp_str + " porque el identificador " + (String) rs_do1.valor + " no fue definido";
-        System.out.println(error);
-        rs_do_res.tipoDO = "ERROR";
-        rs_do_res.valor = "ERROR";
-        this.pilaSem.push(rs_do_res);
-        return;
+        error = "No se puede ejecutar la expresión " + exp_str + " porque el identificador " + (String) rs_do1.valor + " no fue definido";
+      } else if (this.ts.get((String) rs_do1.valor).tipoSimbolo.equals("parámetro")) {
+        error = "No se puede ejecutar la expresión " + exp_str + " porque el parámetro " + (String) rs_do1.valor + " es de contexto local";
+      } else if (this.ts.get((String) rs_do1.valor).alcance.equals("local")) {
+        error = "No se puede ejecutar la expresión " + exp_str + " porque la variable " + (String) rs_do1.valor + " es de contexto local";
       }
 
-      if (this.ts.get((String) rs_do1.valor).tipoSimbolo.equals("parámetro")) {
-        String error = "No se puede ejecutar la expresión " + exp_str + " porque el parámetro " + (String) rs_do1.valor + " es de contexto local";
+      if (!error.equals("")) {
         System.out.println(error);
         rs_do_res.tipoDO = "ERROR";
         rs_do_res.valor = "ERROR";
         this.pilaSem.push(rs_do_res);
-        return;
-      }
 
-      if (this.ts.get((String) rs_do1.valor).alcance.equals("local")) {
-        String error = "No se puede ejecutar la expresión " + exp_str + " porque la variable " + (String) rs_do1.valor + " es de contexto local";
-        System.out.println(error);
-        rs_do_res.tipoDO = "ERROR";
-        rs_do_res.valor = "ERROR";
-        this.pilaSem.push(rs_do_res);
+        Symbol sp2 = new Symbol(simp.sym, simp.left + 1, simp.right + 1, exp_str);
+        errores.add(sp2);
+        erroresStr.add(error);
+
         return;
+
       }
     }
 
     if (rs_do2.tipoDO.equals("direccion")) {
+      String error = "";
 
       if (!this.ts.containsKey((String) rs_do2.valor)) {
-        String error = "No se puede ejecutar la expresión " + exp_str + " porque el identificador " + (String) rs_do2.valor + " no fue definido";
-        System.out.println(error);
-        rs_do_res.tipoDO = "ERROR";
-        rs_do_res.valor = "ERROR";
-        this.pilaSem.push(rs_do_res);
-        return;
+        error = "No se puede ejecutar la expresión " + exp_str + " porque el identificador " + (String) rs_do2.valor + " no fue definido";
+      } else if (this.ts.get((String) rs_do2.valor).tipoSimbolo.equals("parámetro")) {
+        error = "No se puede ejecutar la expresión " + exp_str + " porque el parámetro " + (String) rs_do2.valor + " es de contexto local";
+      } else if (this.ts.get((String) rs_do2.valor).alcance.equals("local")) {
+        error = "No se puede ejecutar la expresión " + exp_str + " porque la variable " + (String) rs_do2.valor + " es de contexto local";
       }
 
-      if (this.ts.get((String) rs_do2.valor).tipoSimbolo.equals("parámetro")) {
-        String error = "No se puede ejecutar la expresión " + exp_str + " porque el parámetro " + (String) rs_do2.valor + " es de contexto local";
+      if (!error.equals("")) {
         System.out.println(error);
         rs_do_res.tipoDO = "ERROR";
         rs_do_res.valor = "ERROR";
         this.pilaSem.push(rs_do_res);
-        return;
-      }
 
-      if (this.ts.get((String) rs_do2.valor).alcance.equals("local")) {
-        String error = "No se puede ejecutar la expresión " + exp_str + " porque la variable " + (String) rs_do2.valor + " es de contexto local";
-        System.out.println(error);
-        rs_do_res.tipoDO = "ERROR";
-        rs_do_res.valor = "ERROR";
-        this.pilaSem.push(rs_do_res);
+        Symbol sp2 = new Symbol(simp.sym, simp.left + 1, simp.right + 1, exp_str);
+        errores.add(sp2);
+        erroresStr.add(error);
+
         return;
       }
     }
@@ -294,6 +400,11 @@ public class Semantico {
       rs_do_res.tipoDO = "ERROR";
       rs_do_res.valor = "ERROR";
       this.pilaSem.push(rs_do_res);
+
+      Symbol sp2 = new Symbol(simp.sym, simp.left + 1, simp.right + 1, exp_str);
+      errores.add(sp2);
+      erroresStr.add(error);
+
       return;
     }
 
@@ -598,7 +709,7 @@ public class Semantico {
     Symbol simp = (Symbol) symb;
     System.out.println("Break en funcion");
     System.out.println("Break en L:" + Integer.toString(simp.left) + " R:" + Integer.toString(simp.right));
-    Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right - 1, b.toString());
+    Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right, b.toString());
     errores.add(sp2);
     erroresStr.add("Break en bloque no permitido");
 
@@ -634,43 +745,47 @@ public class Semantico {
     this.pilaSem.push(rs_ret);
   }
 
-  public void variables_asignarExpresion() { // a 
+  public void variables_asignarExpresion(Object identificador, Object symb) { // a 
+    Symbol simp = (Symbol) symb;
     RegistroSemantico_DataObject rs_do_exp_res = (RegistroSemantico_DataObject) this.pilaSem.pop();
-    String nombreVar = this.ts_aux.get(this.ts_aux.size() - 1);
+    String nombreVar = (String) identificador;//this.ts_aux.get(this.ts_aux.size() - 1);
     String exp_str = nombreVar + "=" + rs_do_exp_res.valor.toString();
     //System.out.println("EVALUANDO: " + exp_str);
     String rs_do_asm;
+    System.out.println("EVALUANDO ASIG_VAR: " + exp_str);
 
     if (rs_do_exp_res.tipoDO.equals("ERROR")) {
       return;
     }
 
     if (rs_do_exp_res.tipoDO.equals("direccion")) {
-      System.out.println(this.ts.get((String) rs_do_exp_res.valor).tipoDato);
+      //System.out.println(this.ts.get((String) rs_do_exp_res.valor).tipoDato);
+      String error = "";
 
       if (!this.ts.containsKey((String) rs_do_exp_res.valor)) {
-        String error = "No se puede ejecutar la expresión " + exp_str + " porque el identificador " + (String) rs_do_exp_res.valor + " no fue definido";
-        System.out.println(error);
-        return;
+        error = "No se puede ejecutar la asignación en declaración " + exp_str + " porque el identificador " + (String) rs_do_exp_res.valor + " no fue definido";
+      } else if (this.ts.get((String) rs_do_exp_res.valor).tipoSimbolo.equals("parámetro")) {
+        error = "No se puede ejecutar la asignación en declaración " + exp_str + " porque el parámetro " + (String) rs_do_exp_res.valor + " es de contexto local";
+      } else if (this.ts.get((String) rs_do_exp_res.valor).alcance.equals("local")) {
+        error = "No se puede ejecutar la asignación en declaración " + exp_str + " porque la variable " + (String) rs_do_exp_res.valor + " es de contexto local";
       }
 
-      if (this.ts.get((String) rs_do_exp_res.valor).tipoSimbolo.equals("parámetro")) {
-        String error = "No se puede ejecutar la expresión " + exp_str + " porque el parámetro " + (String) rs_do_exp_res.valor + " es de contexto local";
+      if (!error.equals("")) {
         System.out.println(error);
-        return;
-      }
-
-      if (this.ts.get((String) rs_do_exp_res.valor).alcance.equals("local")) {
-        String error = "No se puede ejecutar la expresión " + exp_str + " porque la variable " + (String) rs_do_exp_res.valor + " es de contexto local";
-        System.out.println(error);
+        Symbol sp2 = new Symbol(simp.sym, simp.left + 1, simp.right + 1, exp_str);
+        errores.add(sp2);
+        erroresStr.add(error);
         return;
       }
     }
 
     if (rs_do_exp_res.tipoDato != null && !rs_do_exp_res.tipoDato.equals("int")) {
-      String error = "No se puede ejecutar la expresión " + exp_str + " porque el operador " + "=" + " solo puede operar enteros y "
+      String error = "No se puede ejecutar la asignación en declaración " + exp_str + " porque el operador " + "=" + " solo puede operar enteros y "
         + ((String) rs_do_exp_res.valor) + " no lo es";
       System.out.println(error);
+      Symbol sp2 = new Symbol(simp.sym, simp.left + 1, simp.right + 1, exp_str);
+      errores.add(sp2);
+      erroresStr.add(error);
       return;
     }
 
@@ -694,7 +809,8 @@ public class Semantico {
     //System.out.println(exp_asm);
   }
 
-  public void expresion_consumirExpresion() {
+  public void expresion_consumirExpresion(Object symb) {
+    Symbol simp = (Symbol) symb;
     RegistroSemantico_DataObject rs_do_exp_res = (RegistroSemantico_DataObject) this.pilaSem.pop();
 
     if (rs_do_exp_res.tipoDO.equals("ERROR")) {
@@ -711,8 +827,65 @@ public class Semantico {
 
       // VALIDAR QUE EL RESULTADO Y LA ID SEAN DEL MISMO TIPO (?
       String exp_str = rs_do_idAsig.valor + "=" + rs_do_exp_res.valor.toString();
-      System.out.println("EVALUANDO: " + exp_str);
+      System.out.println("EVALUANDO ASIG_EXP: " + exp_str);
       String rs_do_asm;
+
+      if (rs_do_exp_res.tipoDO.equals("direccion")) {
+        String error = "";
+
+        if (!this.ts.containsKey((String) rs_do_exp_res.valor)) {
+          error = "No se puede ejecutar la expresión " + exp_str + " porque el identificador " + (String) rs_do_exp_res.valor + " no fue definido";
+        } else if (this.ts.get((String) rs_do_exp_res.valor).tipoSimbolo.equals("parámetro")) {
+          error = "No se puede ejecutar la expresión " + exp_str + " porque el parámetro " + (String) rs_do_exp_res.valor + " es de contexto local";
+        } else if (this.ts.get((String) rs_do_exp_res.valor).alcance.equals("local")) {
+          error = "No se puede ejecutar la expresión " + exp_str + " porque la variable " + (String) rs_do_exp_res.valor + " es de contexto local";
+        }
+
+        if (!error.equals("")) {
+          System.out.println(error);
+
+          Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right, exp_str);
+          errores.add(sp2);
+          erroresStr.add(error);
+
+          return;
+
+        }
+      }
+
+      if (rs_do_idAsig.tipoDO.equals("direccion")) {
+        String error = "";
+
+        if (!this.ts.containsKey((String) rs_do_idAsig.valor)) {
+          error = "No se puede ejecutar la expresión de asignación " + exp_str + " porque el identificador " + (String) rs_do_idAsig.valor + " no fue definido";
+        } else if (this.ts.get((String) rs_do_idAsig.valor).tipoSimbolo.equals("parámetro")) {
+          error = "No se puede ejecutar la expresión de asignación " + exp_str + " porque el parámetro " + (String) rs_do_idAsig.valor + " es de contexto local";
+        } else if (this.ts.get((String) rs_do_idAsig.valor).alcance.equals("local")) {
+          error = "No se puede ejecutar la expresión de asignación " + exp_str + " porque la variable " + (String) rs_do_idAsig.valor + " es de contexto local";
+        }
+
+        if (!error.equals("")) {
+          System.out.println(error);
+
+          Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right, exp_str);
+          errores.add(sp2);
+          erroresStr.add(error);
+
+          return;
+        }
+      }
+
+      if (!rs_do_exp_res.tipoDato.equals("int") || !rs_do_idAsig.tipoDato.equals("int")) {
+        String error = "No se puede ejecutar la expresión de asignación " + exp_str + " porque el operador " + rs_op.operador + " solo puede operar enteros y "
+          + ((rs_do_exp_res.tipoDato.equals("int")) ? (String) rs_do_idAsig.valor : (String) rs_do_exp_res.valor) + " no lo es";
+        System.out.println(error);
+
+        Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right, exp_str);
+        errores.add(sp2);
+        erroresStr.add(error);
+
+        return;
+      }
 
       switch (rs_do_exp_res.tipoDO) {
         case "constante":
@@ -737,9 +910,46 @@ public class Semantico {
       } // se puedem hacer otros como el +=, ++ y esos
     } else if (this.pilaSem.peek() instanceof RegistroSemantico_Return) {
 
+      RegistroSemantico_Return rs_ret = (RegistroSemantico_Return) this.pilaSem.pop();
+
       String exp_str = "return " + rs_do_exp_res.valor.toString();
       System.out.println("EVALUANDO: " + exp_str);
       String rs_do_asm;
+
+      if (rs_do_exp_res.tipoDO.equals("direccion")) {
+        String error = "";
+
+        if (!this.ts.containsKey((String) rs_do_exp_res.valor)) {
+          error = "No se puede ejecutar el " + exp_str + " porque el identificador " + (String) rs_do_exp_res.valor + " no fue definido";
+        } else if (this.ts.get((String) rs_do_exp_res.valor).tipoSimbolo.equals("parámetro")) {
+          error = "No se puede ejecutar el " + exp_str + " porque el parámetro " + (String) rs_do_exp_res.valor + " es de contexto local";
+        } else if (this.ts.get((String) rs_do_exp_res.valor).alcance.equals("local")) {
+          error = "No se puede ejecutar el " + exp_str + " porque la variable " + (String) rs_do_exp_res.valor + " es de contexto local";
+        }
+
+        if (!error.equals("")) {
+          System.out.println(error);
+
+          Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right, exp_str);
+          errores.add(sp2);
+          erroresStr.add(error);
+
+          return;
+
+        }
+      }
+
+      if (!rs_do_exp_res.tipoDato.equals("int") || !rs_ret.tipoDato.equals("int")) {
+        String error = "No se puede ejecutar el " + exp_str + " porque el return " + " solo retornar enteros y "
+          + ((String) rs_do_exp_res.valor) + " no lo es";
+        System.out.println(error);
+
+        Symbol sp2 = new Symbol(simp.sym, simp.left, simp.right, exp_str);
+        errores.add(sp2);
+        erroresStr.add(error);
+
+        return;
+      }
 
       switch (rs_do_exp_res.tipoDO) {
         case "constante":
@@ -758,9 +968,10 @@ public class Semantico {
       //System.out.println(exp_asm);
       guardarEnCuerpoActual(exp_asm);
     }
+
   }
 
-  public void guardarEnCuerpoActual(String asm_code) {
+  public void guardarEnCuerpoActual(String asm_code) { // mov EXD, EDF \n
     if (this.variables_terminadas) {
         for(String s: asm_code.split("\n")){
             this.asm_cuerpo2+=TAB+s+"\n";
@@ -773,7 +984,7 @@ public class Semantico {
   }
 
   public void variablesEnded() {
-    this.factor = 0;
+    this.factor = 1;
     this.variables_terminadas = true;
   }
 
