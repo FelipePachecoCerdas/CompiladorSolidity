@@ -451,10 +451,9 @@ LITERAL ::=
     Op_booleano
 ;
 EXPRESION ::=  
-    EXPRESION OP_ARITMETICO EXPRESION_TERM {: Semantico.self().expresion_evalBinary(); :} |
-    EXPRESION Op_logico:o {: Semantico.self().expresion_guardarOpLog(o); :} EXPRESION_TERM {: Semantico.self().expresion_evalBinary(); :} |
     EXPRESION OP_ARITMETICO EXPRESION_TERM {: Semantico.self().expresion_evalBinary(this.parser.getCurToken()); :} |
-    EXPRESION Op_logico:o {: Semantico.self().expresion_guardarOpLog(o); :} EXPRESION_TERM |
+    EXPRESION Op_logico:o {: Semantico.self().expresion_guardarOpLog(o); :} EXPRESION_TERM {: Semantico.self().expresion_evalBinary(this.parser.getCurToken()); :} |
+
     EXPRESION OP_ARITMETICO error |
     EXPRESION Op_logico error |
 
