@@ -732,8 +732,9 @@ public class Semantico {
   public void finalizarIfElse() {
     RegistroSemantico_If_Else rs_if_else = (RegistroSemantico_If_Else) this.pilaSem.pop();
     this.asm_cuerpo2 += "\n" + rs_if_else.etiquetaCierre + ":";
+    System.out.println(this.asm_cuerpo2);
     if (this.pilaLogica.isEmpty()) {
-
+      this.asm_cuerpo+=this.asm_cuerpo2;
       asm_cuerpo2 = "";
     } else {
       //this.asm_cuerpo2=this.arregloCuerpo.get(this.arregloCuerpo.size()-1)+this.asm_cuerpo2+"\n"+rs_if_else.etiquetaCierre+":";
