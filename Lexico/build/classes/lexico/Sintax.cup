@@ -452,7 +452,7 @@ LITERAL ::=
 ;
 EXPRESION ::=  
     EXPRESION OP_ARITMETICO EXPRESION_TERM {: Semantico.self().expresion_evalBinary(); :} |
-    EXPRESION Op_logico:o {: Semantico.self().expresion_guardarOpLog(o); :} EXPRESION_TERM |
+    EXPRESION Op_logico:o {: Semantico.self().expresion_guardarOpLog(o); :} EXPRESION_TERM {: Semantico.self().expresion_evalBinary(); :} |
     EXPRESION OP_ARITMETICO error |
     EXPRESION Op_logico error |
 
@@ -513,9 +513,9 @@ OP_TERNARIO ::=
     Parentesis_a EXPRESION Parentesis_c Pregunta EXPRESION Dos_Puntos EXPRESION_TERM
 ;
 IF ::= 
-    If Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c |
-    If Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c |
-    If error Parentesis_c Llave_a CUERPO_EC Llave_c |
+    If Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c {: Semantico.self().guardarEtiquetaIf(); :} {: Semantico.self().finalizarIf(); :}|
+    If Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c {: Semantico.self().guardarEtiquetaIf(); :} {: Semantico.self().finalizarIf(); :}|
+    If error Parentesis_c Llave_a CUERPO_EC Llave_c  |
     If error Parentesis_c Llave_a Llave_c |
     If Parentesis_a EXPRESION Parentesis_c error CUERPO_EC Llave_c |
     If Parentesis_a EXPRESION Parentesis_c error Llave_c 
@@ -524,10 +524,10 @@ EXPRESION_BOOLEANA ::=
     P_coma
 ;
 IF_ELSE ::= 
-    If Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a CUERPO_EC Llave_c |
-    If Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a Llave_c |
-    If Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c Else Llave_a CUERPO_EC Llave_c |
-    If Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c Else Llave_a Llave_c |
+    If Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c Else  Llave_a {: Semantico.self().guardarEtiquetasIfElse(); :} CUERPO_EC Llave_c  {: Semantico.self().finalizarIfElse(); :}|
+    If Parentesis_a EXPRESION Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a{: Semantico.self().guardarEtiquetasIfElse(); :} Llave_c {: Semantico.self().finalizarIfElse(); :}|
+    If Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c Else Llave_a {: Semantico.self().guardarEtiquetasIfElse(); :} CUERPO_EC Llave_c {: Semantico.self().finalizarIfElse(); :}|
+    If Parentesis_a EXPRESION Parentesis_c Llave_a Llave_c Else Llave_a {: Semantico.self().guardarEtiquetasIfElse(); :} Llave_c {: Semantico.self().finalizarIfElse(); :}|
 
     If error Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a CUERPO_EC Llave_c |
     If error Parentesis_c Llave_a CUERPO_EC Llave_c Else Llave_a Llave_c |
@@ -536,8 +536,8 @@ IF_ELSE ::=
     
 ;
 WHILE ::= 
-    While Parentesis_a EXPRESION Parentesis_c Llave_a {: Semantico.self().print("HOLA"); :} CUERPO_EC Llave_c |
-    While Parentesis_a EXPRESION Parentesis_c Llave_a {: Semantico.self().print("HOLA"); :} Llave_c |
+    While Parentesis_a EXPRESION Parentesis_c Llave_a {: Semantico.self().guardarEtiquetasWhile(); :} CUERPO_EC Llave_c {: Semantico.self().finalizarWhile(); :}|
+    While Parentesis_a EXPRESION Parentesis_c Llave_a {: Semantico.self().guardarEtiquetasWhile(); :} Llave_c {: Semantico.self().finalizarWhile(); :}|
 
     While error Parentesis_c Llave_a CUERPO_EC Llave_c |
     While error Parentesis_c Llave_a Llave_c |

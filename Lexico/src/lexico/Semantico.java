@@ -18,7 +18,9 @@ public class Semantico {
 
   public LinkedHashMap<String, SimboloTS> ts = new LinkedHashMap<>();
   public Stack<RegistroSemantico> pilaSem = new Stack<>();
-
+  public Stack<RegistroSemantico> pilaLogica = new Stack<>();
+  public ArrayList<String> arregloCuerpo = new ArrayList<>();
+  
   public ArrayList<String> ts_aux = new ArrayList<>();
   public final String TAB = "    ";
   public int factor = 1;
@@ -36,7 +38,12 @@ public class Semantico {
   public boolean expresion_variable = false;
 
   private static Semantico instancia = null;
-
+  
+  public int contadorWhile = 1;
+  public int contadorIf = 1;
+  
+  public String asm_cuerpo2="";
+  
   public boolean variables_terminadas = false;
   public boolean hayErrores = false;
 
@@ -124,7 +131,7 @@ public class Semantico {
     this.asm_funcion += this.nombre_funcion + ":\n" + TAB + "enter 0,0\n" + TAB + "sub EDX, EDX\n";
     // meter el cuerpo 
 
-    this.asm_funcion += this.asm_cuerpo + "\n";
+    this.asm_funcion += this.asm_cuerpo+this.asm_cuerpo2 + "\n";
 
     this.asm_funcion += "\n" + TAB + "leave\n" + TAB + "ret\n";
 
@@ -201,7 +208,25 @@ public class Semantico {
       this.pilaSem.push(rs_do_res);
       return;
     }
-
+    //System.out.println(rs_op.tipoOperador);
+    if("logico".equals(rs_op.tipoOperador)){  
+     
+     if(this.pilaLogica.isEmpty()){
+        asm_cuerpo+=asm_cuerpo2;
+        asm_cuerpo2="";
+     }else{
+         //System.out.println(this.arregloCuerpo);
+         this.arregloCuerpo.add(asm_cuerpo2);
+         asm_cuerpo2="";
+         //System.out.println(this.arregloCuerpo);
+     }
+     this.pilaLogica.push(rs_do1);
+     this.pilaLogica.push(rs_op);
+     this.pilaLogica.push(rs_do2);
+     
+     return;
+    }
+    
     if (rs_do1.tipoDO.equals("direccion")) {
 
       if (!this.ts.containsKey((String) rs_do1.valor)) {
@@ -347,7 +372,216 @@ public class Semantico {
     this.pilaSem.push(rs_do_res);
 
   }
-
+  
+  
+  
+  public void guardarEtiquetasWhile(){
+      RegistroSemantico_While rs_while = new RegistroSemantico_While("while_label_"+ Integer.toString(this.contadorWhile),"exit_while_label_"+  Integer.toString(this.contadorWhile));
+      this.contadorWhile++;
+      pilaSem.push(rs_while);
+      this.asm_cuerpo2+="\n"+rs_while.etiquetaInicio+":";
+      RegistroSemantico_DataObject rs_datao2 = (RegistroSemantico_DataObject) this.pilaLogica.pop();
+      RegistroSemantico_Operador rs_operador = (RegistroSemantico_Operador) this.pilaLogica.pop();
+      RegistroSemantico_DataObject rs_datao1 = (RegistroSemantico_DataObject) this.pilaLogica.pop();
+      this.asm_cuerpo2+="\n"+TAB+";"+rs_datao1.valor.toString()+rs_operador.operador+rs_datao2.valor.toString()+"\n";
+      if("direccion".equals(rs_datao1.tipoDO)){
+          this.asm_cuerpo2+=TAB+"mov EDX, ["+rs_datao1.valor.toString()+"]\n";
+      }else{
+          this.asm_cuerpo2+=TAB+"mov EDX, dword "+rs_datao1.valor.toString()+"\n";
+      } 
+      if("direccion".equals(rs_datao2.tipoDO)){
+          this.asm_cuerpo2+=TAB+"cmp EDX, ["+rs_datao2.valor.toString()+"]\n";
+      }else{
+          this.asm_cuerpo2+=TAB+"cmp EDX, dword "+rs_datao2.valor.toString()+"\n";
+      } 
+      switch(rs_operador.operador){
+          case "<":
+              this.asm_cuerpo2+=TAB+"jge "+rs_while.etiquetaCierre+"\n";
+              break;
+          case "<=":
+              this.asm_cuerpo2+=TAB+"jg "+rs_while.etiquetaCierre+"\n";
+              break;
+          case ">":
+              this.asm_cuerpo2+=TAB+"jle "+rs_while.etiquetaCierre+"\n";
+              break;
+          case ">=":
+              this.asm_cuerpo2+=TAB+"jl "+rs_while.etiquetaCierre+"\n";
+              break;
+          case "==":
+              this.asm_cuerpo2+=TAB+"jne "+rs_while.etiquetaCierre+"\n";
+              break;
+          case "!=":
+              this.asm_cuerpo2+=TAB+"je "+rs_while.etiquetaCierre+"\n";
+              break;
+      }
+      System.out.println("El:"+this.arregloCuerpo);
+      if(!this.pilaLogica.isEmpty()){
+          this.asm_cuerpo2=this.arregloCuerpo.get(this.arregloCuerpo.size()-1)+this.asm_cuerpo2;
+            this.arregloCuerpo.remove(this.arregloCuerpo.size()-1);
+        //this.arregloCuerpo.add(this.asm_cuerpo2);
+        //this.asm_cuerpo2="";
+      }
+  }
+  
+  public void finalizarWhile(){
+      RegistroSemantico_While rs_while = (RegistroSemantico_While) this.pilaSem.pop();      
+      this.asm_cuerpo2+="\n"+TAB+"jmp "+rs_while.etiquetaInicio+"\n\n"+rs_while.etiquetaCierre+":"; 
+      if(this.pilaLogica.isEmpty()){
+      this.asm_cuerpo+=asm_cuerpo2;
+      asm_cuerpo2="";
+      }else{
+          //this.asm_cuerpo2=this.arregloCuerpo.get(this.arregloCuerpo.size()-1)+this.asm_cuerpo2;
+          //this.arregloCuerpo.remove(this.arregloCuerpo.size()-1);
+          //this.arregloCuerpo.add(this.asm_cuerpo2);
+          //this.asm_cuerpo2="";
+      }
+  }
+  
+  public void guardarEtiquetasIfElse(){
+      RegistroSemantico_If_Else rs_if_else = new RegistroSemantico_If_Else("else_label_"+ Integer.toString(this.contadorIf),"exit_if_label_"+  Integer.toString(this.contadorIf));
+      this.contadorIf++;
+      pilaSem.push(rs_if_else);
+      String asm_cuerpo3="";
+      asm_cuerpo3=this.asm_cuerpo2;
+      this.asm_cuerpo2="";
+      RegistroSemantico_DataObject rs_datao2 = (RegistroSemantico_DataObject) this.pilaLogica.pop();
+      RegistroSemantico_Operador rs_operador = (RegistroSemantico_Operador) this.pilaLogica.pop();
+      RegistroSemantico_DataObject rs_datao1 = (RegistroSemantico_DataObject) this.pilaLogica.pop();
+      this.asm_cuerpo2+="\n"+TAB+";"+rs_datao1.valor.toString()+rs_operador.operador+rs_datao2.valor.toString()+"\n";
+      if("direccion".equals(rs_datao1.tipoDO)){
+          this.asm_cuerpo2+=TAB+"mov EDX, ["+rs_datao1.valor.toString()+"]\n";
+      }else{
+          this.asm_cuerpo2+=TAB+"mov EDX, dword "+rs_datao1.valor.toString()+"\n";
+      } 
+      if("direccion".equals(rs_datao2.tipoDO)){
+          this.asm_cuerpo2+=TAB+"cmp EDX, ["+rs_datao2.valor.toString()+"]\n";
+      }else{
+          this.asm_cuerpo2+=TAB+"cmp EDX, dword "+rs_datao2.valor.toString()+"\n";
+      } 
+      switch(rs_operador.operador){
+          case "<":
+              this.asm_cuerpo2+=TAB+"jge "+rs_if_else.etiquetaElse+"\n";
+              break;
+          case "<=":
+              this.asm_cuerpo2+=TAB+"jg "+rs_if_else.etiquetaElse+"\n";
+              break;
+          case ">":
+              this.asm_cuerpo2+=TAB+"jle "+rs_if_else.etiquetaElse+"\n";
+              break;
+          case ">=":
+              this.asm_cuerpo2+=TAB+"jl "+rs_if_else.etiquetaElse+"\n";
+              break;
+          case "==":
+              this.asm_cuerpo2+=TAB+"jne "+rs_if_else.etiquetaElse+"\n";
+              break;
+          case "!=":
+              this.asm_cuerpo2+=TAB+"je "+rs_if_else.etiquetaElse+"\n";
+              break;
+      }
+      if(this.pilaLogica.isEmpty()){
+      this.asm_cuerpo+=asm_cuerpo2;
+      this.arregloCuerpo.forEach((cuerpo) -> {
+          this.asm_cuerpo+=cuerpo;
+          });
+      this.asm_cuerpo+=asm_cuerpo3+"\n"+TAB+"jmp "+rs_if_else.etiquetaCierre+"\n\n"+rs_if_else.etiquetaElse+":";
+      asm_cuerpo2="";
+      }else{
+        this.asm_cuerpo2=this.arregloCuerpo.get(this.arregloCuerpo.size()-1)+this.asm_cuerpo2+asm_cuerpo3+"\n"+TAB+"jmp "+rs_if_else.etiquetaCierre+"\n\n"+rs_if_else.etiquetaElse+":";
+        this.arregloCuerpo.remove(this.arregloCuerpo.size()-1);
+        //this.arregloCuerpo.add(this.asm_cuerpo2);
+        //this.asm_cuerpo2="";
+      }
+      
+  }
+  
+  public void finalizarIfElse(){
+      RegistroSemantico_If_Else rs_if_else = (RegistroSemantico_If_Else) this.pilaSem.pop();
+      this.asm_cuerpo2+="\n"+rs_if_else.etiquetaCierre+":";
+      if(this.pilaLogica.isEmpty()){
+      
+        asm_cuerpo2="";
+      }else{
+          //this.asm_cuerpo2=this.arregloCuerpo.get(this.arregloCuerpo.size()-1)+this.asm_cuerpo2+"\n"+rs_if_else.etiquetaCierre+":";
+          //this.arregloCuerpo.remove(this.arregloCuerpo.size()-1);
+          //this.arregloCuerpo.add(this.asm_cuerpo2);
+          //this.asm_cuerpo2="";
+      }
+  }
+  public void guardarEtiquetaIf(){
+      RegistroSemantico_If rs_if = new RegistroSemantico_If("exit_if_label_"+ Integer.toString(this.contadorIf));
+      this.contadorIf++;
+      pilaSem.push(rs_if);
+      String asm_cuerpo3="";
+      asm_cuerpo3=this.asm_cuerpo2;
+      this.asm_cuerpo2="";
+      RegistroSemantico_DataObject rs_datao2 = (RegistroSemantico_DataObject) this.pilaLogica.pop();
+      RegistroSemantico_Operador rs_operador = (RegistroSemantico_Operador) this.pilaLogica.pop();
+      RegistroSemantico_DataObject rs_datao1 = (RegistroSemantico_DataObject) this.pilaLogica.pop();
+      this.asm_cuerpo2+="\n"+TAB+";"+rs_datao1.valor.toString()+rs_operador.operador+rs_datao2.valor.toString()+"\n";
+      if("direccion".equals(rs_datao1.tipoDO)){
+          this.asm_cuerpo2+=TAB+"mov EDX, ["+rs_datao1.valor.toString()+"]\n";
+      }else{
+          this.asm_cuerpo2+=TAB+"mov EDX, dword "+rs_datao1.valor.toString()+"\n";
+      } 
+      if("direccion".equals(rs_datao2.tipoDO)){
+          this.asm_cuerpo2+=TAB+"cmp EDX, ["+rs_datao2.valor.toString()+"]\n";
+      }else{
+          this.asm_cuerpo2+=TAB+"cmp EDX, dword "+rs_datao2.valor.toString()+"\n";
+      } 
+      switch(rs_operador.operador){
+          case "<":
+              this.asm_cuerpo2+=TAB+"jge "+rs_if.etiquetaCierre+"\n";
+              break;
+          case "<=":
+              this.asm_cuerpo2+=TAB+"jg "+rs_if.etiquetaCierre+"\n";
+              break;
+          case ">":
+              this.asm_cuerpo2+=TAB+"jle "+rs_if.etiquetaCierre+"\n";
+              break;
+          case ">=":
+              this.asm_cuerpo2+=TAB+"jl "+rs_if.etiquetaCierre+"\n";
+              break;
+          case "==":
+              this.asm_cuerpo2+=TAB+"jne "+rs_if.etiquetaCierre+"\n";
+              break;
+          case "!=":
+              this.asm_cuerpo2+=TAB+"je "+rs_if.etiquetaCierre+"\n";
+              break;
+      }
+      if(this.pilaLogica.isEmpty()){
+      this.asm_cuerpo+=asm_cuerpo2;
+      this.arregloCuerpo.forEach((cuerpo) -> {
+          this.asm_cuerpo+=cuerpo;
+          });
+      this.asm_cuerpo+=asm_cuerpo3;
+      asm_cuerpo2="";
+      }else{
+        this.asm_cuerpo2=this.arregloCuerpo.get(this.arregloCuerpo.size()-1)+this.asm_cuerpo2+asm_cuerpo3;
+        this.arregloCuerpo.remove(this.arregloCuerpo.size()-1);
+        //this.arregloCuerpo.add(this.asm_cuerpo2);
+        //this.asm_cuerpo2="";
+      }
+      //System.out.println("Asm:"+asm_cuerpo2+"\n");
+      
+  }
+  
+  public void finalizarIf(){
+   RegistroSemantico_If rs_if = (RegistroSemantico_If) this.pilaSem.pop();     
+      this.asm_cuerpo2+="\n"+rs_if.etiquetaCierre+":"; 
+      if(this.pilaLogica.isEmpty()){
+      this.asm_cuerpo+=asm_cuerpo2;
+      asm_cuerpo2="";
+      }else{
+        //this.asm_cuerpo2=this.arregloCuerpo.get(this.arregloCuerpo.size()-1)+this.asm_cuerpo2;
+        //this.arregloCuerpo.remove(this.arregloCuerpo.size()-1);
+        //this.arregloCuerpo.add(this.asm_cuerpo2);
+        //this.asm_cuerpo2="";
+      }
+      System.out.println(this.arregloCuerpo);
+  }
+  
+  
+  
   public void printPila() {
     System.out.println(" -----  PILA: -------");
     for (RegistroSemantico rs : this.pilaSem) {
@@ -528,9 +762,13 @@ public class Semantico {
 
   public void guardarEnCuerpoActual(String asm_code) {
     if (this.variables_terminadas) {
-      this.asm_cuerpo += asm_code;
+        for(String s: asm_code.split("\n")){
+            this.asm_cuerpo2+=TAB+s+"\n";
+        }
     } else {
-      this.asm_inicio += asm_code;
+      for(String s: asm_code.split("\n")){
+            this.asm_inicio+=TAB+s+"\n";
+        }
     }
   }
 
