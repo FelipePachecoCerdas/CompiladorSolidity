@@ -64,7 +64,7 @@ public class Semantico {
   int ultimoIndiceTS = 0;
 
   public void variables_tipo(Object tipo) {
-    System.out.println((String) tipo);
+    //System.out.println((String) tipo);
     for (int i = ultimoIndiceTS; i < this.ts.size(); i++) {
       this.ts.get(this.ts_aux.get(i)).tipoDato = (String) tipo;
       if (tipo.equals("int")) {
@@ -84,7 +84,7 @@ public class Semantico {
 
     Symbol simp = (Symbol) symb;
     if (this.ts.get(nombre.toString()) != null) {
-      //System.out.println(nombre.toString() + " ya existe ");
+      System.out.println(nombre.toString() + " ya existe ");
       //System.out.println("Doble existencia en L:" + Integer.toString(simp.left + this.factor) + " R:" + Integer.toString(simp.right + this.factor));
       Symbol sp2 = new Symbol(simp.sym, simp.left + this.factor, simp.right + this.factor,
         nombre.toString()
@@ -93,13 +93,13 @@ public class Semantico {
       erroresStr.add("Variable ya definida anteriormente");
     } else {
       if (this.variables_terminadas) {
-        System.out.println("Variable local: " + nombre.toString() + " ");
+        System.out.println("GUARDANDO VARIABLE LOCAL: " + (String) nombre);
         SimboloTS info = new SimboloTS(null, null, "local", "variable");
         this.ts.put((String) nombre, info);
         this.ts_aux.add((String) nombre);
         return;
       }
-
+      System.out.println("GUARDANDO VARIABLE GLOBAL:  " + (String) nombre);
       SimboloTS info = new SimboloTS(null, null, "global", "variable");
       this.ts.put((String) nombre, info);
       this.ts_aux.add((String) nombre);
@@ -587,7 +587,7 @@ public class Semantico {
         this.asm_cuerpo2 += TAB + "je " + rs_while.etiquetaCierre + "\n";
         break;
     }
-    System.out.println("El:" + this.arregloCuerpo);
+    //System.out.println("El:" + this.arregloCuerpo);
     if (!this.pilaLogica.isEmpty()) {
       this.asm_cuerpo2 = this.arregloCuerpo.get(this.arregloCuerpo.size() - 1) + this.asm_cuerpo2;
       this.arregloCuerpo.remove(this.arregloCuerpo.size() - 1);
@@ -718,10 +718,10 @@ public class Semantico {
       this.arregloCuerpo.forEach((cuerpo) -> {
         this.asm_cuerpo += cuerpo;
       });
-      this.asm_cuerpo += asm_cuerpo3 + "\n" + TAB + "jmp " + rs_if_else.etiquetaCierre + "\n\n" + rs_if_else.etiquetaElse + ":";
+      this.asm_cuerpo += asm_cuerpo3 + "\n" + TAB + "jmp " + rs_if_else.etiquetaCierre + "\n\n; else\n" + rs_if_else.etiquetaElse + ":";
       asm_cuerpo2 = "";
     } else {
-      this.asm_cuerpo2 = this.arregloCuerpo.get(this.arregloCuerpo.size() - 1) + this.asm_cuerpo2 + asm_cuerpo3 + "\n" + TAB + "jmp " + rs_if_else.etiquetaCierre + "\n\n" + rs_if_else.etiquetaElse + ":";
+      this.asm_cuerpo2 = this.arregloCuerpo.get(this.arregloCuerpo.size() - 1) + this.asm_cuerpo2 + asm_cuerpo3 + "\n" + TAB + "jmp " + rs_if_else.etiquetaCierre + "\n\n; else\n" + rs_if_else.etiquetaElse + ":";
       this.arregloCuerpo.remove(this.arregloCuerpo.size() - 1);
       //this.arregloCuerpo.add(this.asm_cuerpo2);
       //this.asm_cuerpo2="";
@@ -732,9 +732,9 @@ public class Semantico {
   public void finalizarIfElse() {
     RegistroSemantico_If_Else rs_if_else = (RegistroSemantico_If_Else) this.pilaSem.pop();
     this.asm_cuerpo2 += "\n" + rs_if_else.etiquetaCierre + ":";
-    System.out.println(this.asm_cuerpo2);
+    //System.out.println(this.asm_cuerpo2);
     if (this.pilaLogica.isEmpty()) {
-      this.asm_cuerpo+=this.asm_cuerpo2;
+      this.asm_cuerpo += this.asm_cuerpo2;
       asm_cuerpo2 = "";
     } else {
       //this.asm_cuerpo2=this.arregloCuerpo.get(this.arregloCuerpo.size()-1)+this.asm_cuerpo2+"\n"+rs_if_else.etiquetaCierre+":";
@@ -876,7 +876,7 @@ public class Semantico {
       //this.arregloCuerpo.add(this.asm_cuerpo2);
       //this.asm_cuerpo2="";
     }
-    System.out.println(this.arregloCuerpo);
+    //System.out.println(this.arregloCuerpo);
   }
 
   public void printPila() {
@@ -1193,7 +1193,7 @@ public class Semantico {
 
   public void parametros_guardarParam(Object tipo, Object identificador) {
     // VALIDAR QUE NO EXISTA
-    System.out.println("Parametro de tipo " + tipo + " :  " + identificador);
+    System.out.println("GUARDANDO PARAMETRO:  " + (String) identificador);
     SimboloTS info = new SimboloTS((String) tipo, null, "local", "parámetro");
     this.ts.put((String) identificador, info);
     this.ts_aux.add((String) identificador);

@@ -139,8 +139,15 @@ public class InterfazSemantica extends javax.swing.JFrame {
 
     codigoHtml += "</pre></body></html>";
     if (!codigo.equals("")) {
+
       try {
-        fileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".asm";
+        String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
+        fileName = baseName + ".asm";
+        // AQUIIII
+        String asm_compile = "; nasm -f elf32 " + baseName + ".asm\n";
+        asm_compile += "; ld -m elf_i386 -s -o " + baseName + " " + baseName + ".o io.o\n";
+        asm_compile += "; ./" + baseName + "\n";
+        codigo = asm_compile + codigo;
         File file = new File(fileDir + "\\" + fileName);
         Writer output = new BufferedWriter(new FileWriter(file));
 

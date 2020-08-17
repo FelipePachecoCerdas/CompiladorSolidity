@@ -184,7 +184,7 @@ public class Interfaz extends javax.swing.JFrame {
     jLabel2.setBackground(new java.awt.Color(255, 255, 255));
     jLabel2.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
     jLabel2.setForeground(Color.decode("#29c7ac"));
-    jLabel2.setText("Analizador Léxico");
+    jLabel2.setText("Compilador Solidity");
 
     jLabel3.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
     jLabel3.setForeground(Color.decode("#ffa931"));
@@ -220,22 +220,21 @@ public class Interfaz extends javax.swing.JFrame {
         .addComponent(jLabel5)
         .addGap(217, 217, 217))
       .addGroup(layout.createSequentialGroup()
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addGap(428, 428, 428)
-            .addComponent(jLabel2)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(ButtonSemantico))
-          .addGroup(layout.createSequentialGroup()
-            .addGap(466, 466, 466)
-            .addComponent(jLabel3)))
-        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        .addGap(466, 466, 466)
+        .addComponent(jLabel3)
+        .addContainerGap(479, Short.MAX_VALUE))
+      .addGroup(layout.createSequentialGroup()
+        .addGap(414, 414, 414)
+        .addComponent(jLabel2)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(ButtonSemantico)
+        .addGap(30, 30, 30))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addGap(24, 24, 24)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(jLabel2)
           .addComponent(ButtonSemantico))
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
