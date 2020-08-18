@@ -134,7 +134,10 @@ public class InterfazSemantica extends javax.swing.JFrame {
       //String[] row = {linea};
       //modelo3.addRow(row);
     }
-
+    System.out.println("\n---------- LISTA DE ERRORES SEMANTICOS ---------");
+    for (String s : sem.erroresStr) {
+      System.out.println(s);
+    }
     this.msBox = "Análisis semántico realizado exitosamente." + ((sem.hayErrores) ? (" Se han encontrado " + Integer.toString(sem.errores.size()) + " errores semánticos.") : " No se han encontrado errores semáncticos.");
 
     codigoHtml += "</pre></body></html>";
