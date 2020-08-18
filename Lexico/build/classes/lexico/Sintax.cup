@@ -487,8 +487,8 @@ ESTRUCTURA_CONTROL ::=
     WHILE |
     DO_WHILE |
     FOR |
-    Break:b P_coma {: Semantico.self().evalBreakFuncion(b,this.parser.getCurToken()); :} |
-    Continue:b  P_coma  {: Semantico.self().evalBreakFuncion(b,this.parser.getCurToken()); :}|
+    Break:b {: Semantico.self().evalBreakFuncion(b,this.parser.getCurToken()); :} P_coma  |
+    Continue:b  {: Semantico.self().evalBreakFuncion(b,this.parser.getCurToken()); :} P_coma  |
     Return {: Semantico.self().return_guardar(); Semantico.self().returnEncontrado(this.parser.getCurToken()); :} EXPRESION P_coma {: Semantico.self().expresion_consumirExpresion(this.parser.getCurToken()); :}
 ;
 SENTENCIA ::=
